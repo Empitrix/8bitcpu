@@ -1,11 +1,18 @@
 #include <stdio.h>
-#include "rules.h"
-#include "utils.h"
+#include "../rules.h"
+#include "../utils.h"
 
+static int PC = 0;
 
 typedef struct ROM {
 	int mcode[ROMSIZ];  // Machine Code
 } ROM;
+
+typedef struct FETCH {
+	int pc;     // Program Counter
+	int data;   // binary data
+} FETCH;
+
 
 
 /* rom_init: setup EEPROM */
@@ -27,6 +34,17 @@ ROM rom_init(void){
 
 	fclose(fp);
 	return rom;
+}
+
+FETCH rom_fetch(ROM rom){
+	FETCH f;
+	f.pc = PC++;
+	f.data = rom.mcode[f.pc];
+	return f;
+}
+
+void set_pc(int new_pc){
+	PC = new_pc;
 }
 
 
