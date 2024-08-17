@@ -2,12 +2,13 @@
 #include <termios.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 #include "structs.h"
 
 
 /* decimal_to_binary: convert given decimal to binary (char *) */
-char *decimal_to_binary(int decimal_num) {
-	int len = 14;
+char *decimal_to_binary(int decimal_num, int len) {
+	len = len + 2;
 	char *binary_str = malloc(len + 1);
 
 	// Fill with '0'
@@ -84,4 +85,34 @@ char getl(void){
 }
 
 
+
+/* str_replace: replaces all of the 'a' with 'b' in the given 'src' */
+void str_replace(char *src, char *a, char *b) {
+	int len_a = strlen(a);
+	int len_b = strlen(b);
+
+	char *p = src;
+
+	while ((p = strstr(p, a)) != NULL) {
+		int offset = p - src;
+		memmove(p + len_b, p + len_a, strlen(p + len_a) + 1);
+		memcpy(p, b, len_b);
+		p += len_b;
+	}
+}
+
+/* prtprt: formatted print in (color-full) */
+void prtprt(char *frmt, ...) {
+	char buff[MALL];
+	va_list args;
+	va_start(args, frmt);
+	vsprintf(buff, frmt, args);
+	str_replace(buff, "[red]", "\x1B[31m");
+	str_replace(buff, "[grn]", "\x1B[32m");
+	str_replace(buff, "[yel]", "\x1B[33m");
+	str_replace(buff, "[blu]", "\x1B[34m");
+	str_replace(buff, "[nrm]", "\x1B[0m");
+	printf("%s%s%s", buff, "\x1B[0m", buff[(int)strlen(buff) - 1] == '\n' ? "" : "\n");
+	va_end(args);
+}
 
