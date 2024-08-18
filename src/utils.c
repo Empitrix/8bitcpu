@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
 #include "structs.h"
 
 
@@ -34,14 +36,14 @@ char *decimal_to_binary(int decimal_num, int len) {
 
 
 void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
-	gflags->step_mode = 0;
+	gflags->stepping = 0;
 	int i;
 	for(i = 0; i < argc; ++i){
 		for(int j = 0; j < (int)strlen(argv[i]); ++j){
 			if(argv[i][0] == '-'){
 				switch(argv[i][j]){
 					case 's':
-						gflags->step_mode = 1;
+						gflags->stepping = 1;
 						break;
 				}
 			}
@@ -51,22 +53,17 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 
 
 
-/************************** TERMIOS **************************/
+/************************** Terminal **************************/
 
 static struct termios old, current;
 
-void init_term(){                /* terminal i/o settings */
-	tcgetattr(0, &old);               /* grab old terminal i/o settings */
-	current = old;                    /* make new settings same as old settings */
-	current.c_lflag &= ~ICANON;       /* disable buffered i/o */
-	current.c_lflag &= ~ECHO;         /* set no echo mode */
-	tcsetattr(0, TCSANOW, &current);  /* use these new terminal i/o settings now */
+void init_term(){                   // terminal i/o settings
+	tcgetattr(0, &old);               // grab old terminal i/o settings
+	current = old;                    // make new settings same as old settings
+	current.c_lflag &= ~ICANON;       // disable buffered i/o
+	current.c_lflag &= ~ECHO;         // set no echo mode
+	tcsetattr(0, TCSANOW, &current);  // use these new terminal i/o settings now
 }
-
-// /* Restore old terminal i/o settings */
-// void reset_termios(void){
-// 	tcsetattr(0, TCSANOW, &old);
-// }
 
 void nrm_term(){
 	tcgetattr(0, &old);
@@ -85,6 +82,27 @@ char getl(void){
 }
 
 
+/* ter_size: get terminal size [x, y] */
+TERSIZ term_size(void){
+	TERSIZ siz = {0, 0};
+	struct winsize w;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+	siz.x = w.ws_col;
+	siz.y = w.ws_row;
+	return siz;
+}
+
+
+void cls_term(void){
+#ifdef linux
+	// printf("\e[3J\033c");
+	system("clear");
+#else
+	printf("\e[1;1H\e[2J");
+#endif
+}
+
+/************************** STRINGS **************************/
 
 /* str_replace: replaces all of the 'a' with 'b' in the given 'src' */
 void str_replace(char *src, char *a, char *b) {

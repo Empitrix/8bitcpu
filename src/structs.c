@@ -6,6 +6,11 @@ typedef struct ROM {
 } ROM;
 
 
+typedef struct RAM {
+	int registers[REGSIZ];
+} RAM;
+
+
 typedef struct FETCH {
 	int pc;     // Program Counter
 	int data;   // binary data
@@ -13,7 +18,7 @@ typedef struct FETCH {
 
 
 typedef struct GFLAGS {
-	int step_mode;
+	int stepping;
 } GFLAGS;
 
 
@@ -23,12 +28,27 @@ typedef enum OPCODES {
 	NOP_OP  = 0,  // No OPeration
 	BCF_OP  = 4,  // Bit Clear File
 	BSF_OP  = 5,  // Bit Scan Forward
-	GOTO_OP = 10  // GOTO
+	GOTO_OP = 10, // GOTO
 } OPCODES;
 
 typedef struct DECODE {
 	OPCODES opcode;
 	int operand;
 } DECODE;
+
+
+typedef struct TERSIZ {
+	int x;
+	int y;
+} TERSIZ;
+
+
+
+/* TARLET: Target Letter */
+typedef struct TARLET {
+	int x;
+	int y;
+	int c;
+} TARLET;
 
 

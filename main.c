@@ -1,6 +1,8 @@
 #include "src/components/rom.h"
 #include "src/components/decode.h"
+#include "src/components/exec.h"
 #include "src/structs.h"
+#include "src/display.h"
 #include <stdio.h>
 #include <unistd.h>
 
@@ -14,43 +16,24 @@ int main(int argc, char *argv[]){
 	ROM rom = rom_init();
 
 	update_gflags(&gflags, argc, argv);
-	// dump_rom(rom);
 
 
-	while(gflags.step_mode ? getl() != 'q' : 1){
+	while(gflags.stepping ? getl() != 'q' : 1){
 
 		fetch = rom_fetch(rom);
 
-
-		//printf("%d\n", fetch.data);
 		dcd = decode_run(fetch);
 
-		printf("BIN: %s - ", decimal_to_binary(fetch.data, 12));
+		// printf("BIN: %s - ", decimal_to_binary(fetch.data, 12));
 
-		switch(dcd.opcode) {
+		// execute_run(dcd);
 
-			case NOP_OP:
-				prtprt("[yel]NOP");
-				break;
+		// pprt(10, 10, "[red]Awesome[nrm]");
+		pprt(10, 10, "[red]Awesome");
 
-			case BCF_OP:
-				prtprt("[yel]BCF");
-				break;
+		emulate_cpu();
 
-			case BSF_OP:
-				prtprt("[yel]BSF");
-				break;
-
-			case GOTO_OP:
-				prtprt("[yel]GOTO: [blu]0x%x [nrm]([grn]Executed![nrm]) -> PC = %d", dcd.operand, dcd.operand);
-				set_pc(dcd.operand);
-				break;
-
-			default:
-				break;
-		}
-
-		if(gflags.step_mode == 0)
+		if(gflags.stepping == 0)
 			usleep(500000);  // 500ms
 	}
 
