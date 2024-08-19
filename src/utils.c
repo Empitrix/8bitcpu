@@ -8,6 +8,15 @@
 #include "structs.h"
 
 
+/* str_insert: insert 'm' into 'src' that starts at given 'idx' */
+void str_insert(char *src, char *m, int idx) {
+	int len1 = strlen(src);
+	int len2 = strlen(m);
+	memmove(src + idx + len2, src + idx, len1 - idx + 1);
+	memcpy(src + idx, m, len2);
+}
+
+
 /* decimal_to_binary: convert given decimal to binary (char *) */
 char *decimal_to_binary(int decimal_num, int len) {
 	len = len + 2;
@@ -32,6 +41,42 @@ char *decimal_to_binary(int decimal_num, int len) {
 	return binary_str;
 }
 
+
+/* (Decimal TO Binary) convert decimal to 12 letter binary with colors */
+char *dtob(int decimal){
+	int len = 12;
+	char *buff = malloc(100 * sizeof(char));
+	strcpy(buff, decimal_to_binary(decimal, len));
+	str_insert(buff, "\033[91m", 0);
+	str_insert(buff, "\033[92m", 11);
+	str_insert(buff, "\033[94m", 19);
+	str_insert(buff, "\033[39m", (int)strlen(buff));
+	return buff;
+}
+
+/* (Decimal to Hex) */
+char *dtoh(int decimal) {
+	char *hex = (char*)malloc(6); // Allocate memory for the hex string
+	if (decimal < 0 || decimal > 4095) {
+		hex[0] = 'E'; // Or handle the error differently
+		hex[1] = 'R';
+		hex[2] = 'R';
+		hex[3] = '\0';
+		return hex;
+	}
+
+	hex[0] = '0';
+	hex[1] = 'x';
+	hex[5] = '\0'; // Null terminator
+
+	for (int i = 4; i >= 2; i--) {
+		int digit = decimal % 16;
+		decimal /= 16;
+		hex[i] = (digit < 10) ? (digit + '0') : (digit - 10 + 'A');
+	}
+
+	return hex;
+}
 
 
 

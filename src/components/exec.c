@@ -1,32 +1,65 @@
 #include "../structs.h"
 #include "./rom.h"
+#include <stdio.h>
 
 
-void execute_run(DECODE dcd){
+EXEC execute_run(DECODE dcd){
 	int b_val, f_val;
+
+	EXEC exec;
 
 	switch(dcd.opcode) {
 		case NOP_OP:
-			// prtprt("[yel]NOP:      [nrm]([grn]Executed![nrm]) -> Do Nothing");
+			exec.opcode = "NOP";
 			break;
 
 		case BCF_OP:
-			// prtprt("[yel]BCF");
+			exec.opcode = "BCF";
 			break;
 
 		case BSF_OP:
-			b_val = dcd.operand >> 5;
-			f_val = dcd.operand & 0b00011111;
-			// prtprt("[yel]BSF:      [nrm]([yel]Progress![nrm]) [nrm]SET [blu]B:%s[nrm] for [blu]F:%s [red]=> [blu]%d", decimal_to_binary(b_val, 3), decimal_to_binary(f_val, 5), f_val);
+			b_val = dcd.operand >> 5; // len: 3
+			f_val = dcd.operand & 0b00011111; // len: 5
+			exec.opcode = "BSF";
 			break;
 
 		case GOTO_OP:
-			// prtprt("[yel]GOTO: [blu]0x%x [nrm]([grn]Executed![nrm]) -> PC = %d", dcd.operand, dcd.operand);
+			exec.opcode = "GOTO";
 			set_pc(dcd.operand);
 			break;
 
 		default:
+			exec.opcode = "NOP";
 			break;
 	}
 
+	return exec;
+}
+
+char* execute_info(int inst){
+	char *info;
+	int opcode = inst >> 8;
+	switch(opcode) {
+		case NOP_OP:
+			info = "NOP";
+			break;
+
+		case BCF_OP:
+			info = "BCF";
+			break;
+
+		case BSF_OP:
+			info = "BSF";
+			break;
+
+		case GOTO_OP:
+			info = "GOTO";
+			break;
+
+		default:
+			info = "GOTO";
+			break;
+	}
+
+	return info;
 }

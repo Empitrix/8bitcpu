@@ -16,6 +16,9 @@ typedef struct FETCH {
 	int data;   // binary data
 } FETCH;
 
+typedef struct EXEC {
+	char *opcode;     // Operation Code
+} EXEC;
 
 typedef struct GFLAGS {
 	int stepping;
@@ -41,14 +44,5 @@ typedef struct TERSIZ {
 	int x;
 	int y;
 } TERSIZ;
-
-
-
-/* TARLET: Target Letter */
-typedef struct TARLET {
-	int x;
-	int y;
-	int c;
-} TARLET;
 
 

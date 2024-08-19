@@ -13,29 +13,32 @@ int main(int argc, char *argv[]){
 	FETCH fetch;
 	DECODE dcd;
 
+	EXEC exec;
+
 	ROM rom = rom_init();
 
 	update_gflags(&gflags, argc, argv);
 
 
 	while(gflags.stepping ? getl() != 'q' : 1){
+		
+
 		fetch = rom_fetch(rom);
 		dcd = decode_run(fetch);
 
-		execute_run(dcd);
+		exec = execute_run(dcd);
 
-		emulate_cpu();
+		emulate_cpu(rom, exec);
 		
-		dprt(10, 0, " [blu]CPU[nrm] ");
+		
 
+		// for(int i = 0; i < 5; ++i){
+		// 	if(i == get_pc())
+		// 		dprt(3, 3 + i, "[dgr_b][blk]%d %s[nrm]", i, decimal_to_binary(rom.mcode[i], 12));
+		// 	else
+		// 		dprt(3, 3 + i, "[blk_b][wht]%d %s[nrm]", i, decimal_to_binary(rom.mcode[i], 12));
+		// }
 
-		dprt(3, 9, "PC: [red]%d", get_pc());
-		for(int i = 0; i < 5; ++i){
-			if(i == get_pc())
-				dprt(3, 10 + i, "[yel_b][blk]%d %s[nrm]", i, decimal_to_binary(rom.mcode[i], 12));
-			else
-				dprt(3, 10 + i, "[blk_b][wht]%d %s[nrm]", i, decimal_to_binary(rom.mcode[i], 12));
-		}
 
 
 		if(gflags.stepping == 0)

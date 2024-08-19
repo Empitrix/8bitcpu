@@ -75,7 +75,7 @@ typedef enum LINE_TYPE {
 } LINE_TYPE;
 
 
-void draw_line(int x, int y, int size, LINE_TYPE lt, char *a, char *b){ 
+void draw_line(int x, int y, int size, LINE_TYPE lt, char *a, char *b, int light){ 
 	int i;
 	for(i = 0 ; i < size; ++i){
 
@@ -88,10 +88,10 @@ void draw_line(int x, int y, int size, LINE_TYPE lt, char *a, char *b){
 		else {
 			if(lt == HORIZONTAL){
 				x++;
-				printfxy("─", x, y);
+				printfxy(light ? "┄": "─", x, y);
 			} else {
 				y++;
-				printfxy("│", x, y);
+				printfxy(light ? "┆": "│", x, y);
 			}
 
 		}
@@ -101,10 +101,10 @@ void draw_line(int x, int y, int size, LINE_TYPE lt, char *a, char *b){
 
 
 void draw_box(int x, int y, int widht, int height){
-	draw_line(x, y, height, VERTICAL, "╭", "╰");
-	draw_line(x + widht, y, height, VERTICAL, "╮", "╯");
-	draw_line(x + 1, y, widht, HORIZONTAL, "─", "─");
-	draw_line(x + 1, y + height - 2, widht, HORIZONTAL, "─", "─");
+	draw_line(x, y, height, VERTICAL, "╭", "╰", 0);
+	draw_line(x + widht, y, height, VERTICAL, "╮", "╯", 0);
+	draw_line(x + 1, y, widht, HORIZONTAL, "─", "─", 0);
+	draw_line(x + 1, y + height - 2, widht, HORIZONTAL, "─", "─", 0);
 	// ╭─╮
 	// │ │
 	// ╰─╯
