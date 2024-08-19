@@ -35,14 +35,9 @@ void emulate_cpu(){
 	cls_term();
 	prtfrm(ts);
 
-	// draw_line(50, 20, 10, HORIZONTAL, "+", "+");
+	draw_box(50, 20, 6, 5);
+	draw_box(50 + 6 + 1, 20, 6, 5);
 
-	draw_line(20, 20, 10, VERTICAL, "╭", "╰");
-	draw_line(40, 20, 10, VERTICAL, "╮", "╯");
 }
 
-
-// ╭─╮
-// │ │
-// ╰─╯
 

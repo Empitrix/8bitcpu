@@ -99,3 +99,14 @@ void draw_line(int x, int y, int size, LINE_TYPE lt, char *a, char *b){
 	}
 }
 
+
+void draw_box(int x, int y, int widht, int height){
+	draw_line(x, y, height, VERTICAL, "╭", "╰");
+	draw_line(x + widht, y, height, VERTICAL, "╮", "╯");
+	draw_line(x + 1, y, widht, HORIZONTAL, "─", "─");
+	draw_line(x + 1, y + height - 2, widht, HORIZONTAL, "─", "─");
+	// ╭─╮
+	// │ │
+	// ╰─╯
+}
+
