@@ -46,7 +46,7 @@ void update_color(char buff[]){
 
 
 void gotoxy(int x, int y){ 
-	printf("\033[%d;%df", x, y); 
+	printf("\033[%d;%df", y, x); 
 }
 
 void printfxy(char *s, int x, int y){
@@ -62,7 +62,7 @@ void dprt(int x, int y, char *frmt, ...) {
 	va_start(args, frmt);
 	vsprintf(buff, frmt, args);
 	update_color(buff);
-	gotoxy(y, x);
+	gotoxy(x, y);
 	printf("%s%s%s", buff, "\033[39m", "\033[49m");
 	fflush(NULL);
 	va_end(args);
@@ -83,13 +83,15 @@ void draw_line(int x, int y, int size, LINE_TYPE lt, char *a, char *b){
 			printfxy(a, x, y);
 		else if (i == size - 1)
 			printfxy(b, x, y);
+
+
 		else {
-			if(lt != HORIZONTAL){
+			if(lt == HORIZONTAL){
 				x++;
-				printfxy("│", x, y);
+				printfxy("─", x, y);
 			} else {
 				y++;
-				printfxy("─", x, y);
+				printfxy("│", x, y);
 			}
 
 		}

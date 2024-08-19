@@ -6,24 +6,22 @@
 void prtfrm(TERSIZ ts){
 	int x, y;
 	int xm, ym;
-	xm = ts.x - 1;
-	ym = ts.y - 1;
 
-	for(y = 1; y < ts.y; ++y)
-		for(x = 1; x < ts.x; ++x)
+	for(y = 1; y < ts.y + 1; ++y)
+		for(x = 1; x < ts.x + 1; ++x)
 
-			if(x == 1 && y == 1)
+			if(y == 1 && x == 1)
 				printfxy("╭", x, y);
-			else if (x == 1 && y == ym)
+			else if (y == 1 && x == ts.x)
 				printfxy("╮", x, y);
-			else if(x == xm && y == 1)
+			else if(y == ts.y && x == 1)
 				printfxy("╰", x, y);
-			else if (x == xm && y == ym)
+			else if (y == ts.y && x == ts.x)
 				printfxy("╯", x, y);
 			else {
-				if(y == 1 || y == ym)
+				if(x == 1 || x == ts.x)
 					printfxy("│", x, y);
-				else if(x == 1 || x == xm)
+				else if(y == 1 || y == ts.y)
 					printfxy("─", x, y);
 				else
 					printfxy(" ", x, y);
@@ -37,6 +35,14 @@ void emulate_cpu(){
 	cls_term();
 	prtfrm(ts);
 
-	draw_line(20, 20, 10, VERTICAL, "+", "+");
+	// draw_line(50, 20, 10, HORIZONTAL, "+", "+");
+
+	draw_line(20, 20, 10, VERTICAL, "╭", "╰");
+	draw_line(40, 20, 10, VERTICAL, "╮", "╯");
 }
+
+
+// ╭─╮
+// │ │
+// ╰─╯
 
