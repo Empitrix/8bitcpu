@@ -36,19 +36,24 @@ void emulate_cpu(ROM rom, EXEC exec){
 
 	cls_term();
 	prtfrm(ts);
+	dprt(10, 0, " [blu]8-BIT CPU[nrm] ");  // header
 
 
 
 
-	dprt(10, 0, " [blu]8-BIT CPU[nrm] ");
-	draw_box(2, 2, 34, ts.y / 2);
 
 	// draw_line(30, 2, (ts.y / 2), VERTICAL, "┬", "┴", 1);
-	dprt(4, 2, " ROM ");
+
+	// ROM box
+	draw_box(2, 3, 34, ts.y / 2);
+	dprt(4, 3, " ROM ");
+
+	draw_box(37, 3, ts.x - 38, ts.y / 1.5);
+	dprt(39, 3, " Expandable ");
 
 
+	dprt(2, 2, "[wht_b][blk] PC: %d | %*s ", get_pc(), ts.x - 12, "STATUS LINE");
 
-	dprt(3, 9, "PC: [red]%d", get_pc());
 	// for(int i = 0; i < (ts.y / 2) - 3; ++i){
 	// 	if(i == get_pc())
 	// 		dprt(3, 3 + i, "[wht_b][blk]%-4d [yel_b][blk]%s[nrm]", i, decimal_to_binary(rom.mcode[i], 12));
@@ -58,9 +63,9 @@ void emulate_cpu(ROM rom, EXEC exec){
 
 	for(int i = 0; i < (ts.y / 2) - 3; ++i){
 		if(i == get_pc())
-			dprt(3, 3 + i, "[wht_b][blk]%-4d [yel_b][blk]%s[nrm][nrm_b] - [blu_b][blk]%s[nrm][nrm_b] %s", i, dtob(rom.mcode[i]), dtoh(rom.mcode[i]), execute_info(rom.mcode[i]) );
+			dprt(3, 4 + i, "[wht_b][blk]%-4d [yel_b][blk]%s[nrm][nrm_b] - [blu_b][blk]%s[nrm][nrm_b] %s", i, dtob(rom.mcode[i]), dtoh(rom.mcode[i]), execute_info(rom.mcode[i]) );
 		else
-			dprt(3, 3 + i, "[blk_b][wht]%-4d %s[nrm]", i, dtob(rom.mcode[i]));
+			dprt(3, 4 + i, "[blk_b][wht]%-4d %s[nrm]", i, dtob(rom.mcode[i]));
 	}
 
 	dprt(ts.x, ts.y, "");

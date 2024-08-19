@@ -1,6 +1,5 @@
 #include "../structs.h"
 #include "./rom.h"
-#include <stdio.h>
 
 
 EXEC execute_run(DECODE dcd){
@@ -57,7 +56,7 @@ char* execute_info(int inst){
 			break;
 
 		default:
-			info = "GOTO";
+			info = "NOP";
 			break;
 	}
 

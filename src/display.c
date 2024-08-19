@@ -110,3 +110,7 @@ void draw_box(int x, int y, int widht, int height){
 	// ╰─╯
 }
 
+
+void scrollable(){
+
+}
