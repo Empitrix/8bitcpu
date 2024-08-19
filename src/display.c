@@ -42,6 +42,9 @@ void update_color(char buff[]){
 }
 
 
+
+
+
 void gotoxy(int x, int y){ 
 	printf("\033[%d;%df", x, y); 
 }
@@ -66,4 +69,31 @@ void dprt(int x, int y, char *frmt, ...) {
 }
 
 
+typedef enum LINE_TYPE {
+	HORIZONTAL,
+	VERTICAL,
+} LINE_TYPE;
+
+
+void draw_line(int x, int y, int size, LINE_TYPE lt, char *a, char *b){ 
+	int i;
+	for(i = 0 ; i < size; ++i){
+
+		if(i == 0)
+			printfxy(a, x, y);
+		else if (i == size - 1)
+			printfxy(b, x, y);
+		else {
+			if(lt != HORIZONTAL){
+				x++;
+				printfxy("│", x, y);
+			} else {
+				y++;
+				printfxy("─", x, y);
+			}
+
+		}
+
+	}
+}
 

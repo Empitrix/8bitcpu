@@ -36,5 +36,7 @@ void emulate_cpu(){
 
 	cls_term();
 	prtfrm(ts);
+
+	draw_line(20, 20, 10, VERTICAL, "+", "+");
 }
 
