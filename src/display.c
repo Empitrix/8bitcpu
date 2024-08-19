@@ -1,88 +1,69 @@
-#include "components/rom.h"
-#include "structs.h"
 #include "utils.h"
-#include <stdio.h>
 
 
-static TARLET tar_buff[5000];
-static int tar_idx = 0;
 
-/* prtprt: formatted print in (color-full) */
-void pprt(int x, int y, char *frmt, ...) {
+
+void update_color(char buff[]){
+	str_replace(buff, "[nrm]", "\033[39m");
+	str_replace(buff, "[blk]", "\033[30m");
+	str_replace(buff, "[drd]", "\033[31m");
+	str_replace(buff, "[dgn]", "\033[32m");
+	str_replace(buff, "[yel]", "\033[33m");
+	str_replace(buff, "[dlu]", "\033[34m");
+	str_replace(buff, "[dmg]", "\033[35m");
+	str_replace(buff, "[dcn]", "\033[36m");
+	str_replace(buff, "[lgr]", "\033[37m");
+	str_replace(buff, "[dgr]", "\033[90m");
+	str_replace(buff, "[red]", "\033[91m");
+	str_replace(buff, "[grn]", "\033[92m");
+	str_replace(buff, "[org]", "\033[93m");
+	str_replace(buff, "[blu]", "\033[94m");
+	str_replace(buff, "[mgn]", "\033[95m");
+	str_replace(buff, "[cyn]", "\033[96m");
+	str_replace(buff, "[wht]", "\033[97m");
+
+	str_replace(buff, "[nrm_b]", "\033[49m");
+	str_replace(buff, "[blk_b]", "\033[40m");
+	str_replace(buff, "[drd_b]", "\033[41m");
+	str_replace(buff, "[dgn_b]", "\033[42m");
+	str_replace(buff, "[yel_b]", "\033[43m");
+	str_replace(buff, "[dlu_b]", "\033[44m");
+	str_replace(buff, "[dmg_b]", "\033[45m");
+	str_replace(buff, "[dcn_b]", "\033[46m");
+	str_replace(buff, "[lgr_b]", "\033[47m");
+	str_replace(buff, "[dgr_b]", "\033[100m");
+	str_replace(buff, "[red_b]", "\033[101m");
+	str_replace(buff, "[grn_b]", "\033[101m");
+	str_replace(buff, "[org_b]", "\033[103m");
+	str_replace(buff, "[blu_b]", "\033[104m");
+	str_replace(buff, "[mgn_b]", "\033[105m");
+	str_replace(buff, "[cyn_b]", "\033[106m");
+	str_replace(buff, "[wht_b]", "\033[107m");
+}
+
+
+void gotoxy(int x, int y){ 
+	printf("\033[%d;%df", x, y); 
+}
+
+void printfxy(char *s, int x, int y){
+	gotoxy(x, y);
+	printf("%s", s);
+}
+
+
+/* dprt: Display Print */
+void dprt(int x, int y, char *frmt, ...) {
 	char buff[MALL];
 	va_list args;
 	va_start(args, frmt);
 	vsprintf(buff, frmt, args);
-	// pprt(10, 10, "[red]Awesome");
-	str_replace(buff, "[red]", "\x0A");
-	str_replace(buff, "[grn]", "\x0B");
-	str_replace(buff, "[yel]", "\x0C");
-	str_replace(buff, "[blu]", "\x0D");
-	str_replace(buff, "[nrm]", "\x0E");
-	sprintf(buff, "%s%s", buff, "\x0F");
+	update_color(buff);
+	gotoxy(y, x);
+	printf("%s%s%s", buff, "\033[39m", "\033[49m");
+	fflush(NULL);
 	va_end(args);
-	
-	for(int i = 0; i < (int)strlen(buff); ++i)
-		tar_buff[tar_idx++] = (TARLET){ x + i, y, buff[i]};
 }
 
 
-
-int is_b_contains(int x, int y){
-	int i;
-	for(i = 0; i < tar_idx; ++i){
-		if(tar_buff[i].x == x && tar_buff[i].y == y)
-			return tar_buff[i].c;
-	}
-	return 0;
-}
-
-
-void emulate_cpu(){
-	TERSIZ ts = term_size();
-	ts.y -= 3;
-
-
-	int x, y, c; x = y = c = 0;
-	int xm, ym = 0; xm = ts.x - 1; ym = ts.y - 1;
-
-	int s = 0;
-	cls_term();
-	// printf("[%d, %d] => %d\n", ts.x, ts.y, ts.x * ts.y);
-
-	for(y = 0; y < ts.y; ++y){
-		for(x = 0; x < ts.x; ++x, c = 0){
-
-
-			if((c = is_b_contains(x, y)) != 0){
-					printf("%c", c);
-
-			} else {
-
-					if(y == 0 && x == 0)
-						printf("╭");
-					else if (y == 0 && x == xm)
-						printf("╮");
-					else if(y == ym && x == 0)
-						printf("╰");
-					else if (y == ym && x == xm)
-						printf("╯\n");
-					else {
-						if(x == 0)
-							printf("│");
-						else if(x == xm)
-							printf("│\n");
-						else if(y == 0)
-							printf("─");
-						else if(y == ym)
-							printf("─");
-						else
-							printf(" ");
-					}
-
-			}
-
-		}
-	}
-}
 

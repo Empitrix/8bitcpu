@@ -87,8 +87,8 @@ TERSIZ term_size(void){
 	TERSIZ siz = {0, 0};
 	struct winsize w;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-	siz.x = w.ws_col;
-	siz.y = w.ws_row;
+	siz.y = w.ws_col;
+	siz.x = w.ws_row;
 	return siz;
 }
 

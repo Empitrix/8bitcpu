@@ -37,6 +37,9 @@ void set_pc(int new_pc){
 	PC = new_pc;
 }
 
+int get_pc(){
+	return PC;
+}
 
 /* dump_rom: show rom's data */
 void dump_rom(ROM rom){

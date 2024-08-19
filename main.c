@@ -2,8 +2,8 @@
 #include "src/components/decode.h"
 #include "src/components/exec.h"
 #include "src/structs.h"
-#include "src/display.h"
-#include <stdio.h>
+#include "src/emulator.h"
+#include "src/utils.h"
 #include <unistd.h>
 
 
@@ -19,19 +19,24 @@ int main(int argc, char *argv[]){
 
 
 	while(gflags.stepping ? getl() != 'q' : 1){
-
 		fetch = rom_fetch(rom);
-
 		dcd = decode_run(fetch);
 
-		// printf("BIN: %s - ", decimal_to_binary(fetch.data, 12));
-
-		// execute_run(dcd);
-
-		// pprt(10, 10, "[red]Awesome[nrm]");
-		pprt(10, 10, "[red]Awesome");
+		execute_run(dcd);
 
 		emulate_cpu();
+		
+		dprt(10, 0, " [blu]CPU[nrm] ");
+
+
+		dprt(3, 9, "PC: [red]%d", get_pc());
+		for(int i = 0; i < 5; ++i){
+			if(i == get_pc())
+				dprt(3, 10 + i, "[yel_b][blk]%d %s[nrm]", i, decimal_to_binary(rom.mcode[i], 12));
+			else
+				dprt(3, 10 + i, "[blk_b][wht]%d %s[nrm]", i, decimal_to_binary(rom.mcode[i], 12));
+		}
+
 
 		if(gflags.stepping == 0)
 			usleep(500000);  // 500ms
