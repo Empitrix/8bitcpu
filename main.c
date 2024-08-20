@@ -42,7 +42,9 @@ int main(int argc, char *argv[]){
 
 
 		if(gflags.stepping == 0)
-			usleep(500000);  // 500ms
+			usleep(600000);  // 500ms
+
+	// printf("\e[?25h");
 	}
 
 	return 0;

@@ -1,8 +1,10 @@
 #include "components/rom.h"
 #include "components/exec.h"
+#include "rules.h"
 #include "structs.h"
 #include "utils.h"
 #include "display.h"
+#include <stdio.h>
 
 
 void prtfrm(TERSIZ ts){
@@ -31,10 +33,16 @@ void prtfrm(TERSIZ ts){
 }
 
 
+static int fake_pc = 110;
+
+
 void emulate_cpu(ROM rom, EXEC exec){
 	TERSIZ ts = term_size(); ts.y += 1;
 
 	cls_term();
+
+	// printf("\e[?25l"); // hide cursor
+
 	prtfrm(ts);
 	dprt(10, 0, " [blu]8-BIT CPU[nrm] ");  // header
 
@@ -54,21 +62,32 @@ void emulate_cpu(ROM rom, EXEC exec){
 
 	dprt(2, 2, "[wht_b][blk] PC: %d | %*s ", get_pc(), ts.x - 12, "STATUS LINE");
 
+
 	// for(int i = 0; i < (ts.y / 2) - 3; ++i){
 	// 	if(i == get_pc())
-	// 		dprt(3, 3 + i, "[wht_b][blk]%-4d [yel_b][blk]%s[nrm]", i, decimal_to_binary(rom.mcode[i], 12));
+	// 		dprt(3, 4 + i, "[wht_b][blk]%-4d [yel_b][blk]%s[nrm][nrm_b] - [blu_b][blk]%s[nrm][nrm_b] %s", i, dtob(rom.mcode[i]), dtoh(rom.mcode[i]), execute_info(rom.mcode[i]) );
 	// 	else
-	// 		dprt(3, 3 + i, "[blk_b][wht]%-4d %s[nrm]", i, decimal_to_binary(rom.mcode[i], 12));
+	// 		dprt(3, 4 + i, "[blk_b][wht]%-4d %s[nrm]", i, dtob(rom.mcode[i]));
 	// }
 
-	for(int i = 0; i < (ts.y / 2) - 3; ++i){
-		if(i == get_pc())
+	int max_h = (ts.y / 2) - 3;
+
+	int linen = 0;
+
+	if(get_pc() > max_h / 2){
+		linen = (fake_pc % RAMSIZ) - (max_h / 2);
+		if(linen + (max_h / 2) + (max_h / 2) + 2 > RAMSIZ)
+			linen = RAMSIZ - max_h;
+	}
+
+	for(int i = 0; i < max_h; ++i){
+		if((linen + i)  == get_pc())
 			dprt(3, 4 + i, "[wht_b][blk]%-4d [yel_b][blk]%s[nrm][nrm_b] - [blu_b][blk]%s[nrm][nrm_b] %s", i, dtob(rom.mcode[i]), dtoh(rom.mcode[i]), execute_info(rom.mcode[i]) );
 		else
 			dprt(3, 4 + i, "[blk_b][wht]%-4d %s[nrm]", i, dtob(rom.mcode[i]));
 	}
 
-	dprt(ts.x, ts.y, "");
+
 
 }
 
