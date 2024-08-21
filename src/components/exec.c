@@ -1,5 +1,6 @@
 #include "../structs.h"
 #include "./rom.h"
+#include <stdio.h>
 
 
 EXEC execute_run(DECODE dcd){
@@ -46,30 +47,46 @@ EXEC execute_run(DECODE dcd){
 }
 
 
-char* execute_info(int inst){
-	char *info;
+
+/* Return execution information for given ROM instruction */
+char* exec_info(int inst){
+	char *info = malloc(MALL * sizeof(char));
+	int b, f = 0;
+
 	int opcode = inst >> 8;
+	int operand = inst & 0xFF;  // Operand
+
+	char *bits_1sec = dtob(inst, "[459395]", "", "");
+	char *bits_2sec = dtob2sec(inst, "[459395]", "[EB7C69]");
+	char *bits_3sec = dtob(inst, "[459395]", "[EB7C69]", "[FCA637]");
+
 	switch(opcode) {
 		case NOP_OP:
-			info = "NOP";
+			sprintf(info, "%s[FFFFFF]  [2979FF]%s [878700]%s", bits_1sec, dtoh(inst, 3), "NOP");
 			break;
 
 		case BCF_OP:
-			info = "BCF";
+			b = operand >> 5;          // len: 3
+			f = operand & 0b00011111;  // len: 5
+			sprintf(info, "%s[FFFFFF]  [2979FF]%s [878700]%s [d787af]%s[FFFFFF], [fb8019]%s", bits_3sec, dtoh(inst, 3), "BCF", dtoh(f, 2), dtoh(b, 2));
 			break;
 
 		case BSF_OP:
-			info = "BSF";
+			b = operand >> 5;          // len: 3
+			f = operand & 0b00011111;  // len: 5
+			sprintf(info, "%s[FFFFFF]  [2979FF]%s [878700]%s [d787af]%s[FFFFFF], [fb8019]%s", bits_3sec, dtoh(inst, 3), "BSF", dtoh(f, 2), dtoh(b, 2));
 			break;
 
 		case GOTO_OP:
-			info = "GOTO";
+			sprintf(info, "%s[FFFFFF]  [2979FF]%s [878700]%s [d787af]%s", bits_2sec, dtoh(inst, 3), "GOTO", dtoh(operand, 4));
 			break;
 
 		default:
-			info = "NOP";
+			sprintf(info, "%s[FFFFFF]  [2979FF]%s [878700]%s", bits_1sec, dtoh(inst, 3), "NOP");
 			break;
 	}
 
+	strcpy(info, update_color(info, 1));
 	return info;
 }
+

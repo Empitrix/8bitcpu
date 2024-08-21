@@ -38,44 +38,50 @@ char *decimal_to_binary(int decimal_num, int len) {
 
 
 /* (Decimal TO Binary) convert decimal to 12 letter binary with colors */
-char *dtob(int decimal){
+char *dtob(int decimal, char *a, char *b, char *c){
 	int len = 12;
 	char *buff = malloc(MALL * sizeof(char));
 	char *out = malloc(MALL * sizeof(char));
 	strcpy(buff, decimal_to_binary(decimal, len));
-	sprintf(out, "%s%s",        update_color("[459395]", 0), str_slice(buff, 0, 6));
-	sprintf(out, "%s%s%s", out, update_color("[EB7C69]", 0), str_slice(buff, 6, 9));
-	sprintf(out, "%s%s%s", out, update_color("[FCA637]", 0), str_slice(buff, 9, 14));
+	// sprintf(out, "%s%s",        update_color("[459395]", 0), str_slice(buff, 0, 6));
+	// sprintf(out, "%s%s%s", out, update_color("[EB7C69]", 0), str_slice(buff, 6, 9));
+	// sprintf(out, "%s%s%s", out, update_color("[FCA637]", 0), str_slice(buff, 9, 14));
+	sprintf(out, "%s%s",        update_color(a, 0), str_slice(buff, 0, 6));
+	sprintf(out, "%s%s%s", out, update_color(b, 0), str_slice(buff, 6, 9));
+	sprintf(out, "%s%s%s", out, update_color(c, 0), str_slice(buff, 9, 14));
 	// sprintf(out, "%s%s ", out, update_color("[FF0000]", 0));
 	return out;
 }
 
-/* (Decimal to Hex) */
-char *dtoh(int decimal) {
-	char *hex = (char*)malloc(6); // Allocate memory for the hex string
-	if (decimal < 0 || decimal > 4095) {
-		hex[0] = 'E'; // Or handle the error differently
-		hex[1] = 'R';
-		hex[2] = 'R';
-		hex[3] = '\0';
-		return hex;
-	}
 
+/* decimal to binary for 2 section */
+char *dtob2sec(int decimal, char *a, char *b){
+	int len = 12;
+	char *buff = malloc(MALL * sizeof(char));
+	char *out = malloc(MALL * sizeof(char));
+	strcpy(buff, decimal_to_binary(decimal, len));
+	sprintf(out, "%s%s",        update_color(a, 0), str_slice(buff, 0, 5));
+	sprintf(out, "%s%s%s", out, update_color(b, 0), str_slice(buff, 5, 14));
+	return out;
+}
+
+
+/* dtoh: (Decimal TO Hex) converts given decimal into hex string with size of 'siz' */
+char *dtoh(int decimal, int siz){
+	char *hex = (char*)malloc(siz + 3);
 	hex[0] = '0';
 	hex[1] = 'x';
-	hex[5] = '\0'; // Null terminator
-
-	for (int i = 4; i >= 2; i--) {
+	hex[siz + 3] = '\0';
+	for(int i = siz + 1; i >= 2; i--){
 		int digit = decimal % 16;
 		decimal /= 16;
 		hex[i] = (digit < 10) ? (digit + '0') : (digit - 10 + 'A');
 	}
-
 	return hex;
 }
 
 
-
+/* update_gflags: Update Global Flags */
 void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 	gflags->stepping = 0;
 	int i;

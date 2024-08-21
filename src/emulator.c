@@ -35,15 +35,16 @@ void prtfrm(TERSIZ ts){
 static int fake_pc = 110;
 
 
-void emulate_cpu(ROM rom, EXEC exec){
+void emulate_cpu(ROM rom, DECODE dcd, EXEC exec){
 	TERSIZ ts = term_size(); ts.y += 1;
 	cls_term();
 
 	prtfrm(ts);
 	dprt(10, 0, " [3153eb]8-BIT CPU[{}] ");  // header
 
+	int rom_p_s = 50; 
 	// ROM box
-	draw_box(2, 3, 34, ts.y / 2);
+	draw_box(2, 3, rom_p_s, ts.y / 2);
 	dprt(4, 3, " ROM ");
 
 
@@ -61,18 +62,18 @@ void emulate_cpu(ROM rom, EXEC exec){
 			linen = RAMSIZ - max_h;
 	}
 
+
 	for(int i = 0; i < max_h; ++i){
 		if((linen + i)  == get_pc())
-			dprt(3, 4 + i, "[fcd200]%-4d [u][000000]%s[{}] - [2979FF]%s[{}] %s",
-					i, dtob(rom.mcode[i]), dtoh(rom.mcode[i]), exec.opcode);
+			dprt(3, 4 + i, "%s%-4s [{}][u]%s", i == 0 ? "[F44336]" : "[fcd200]", dtoh(i, 4), exec_info(rom.mcode[i]));
 		else
-			dprt(3, 4 + i, "[808080]%-4d [{}]%s", i, dtob(rom.mcode[i]));
+			dprt(3, 4 + i, "%s%-4s [{}]%s", i == 0 ? "[D32F2F]" : "[808080]", dtoh(i, 4), exec_info(rom.mcode[i]));
 	}
 
 
 	// RAM
-	draw_box(37, 3, ts.x - 38, ts.y / 1.5);
-	dprt(39, 3, " Expandable ");
+	draw_box(rom_p_s + 3, 3, ts.x - rom_p_s - 4, ts.y / 1.5);
+	dprt(rom_p_s + 5, 3, " Expandable ");
 
 
 }

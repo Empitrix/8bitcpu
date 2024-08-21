@@ -26,7 +26,7 @@ int main(int argc, char *argv[]){
 		dcd = decode_run(fetch);
 		exec = execute_run(dcd);
 
-		emulate_cpu(rom, exec);
+		emulate_cpu(rom, dcd, exec);
 
 
 		if(gflags.stepping == 0)
