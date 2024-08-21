@@ -4,7 +4,6 @@
 #include "structs.h"
 #include "utils.h"
 #include "display.h"
-#include <stdio.h>
 
 
 void prtfrm(TERSIZ ts){
@@ -44,7 +43,7 @@ void emulate_cpu(ROM rom, EXEC exec){
 	// printf("\e[?25l"); // hide cursor
 
 	prtfrm(ts);
-	dprt(10, 0, " [blu]8-BIT CPU[nrm] ");  // header
+	dprt(10, 0, " [3153eb]8-BIT CPU[{}] ");  // header
 
 
 
@@ -60,7 +59,7 @@ void emulate_cpu(ROM rom, EXEC exec){
 	dprt(39, 3, " Expandable ");
 
 
-	dprt(2, 2, "[wht_b][blk] PC: %d | %*s ", get_pc(), ts.x - 12, "STATUS LINE");
+	dprt(2, 2, "{FFFFFF}[000000] PC: %d | %*s ", get_pc(), ts.x - 12, "STATUS LINE");
 
 
 	// for(int i = 0; i < (ts.y / 2) - 3; ++i){
@@ -82,9 +81,10 @@ void emulate_cpu(ROM rom, EXEC exec){
 
 	for(int i = 0; i < max_h; ++i){
 		if((linen + i)  == get_pc())
-			dprt(3, 4 + i, "[wht_b][blk]%-4d [yel_b][blk]%s[nrm][nrm_b] - [blu_b][blk]%s[nrm][nrm_b] %s", i, dtob(rom.mcode[i]), dtoh(rom.mcode[i]), execute_info(rom.mcode[i]) );
+			dprt(3, 4 + i, "[fcd200]%-4d [u][000000]%s[{}] - [2979FF]%s[{}] %s",
+					i, dtob(rom.mcode[i]), dtoh(rom.mcode[i]), execute_info(rom.mcode[i]));
 		else
-			dprt(3, 4 + i, "[blk_b][wht]%-4d %s[nrm]", i, dtob(rom.mcode[i]));
+			dprt(3, 4 + i, "[808080]%-4d [{}]%s", i, dtob(rom.mcode[i]));
 	}
 
 

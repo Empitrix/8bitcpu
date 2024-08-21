@@ -1,53 +1,73 @@
-#include "utils.h"
+#include "strfy.h"
+#include "rules.h"
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
+#include <stdlib.h>
 
 
 
 
-void update_color(char buff[]){
-	str_replace(buff, "[nrm]", "\033[39m");
-	str_replace(buff, "[blk]", "\033[30m");
-	str_replace(buff, "[drd]", "\033[31m");
-	str_replace(buff, "[dgn]", "\033[32m");
-	str_replace(buff, "[yel]", "\033[33m");
-	str_replace(buff, "[dlu]", "\033[34m");
-	str_replace(buff, "[dmg]", "\033[35m");
-	str_replace(buff, "[dcn]", "\033[36m");
-	str_replace(buff, "[lgr]", "\033[37m");
-	str_replace(buff, "[dgr]", "\033[90m");
-	str_replace(buff, "[red]", "\033[91m");
-	str_replace(buff, "[grn]", "\033[92m");
-	str_replace(buff, "[org]", "\033[93m");
-	str_replace(buff, "[blu]", "\033[94m");
-	str_replace(buff, "[mgn]", "\033[95m");
-	str_replace(buff, "[cyn]", "\033[96m");
-	str_replace(buff, "[wht]", "\033[97m");
+char *update_color(char *format, int clean){
+	// increase the format size and use 'src'
+	char *src = malloc(MALL * sizeof(char));
+	strcpy(src, format);
 
-	str_replace(buff, "[nrm_b]", "\033[49m");
-	str_replace(buff, "[blk_b]", "\033[40m");
-	str_replace(buff, "[drd_b]", "\033[41m");
-	str_replace(buff, "[dgn_b]", "\033[42m");
-	str_replace(buff, "[yel_b]", "\033[43m");
-	str_replace(buff, "[dlu_b]", "\033[44m");
-	str_replace(buff, "[dmg_b]", "\033[45m");
-	str_replace(buff, "[dcn_b]", "\033[46m");
-	str_replace(buff, "[lgr_b]", "\033[47m");
-	str_replace(buff, "[dgr_b]", "\033[100m");
-	str_replace(buff, "[red_b]", "\033[101m");
-	str_replace(buff, "[grn_b]", "\033[101m");
-	str_replace(buff, "[org_b]", "\033[103m");
-	str_replace(buff, "[blu_b]", "\033[104m");
-	str_replace(buff, "[mgn_b]", "\033[105m");
-	str_replace(buff, "[cyn_b]", "\033[106m");
-	str_replace(buff, "[wht_b]", "\033[107m");
+	size_t src_len = strlen(src);
+	char *tmp = malloc(src_len * 2 + 1); // Allocate temporary buffer
+	char *dst = tmp;
+	char *ptr = src;
+
+	while (*ptr) {
+		if (*ptr == '[' || *ptr == '{') {
+			// Check if it's a color code
+			char color_code[7];
+			strncpy(color_code, ptr + 1, 6);
+			color_code[6] = '\0';
+
+			// Convert hex color to RGB
+			int r, g, b;
+			if (sscanf(color_code, "%2x%2x%2x", &r, &g, &b) == 3) {
+				if (*ptr == '[') {
+					dst += sprintf(dst, "\033[38;2;%d;%d;%dm", r, g, b);  // fg
+				} else if (*ptr == '{') {
+					dst += sprintf(dst, "\033[48;2;%d;%d;%dm", r, g, b);  // bg
+				}
+				ptr += 8;  // Don't copy the color code
+			} else {
+				*dst++ = *ptr++;  // Just copy if color code is invalid
+			}
+		} else {
+			*dst++ = *ptr++;  // Copy other characters
+		}
+	}
+
+	*dst = '\0';
+
+	// Copy the modified string back to the original buffer
+	strncpy(src, tmp, dst - tmp);
+	src[dst - tmp] = '\0';
+	free(tmp);
+
+	// Insert reset codes at the end
+	if(clean == 1)
+		strcat(src, "\033[0m\033[49m");
+
+	str_replace(src, "[{}]", "\033[0m\033[49m");
+	str_replace(src, "[]", "\033[0m");
+	str_replace(src, "{}", "\033[49m");
+
+	str_replace(src, "[u]", "\033[4m");
+
+
+	return src;
 }
-
-
-
 
 
 void gotoxy(int x, int y){ 
 	printf("\033[%d;%df", y, x); 
 }
+
 
 void printfxy(char *s, int x, int y){
 	gotoxy(x, y);
@@ -61,9 +81,10 @@ void dprt(int x, int y, char *frmt, ...) {
 	va_list args;
 	va_start(args, frmt);
 	vsprintf(buff, frmt, args);
-	update_color(buff);
+	;
 	gotoxy(x, y);
-	printf("%s%s%s", buff, "\033[39m", "\033[49m");
+	// printf("%s%s%s", buff, "\033[39m", "\033[49m");
+	printf("%s", update_color(buff, 1));
 	fflush(NULL);
 	va_end(args);
 }

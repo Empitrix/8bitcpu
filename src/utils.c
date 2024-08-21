@@ -6,15 +6,9 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include "structs.h"
+#include "strfy.h"
+#include "display.h"
 
-
-/* str_insert: insert 'm' into 'src' that starts at given 'idx' */
-void str_insert(char *src, char *m, int idx) {
-	int len1 = strlen(src);
-	int len2 = strlen(m);
-	memmove(src + idx + len2, src + idx, len1 - idx + 1);
-	memcpy(src + idx, m, len2);
-}
 
 
 /* decimal_to_binary: convert given decimal to binary (char *) */
@@ -45,13 +39,14 @@ char *decimal_to_binary(int decimal_num, int len) {
 /* (Decimal TO Binary) convert decimal to 12 letter binary with colors */
 char *dtob(int decimal){
 	int len = 12;
-	char *buff = malloc(100 * sizeof(char));
+	char *buff = malloc(MALL * sizeof(char));
+	char *out = malloc(MALL * sizeof(char));
 	strcpy(buff, decimal_to_binary(decimal, len));
-	str_insert(buff, "\033[91m", 0);
-	str_insert(buff, "\033[92m", 11);
-	str_insert(buff, "\033[94m", 19);
-	str_insert(buff, "\033[39m", (int)strlen(buff));
-	return buff;
+	sprintf(out, "%s%s",        update_color("[459395]", 0), str_slice(buff, 0, 6));
+	sprintf(out, "%s%s%s", out, update_color("[EB7C69]", 0), str_slice(buff, 6, 9));
+	sprintf(out, "%s%s%s", out, update_color("[FCA637]", 0), str_slice(buff, 9, 14));
+	// sprintf(out, "%s%s ", out, update_color("[FF0000]", 0));
+	return out;
 }
 
 /* (Decimal to Hex) */
@@ -145,37 +140,5 @@ void cls_term(void){
 #else
 	printf("\e[1;1H\e[2J");
 #endif
-}
-
-/************************** STRINGS **************************/
-
-/* str_replace: replaces all of the 'a' with 'b' in the given 'src' */
-void str_replace(char *src, char *a, char *b) {
-	int len_a = strlen(a);
-	int len_b = strlen(b);
-
-	char *p = src;
-
-	while ((p = strstr(p, a)) != NULL) {
-		int offset = p - src;
-		memmove(p + len_b, p + len_a, strlen(p + len_a) + 1);
-		memcpy(p, b, len_b);
-		p += len_b;
-	}
-}
-
-/* prtprt: formatted print in (color-full) */
-void prtprt(char *frmt, ...) {
-	char buff[MALL];
-	va_list args;
-	va_start(args, frmt);
-	vsprintf(buff, frmt, args);
-	str_replace(buff, "[red]", "\x1B[31m");
-	str_replace(buff, "[grn]", "\x1B[32m");
-	str_replace(buff, "[yel]", "\x1B[33m");
-	str_replace(buff, "[blu]", "\x1B[34m");
-	str_replace(buff, "[nrm]", "\x1B[0m");
-	printf("%s%s%s", buff, "\x1B[0m", buff[(int)strlen(buff) - 1] == '\n' ? "" : "\n");
-	va_end(args);
 }
 
