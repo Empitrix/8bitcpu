@@ -3,37 +3,48 @@
 
 
 EXEC execute_run(DECODE dcd){
-	int b_val, f_val;
 
 	EXEC exec;
+
+	exec.upc = get_pc();          // default PC
+	exec.reg_n = exec.bit_n = 0;  // Register & Bit
 
 	switch(dcd.opcode) {
 		case NOP_OP:
 			exec.opcode = "NOP";
+			exec.type = MONO_OP;
 			break;
 
 		case BCF_OP:
+			exec.bit_n = dcd.operand >> 5;          // len: 3
+			exec.reg_n = dcd.operand & 0b00011111;  // len: 5
 			exec.opcode = "BCF";
+			exec.type = MULTI_OP;
 			break;
 
 		case BSF_OP:
-			b_val = dcd.operand >> 5; // len: 3
-			f_val = dcd.operand & 0b00011111; // len: 5
+			exec.bit_n = dcd.operand >> 5;          // len: 3
+			exec.reg_n = dcd.operand & 0b00011111;  // len: 5
 			exec.opcode = "BSF";
+			exec.type = MULTI_OP;
 			break;
 
 		case GOTO_OP:
 			exec.opcode = "GOTO";
-			set_pc(dcd.operand);
+			exec.type = MONO_OP;
+			exec.upc = dcd.operand;
+			// set_pc(dcd.operand);
 			break;
 
-		default:
+	default:
 			exec.opcode = "NOP";
+			exec.type = MONO_OP;
 			break;
 	}
 
 	return exec;
 }
+
 
 char* execute_info(int inst){
 	char *info;

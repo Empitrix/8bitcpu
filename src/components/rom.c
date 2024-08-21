@@ -28,13 +28,18 @@ ROM rom_init(void){
 
 FETCH rom_fetch(ROM rom){
 	FETCH f;
-	f.pc = PC++;
+	// f.pc = PC++;
+	f.pc = PC;
 	f.data = rom.mcode[f.pc];
 	return f;
 }
 
 void set_pc(int new_pc){
 	PC = new_pc;
+}
+
+void increment_pc(void){
+	PC++;
 }
 
 int get_pc(){

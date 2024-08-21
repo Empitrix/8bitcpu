@@ -1,3 +1,4 @@
+#include <signal.h>
 #include <stdlib.h>
 #include <termios.h>
 #include <stdio.h>
@@ -140,5 +141,25 @@ void cls_term(void){
 #else
 	printf("\e[1;1H\e[2J");
 #endif
+}
+
+
+
+struct sigaction old_action;
+
+void sigint_handler(int sig_no){
+	cls_term();
+	enable_cursor();
+	nrm_term();
+	sigaction(SIGINT, &old_action, NULL);
+	kill(0, SIGINT);
+}
+
+
+void init_end_sig(){
+	struct sigaction action;
+	memset(&action, 0, sizeof(action));
+	action.sa_handler = &sigint_handler;
+	sigaction(SIGINT, &action, &old_action);
 }
 

@@ -13,26 +13,37 @@ typedef struct RAM {
 
 typedef struct FETCH {
 	int pc;     // Program Counter
-	int data;   // binary data
+	int data;   // Binary data
 } FETCH;
 
+
+typedef enum EXEC_TYPE {
+	MONO_OP,
+	MULTI_OP,
+} exec_t;
+
+
 typedef struct EXEC {
-	char *opcode;     // Operation Code
+	char *opcode;  // Operation Code
+	exec_t type;   // Number of operands
+	int upc;       // Updated PC (Program Counter)
+	int reg_n;     // Register Number
+	int bit_n;     // Bit
 } EXEC;
+
 
 typedef struct GFLAGS {
 	int stepping;
 } GFLAGS;
 
 
-
-
 typedef enum OPCODES {
-	NOP_OP  = 0,  // No OPeration
-	BCF_OP  = 4,  // Bit Clear File
-	BSF_OP  = 5,  // Bit Scan Forward
-	GOTO_OP = 10, // GOTO
+	NOP_OP  = 0,   // No OPeration
+	BCF_OP  = 4,   // Bit Clear File
+	BSF_OP  = 5,   // Bit Scan Forward
+	GOTO_OP = 10,  // GOTO
 } OPCODES;
+
 
 typedef struct DECODE {
 	OPCODES opcode;

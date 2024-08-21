@@ -132,6 +132,6 @@ void draw_box(int x, int y, int widht, int height){
 }
 
 
-void scrollable(){
-}
+void enable_cursor(void){ printf("\e[?25h"); fflush(NULL); }   // show cursor
+void disable_cursor(void){ printf("\e[?25l"); fflush(NULL); }  // hide cursor
 
