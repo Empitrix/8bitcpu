@@ -145,12 +145,17 @@ void cls_term(void){
 
 
 
-struct sigaction old_action;
-
-void sigint_handler(int sig_no){
+void normal_terminal(void){
 	cls_term();
 	enable_cursor();
 	nrm_term();
+	fflush(NULL);
+}
+
+struct sigaction old_action;
+
+void sigint_handler(int sig_no){
+	normal_terminal();
 	sigaction(SIGINT, &old_action, NULL);
 	kill(0, SIGINT);
 }
@@ -162,4 +167,7 @@ void init_end_sig(){
 	action.sa_handler = &sigint_handler;
 	sigaction(SIGINT, &action, &old_action);
 }
+
+
+
 

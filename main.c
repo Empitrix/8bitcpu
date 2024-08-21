@@ -21,7 +21,7 @@ int main(int argc, char *argv[]){
 	update_gflags(&gflags, argc, argv);
 
 
-	while(gflags.stepping ? getl() != 'q' : 1){
+	do {
 		fetch = rom_fetch(rom);
 		dcd = decode_run(fetch);
 		exec = execute_run(dcd);
@@ -38,7 +38,9 @@ int main(int argc, char *argv[]){
 		else
 			set_pc(exec.upc);
 
-	}
+	} while(gflags.stepping ? getl() != 'q' : 1);
+
+	normal_terminal();
 
 	return 0;
 }
