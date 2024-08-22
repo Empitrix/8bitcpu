@@ -6,7 +6,6 @@
 #include "src/structs.h"
 #include "src/emulator.h"
 #include "src/utils.h"
-#include <stdio.h>
 #include <unistd.h>
 
 

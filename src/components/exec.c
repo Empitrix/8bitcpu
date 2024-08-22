@@ -56,33 +56,33 @@ char* exec_info(int inst){
 	int opcode = inst >> 8;
 	int operand = inst & 0xFF;  // Operand
 
-	char *bits_1sec = dtob(inst, "[459395]", "", "");
-	char *bits_2sec = dtob2sec(inst, "[459395]", "[EB7C69]");
-	char *bits_3sec = dtob(inst, "[459395]", "[EB7C69]", "[FCA637]");
+	char *bits_1sec = dtob(inst, 12);
+	char *bits_2sec = dtob2sec(inst, "[62AEEF]", "[E5C07A]");
+	char *bits_3sec = dtob3sec(inst, "[62AEEF]", "[E5C07A]", "[C678DD]");
 
 	switch(opcode) {
 		case NOP_OP:
-			sprintf(info, "%s[FFFFFF]  [2979FF]%s [878700]%s", bits_1sec, dtoh(inst, 3), "NOP");
+			sprintf(info, "[62AEEF]%s  [2979FF]%s [98C379]%s", bits_1sec, dtoh(inst, 3), "NOP");
 			break;
 
 		case BCF_OP:
 			b = operand >> 5;          // len: 3
 			f = operand & 0b00011111;  // len: 5
-			sprintf(info, "%s[FFFFFF]  [2979FF]%s [878700]%s [d787af]%s[FFFFFF], [fb8019]%s", bits_3sec, dtoh(inst, 3), "BCF", dtoh(f, 2), dtoh(b, 2));
+			sprintf(info, "%s[FFFFFF]  [2979FF]%s [98C379]%s [ed400e]%s[FFFFFF], [E98C31]%s", bits_3sec, dtoh(inst, 3), "BCF", dtoh(f, 2), dtoh(b, 2));
 			break;
 
 		case BSF_OP:
 			b = operand >> 5;          // len: 3
 			f = operand & 0b00011111;  // len: 5
-			sprintf(info, "%s[FFFFFF]  [2979FF]%s [878700]%s [d787af]%s[FFFFFF], [fb8019]%s", bits_3sec, dtoh(inst, 3), "BSF", dtoh(f, 2), dtoh(b, 2));
+			sprintf(info, "%s[FFFFFF]  [2979FF]%s [98C379]%s [ed400e]%s[FFFFFF], [E98C31]%s", bits_3sec, dtoh(inst, 3), "BSF", dtoh(f, 2), dtoh(b, 2));
 			break;
 
 		case GOTO_OP:
-			sprintf(info, "%s[FFFFFF]  [2979FF]%s [878700]%s [d787af]%s", bits_2sec, dtoh(inst, 3), "GOTO", dtoh(operand, 4));
+			sprintf(info, "%s[FFFFFF]  [2979FF]%s [98C379]%s [ed400e]%s", bits_2sec, dtoh(inst, 3), "GOTO", dtoh(operand, 4));
 			break;
 
 		default:
-			sprintf(info, "%s[FFFFFF]  [2979FF]%s [878700]%s", bits_1sec, dtoh(inst, 3), "NOP");
+			sprintf(info, "[62AEEF]%s  [2979FF]%s [98C379]%s", bits_1sec, dtoh(inst, 3), "NOP");
 			break;
 	}
 

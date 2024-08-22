@@ -13,7 +13,7 @@
 
 
 /* decimal_to_binary: convert given decimal to binary (char *) */
-char *d_to_b(int decimal_num, int len) {
+char *dtob(int decimal_num, int len) {
 	len = len + 2;
 	char *binary_str = malloc(len + 1);
 
@@ -37,19 +37,26 @@ char *d_to_b(int decimal_num, int len) {
 }
 
 
+/* decimal_to_binary: convert given decimal to binary (char *) */
+char *dtob_led(int num, int len) {
+	char *buff = malloc(MALL * sizeof(char));
+	buff = dtob(num, len);
+	sprintf(buff, "%s", str_slice(buff, 2, len + 2));
+	str_replace(buff, "0", "[909090]❚");
+	str_replace(buff, "1", "[00FF00]❚");
+	return buff;
+}
+
+
 /* (Decimal TO Binary) convert decimal to 12 letter binary with colors */
-char *dtob(int decimal, char *a, char *b, char *c){
+char *dtob3sec(int decimal, char *a, char *b, char *c){
 	int len = 12;
 	char *buff = malloc(MALL * sizeof(char));
 	char *out = malloc(MALL * sizeof(char));
-	strcpy(buff, d_to_b(decimal, len));
-	// sprintf(out, "%s%s",        update_color("[459395]", 0), str_slice(buff, 0, 6));
-	// sprintf(out, "%s%s%s", out, update_color("[EB7C69]", 0), str_slice(buff, 6, 9));
-	// sprintf(out, "%s%s%s", out, update_color("[FCA637]", 0), str_slice(buff, 9, 14));
+	strcpy(buff, dtob(decimal, len));
 	sprintf(out, "%s%s",        update_color(a, 0), str_slice(buff, 0, 6));
 	sprintf(out, "%s%s%s", out, update_color(b, 0), str_slice(buff, 6, 9));
 	sprintf(out, "%s%s%s", out, update_color(c, 0), str_slice(buff, 9, 14));
-	// sprintf(out, "%s%s ", out, update_color("[FF0000]", 0));
 	return out;
 }
 
@@ -59,7 +66,7 @@ char *dtob2sec(int decimal, char *a, char *b){
 	int len = 12;
 	char *buff = malloc(MALL * sizeof(char));
 	char *out = malloc(MALL * sizeof(char));
-	strcpy(buff, d_to_b(decimal, len));
+	strcpy(buff, dtob(decimal, len));
 	sprintf(out, "%s%s",        update_color(a, 0), str_slice(buff, 0, 5));
 	sprintf(out, "%s%s%s", out, update_color(b, 0), str_slice(buff, 5, 14));
 	return out;

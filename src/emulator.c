@@ -41,7 +41,7 @@ void emulate_cpu(ROM rom, DECODE dcd, EXEC exec, REG reg, RAM ram){
 	cls_term();
 
 	prtfrm(ts);
-	dprt(10, 0, " [3153eb]8-BIT CPU[{}] ");  // header
+	dprt(10, 0, " [98C379]8-BIT CPU[{}] ");  // header
 
 	int rom_p_s = (ts.x / 2) - 1;  // ROM Pannel Size
 
@@ -50,19 +50,30 @@ void emulate_cpu(ROM rom, DECODE dcd, EXEC exec, REG reg, RAM ram){
 	dprt(4, 3, " ROM ");
 
 	// Registers Pannel
-	draw_box(rom_p_s + 3, 3, ts.x - rom_p_s - 4, 13); // ts.y / 2 - 4
+	draw_box(rom_p_s + 3, 3, 27, 13); // ts.y / 2 - 4
 	dprt(rom_p_s + 5, 3, " Registers ");
 
+
+	// Info Pannel
+	draw_box(ts.x - (ts.x / 3) + 11, 3, (ts.x / 3) - 12, 13);
+	dprt(ts.x - (ts.x / 3) + 13, 3, " INFO ");
+
+
 	// RAM Pannel
-	draw_box((ts.x / 2) + 2, ts.y / 2 - 2, (ts.x / 2) - 2, ts.y / 2 + 2);
+	draw_box((ts.x / 2) + 2, 15, 23, ts.y / 2 + 2);
 	dprt((ts.x / 2) + 4, ts.y / 2 - 2, " RAM ");
 
 
-	dprt(2, 2, "{AED0FB}[000000] PC: %d │ GPIO 6: %s │ %*s ", get_pc(), dtoh(reg.registers[6], 2), ts.x - 27, "STATUS LINE");
+	draw_box((ts.x / 2) + 26, 15, (ts.x / 3) - 8, ts.y / 2 + 2);
+	dprt((ts.x / 2) + 28, 15, " Console ");
+
+
+
+
+	dprt(2, 2, " [55B6C2]PC[FFFFFF]: [ed400e]%d [FFFFFF]  [55B6C2]GPIO[FFFFFF]: [ed400e]%s[FFFFFF]  %s[{}]", get_pc(), dtoh(reg.registers[6], 2), dtob_led(reg.registers[6], 8));
 
 
 	// ROM Pannel
-	// int max_h = (ts.y / 2) - 3;
 	int max_h = (ts.y) - 6;
 	int linen = 0;
 
@@ -85,11 +96,11 @@ void emulate_cpu(ROM rom, DECODE dcd, EXEC exec, REG reg, RAM ram){
 
 	// REG
 	for(int i = 0; i < REGSIZ; ++i)
-		dprt(ts.x / 2 + 4, 4 + i, "%-16s [FB8C00]%s [558B2F]%s", i == 6 ? "[FFFFFF]GPIO" : "[999999]RESEVERD", d_to_b(reg.registers[i], 8), dtoh(reg.registers[i], 2));
+		dprt(ts.x / 2 + 4, 4 + i, "%-16s [E06B74]%s [98C379]%s", i == 6 ? "[FFFFFF]GPIO" : "[ABB2BF]RESEVERD", dtob(reg.registers[i], 8), dtoh(reg.registers[i], 2));
 
 	// RAM
-	for(int i = 0; i < (ts.y / 2 - 1); ++i)
-		dprt((ts.x / 2) + 4, ((ts.y / 2) - 1) + i, "[999999]%-4s [FB8C00]%s [558B2F]%s", dtoh(i + 16, 2), d_to_b(ram.ram[i], 8), dtoh(ram.ram[i], 2));
+	for(int i = 0; i < 16; ++i)
+		dprt((ts.x / 2) + 4, 16 + i, "[ABB2BF]%-4s [E06B74]%s [98C379]%s", dtoh(i + 16, 2), dtob(ram.ram[i], 8), dtoh(ram.ram[i], 2));
 
 
 
