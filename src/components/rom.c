@@ -54,7 +54,7 @@ void dump_rom(ROM rom){
 	int value, i; i = value = 0;
 	for(i = 0; i < sizeof(rom.mcode) / sizeof(rom.mcode[0]); ++i){
 		value = rom.mcode[i];
-		printf("| %-3d | %-7d | 0x%-4x | %s |\n", i, value, value, decimal_to_binary(value, 12));
+		printf("| %-3d | %-7d | 0x%-4x | %s |\n", i, value, value, d_to_b(value, 12));
 	}
 	printf("\n\n");
 }

@@ -45,30 +45,31 @@ void emulate_cpu(ROM rom, DECODE dcd, EXEC exec, REG reg, RAM ram){
 
 	int rom_p_s = (ts.x / 2) - 1;  // ROM Pannel Size
 
-	// ROM box
-	draw_box(2, 3, rom_p_s, ts.y / 2);
+	// ROM Pannel
+	draw_box(2, 3, rom_p_s, ts.y - 3);
 	dprt(4, 3, " ROM ");
 
 	// Registers Pannel
-	draw_box(rom_p_s + 3, 3, ts.x - rom_p_s - 4, ts.y / 2);
+	draw_box(rom_p_s + 3, 3, ts.x - rom_p_s - 4, 13); // ts.y / 2 - 4
 	dprt(rom_p_s + 5, 3, " Registers ");
 
-	// RAM
-	draw_box(2, ts.y / 2 + 2, ts.x - 3, ts.y / 2 - 2);
-	dprt(4, ts.y / 2 + 2, " RAM ");
+	// RAM Pannel
+	draw_box((ts.x / 2) + 2, ts.y / 2 - 2, (ts.x / 2) - 2, ts.y / 2 + 2);
+	dprt((ts.x / 2) + 4, ts.y / 2 - 2, " RAM ");
 
 
 	dprt(2, 2, "{AED0FB}[000000] PC: %d │ GPIO 6: %s │ %*s ", get_pc(), dtoh(reg.registers[6], 2), ts.x - 27, "STATUS LINE");
 
 
 	// ROM Pannel
-	int max_h = (ts.y / 2) - 3;
+	// int max_h = (ts.y / 2) - 3;
+	int max_h = (ts.y) - 6;
 	int linen = 0;
 
 	if(get_pc() > max_h / 2){
-		linen = (fake_pc % RAMSIZ) - (max_h / 2);
-		if(linen + (max_h / 2) + (max_h / 2) + 2 > RAMSIZ)
-			linen = RAMSIZ - max_h;
+		linen = (fake_pc % ROMSIZ) - (max_h / 2);
+		if(linen + (max_h / 2) + (max_h / 2) + 2 > ROMSIZ)
+			linen = ROMSIZ - max_h;
 	}
 
 
@@ -84,11 +85,11 @@ void emulate_cpu(ROM rom, DECODE dcd, EXEC exec, REG reg, RAM ram){
 
 	// REG
 	for(int i = 0; i < REGSIZ; ++i)
-		dprt(ts.x / 2 + 4, 4 + i, "[999999]%-4s []%s [558B2F]%s", dtoh(i, 2), dtob2sec(reg.registers[i], "[FB8C00]", ""), dtoh(reg.registers[i], 3));
+		dprt(ts.x / 2 + 4, 4 + i, "%-16s [FB8C00]%s [558B2F]%s", i == 6 ? "[FFFFFF]GPIO" : "[999999]RESEVERD", d_to_b(reg.registers[i], 8), dtoh(reg.registers[i], 2));
 
 	// RAM
-	for(int i = 0; i < (ts.y / 2 - 5); ++i)
-		dprt(4, ((ts.y / 2) + 3) + i, "[CCCCCC]%-4s [FB8C00]%s [558B2F]%s", dtoh(i, 2), dtob2sec(ram.ram[i], "", ""), dtoh(ram.ram[i], 3));
+	for(int i = 0; i < (ts.y / 2 - 1); ++i)
+		dprt((ts.x / 2) + 4, ((ts.y / 2) - 1) + i, "[999999]%-4s [FB8C00]%s [558B2F]%s", dtoh(i + 16, 2), d_to_b(ram.ram[i], 8), dtoh(ram.ram[i], 2));
 
 
 

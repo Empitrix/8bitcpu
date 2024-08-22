@@ -34,21 +34,6 @@ int main(int argc, char *argv[]){
 		dcd = decode_run(fetch);
 		exec = execute_run(dcd);
 
-		// // 
-		// switch(dcd.opcode) {
-		// 	case BSF_OP:
-		// 		if(exec.type == MULTI_OP){
-		// 			// cls_term();
-		// 			//printf("RN: %d\n", exec.reg_n);
-		// 			// reg.registers[exec.reg_n] = 1;
-		// 			reg.registers[exec.reg_n] |= 1 << exec.bit_n;
-		// 			// usleep(500000);
-		// 		}
-		// 		break;
-		// 	default: break;
-		// }
-
-
 
 		// Display CPU
 		emulate_cpu(rom, dcd, exec, reg, ram);
@@ -67,7 +52,6 @@ int main(int argc, char *argv[]){
 						reg.registers[exec.reg_n] |= 1 << exec.bit_n;
 					else
 						reg.registers[exec.reg_n] &= ~(1 << exec.bit_n);
-						//reg.registers[exec.reg_n] |= 0 << exec.bit_n;
 				}
 				break;
 			default: break;
