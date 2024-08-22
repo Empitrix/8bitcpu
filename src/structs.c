@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include "rules.h"
 
 
@@ -7,8 +8,13 @@ typedef struct ROM {
 
 
 typedef struct RAM {
-	int registers[REGSIZ];
+	uint8_t ram[RAMSIZ];
 } RAM;
+
+
+typedef struct REG {
+	uint8_t registers[REGSIZ];
+} REG;
 
 
 typedef struct FETCH {

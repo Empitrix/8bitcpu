@@ -1,8 +1,12 @@
 #include "src/components/rom.h"
+#include "src/components/ram.h"
 #include "src/components/decode.h"
+#include "src/components/reg.h"
 #include "src/components/exec.h"
 #include "src/structs.h"
 #include "src/emulator.h"
+#include "src/utils.h"
+#include <stdio.h>
 #include <unistd.h>
 
 
@@ -17,26 +21,65 @@ int main(int argc, char *argv[]){
 	EXEC exec;
 
 	ROM rom = rom_init();
+	REG reg = reg_init();
+	RAM ram = ram_init();
+
 
 	update_gflags(&gflags, argc, argv);
 
 
 	do {
+
 		fetch = rom_fetch(rom);
 		dcd = decode_run(fetch);
 		exec = execute_run(dcd);
 
-		emulate_cpu(rom, dcd, exec);
+		// // 
+		// switch(dcd.opcode) {
+		// 	case BSF_OP:
+		// 		if(exec.type == MULTI_OP){
+		// 			// cls_term();
+		// 			//printf("RN: %d\n", exec.reg_n);
+		// 			// reg.registers[exec.reg_n] = 1;
+		// 			reg.registers[exec.reg_n] |= 1 << exec.bit_n;
+		// 			// usleep(500000);
+		// 		}
+		// 		break;
+		// 	default: break;
+		// }
 
 
-		if(gflags.stepping == 0)
-			usleep(600000);  // 500ms
 
+		// Display CPU
+		emulate_cpu(rom, dcd, exec, reg, ram);
 
+		// PC
 		if(exec.upc == get_pc())
 			increment_pc();
 		else
 			set_pc(exec.upc);
+
+
+		switch(dcd.opcode) {
+			case BSF_OP: case BCF_OP:
+				if(exec.type == MULTI_OP){
+					if(dcd.opcode == BSF_OP)
+						reg.registers[exec.reg_n] |= 1 << exec.bit_n;
+					else
+						reg.registers[exec.reg_n] &= ~(1 << exec.bit_n);
+						//reg.registers[exec.reg_n] |= 0 << exec.bit_n;
+				}
+				break;
+			default: break;
+		}
+
+
+
+
+
+		// Interruption
+		if(gflags.stepping == 0)
+			usleep(600000);  // 500ms
 
 	} while(gflags.stepping ? getl() != 'q' : 1);
 

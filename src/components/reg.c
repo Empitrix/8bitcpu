@@ -1,8 +1,13 @@
 #include "../structs.h"
 
-struct RAM _ram_; 
 
+REG reg_init(){
+	REG reg;
 
-void ram_init(){
+	for(int i = 0; i < REGSIZ; ++i){
+		reg.registers[i] = 0;
+	}
 
+	return reg;
 }
+
