@@ -44,18 +44,17 @@ void emulate_cpu(ROM rom, DECODE dcd, EXEC exec, REG reg, RAM ram, GFLAGS flags)
 	int max_h = (ts.y) - 6;
 	int linen = 0;
 
-	if(get_pc() > (max_h / 2)){
-		linen = (get_pc() % ROMSIZ) - (max_h / 2);
+	if(get_pc() > (int)(max_h / 2)){
+		linen = (get_pc() % ROMSIZ) - (int)(max_h / 2);
 		if(linen + (max_h / 2) + (max_h / 2) + 2 > ROMSIZ)
 			linen = ROMSIZ - max_h;
 	}
-
 	// ROM list view
 	for(int i = 0; i < max_h; ++i){
-		if((linen + i) == get_pc())
-			dprt(4, 4 + i, "%s%-4s [{}][u]%s", (linen + i) == 0 ? "[F44336]" : "[fcd200]", dtoh(linen + i, 4), exec_info(rom.mcode[linen + i]));
+		if((linen + i)  == get_pc())
+			dprt(4, 4 + i, "%s%-4s [{}][u]%s", i == 0 ? "[F44336]" : "[fcd200]", dtoh(i, 4), exec_info(rom.mcode[i]));
 		else
-			dprt(4, 4 + i, "%s%-4s [{}]%s", (linen + i) == 0 ? "[D32F2F]" : "[808080]", dtoh(linen + i, 4), exec_info(rom.mcode[linen + i]));
+			dprt(4, 4 + i, "%s%-4s [{}]%s", i == 0 ? "[D32F2F]" : "[808080]", dtoh(i, 4), exec_info(rom.mcode[i]));
 	}
 
 
