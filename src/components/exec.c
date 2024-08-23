@@ -3,11 +3,11 @@
 #include <stdio.h>
 
 
-EXEC execute_run(DECODE dcd){
-
+/* return EXEC that contains execute information for given instruction */
+EXEC execute_capture(DECODE dcd){
 	EXEC exec;
 
-	exec.upc = get_pc();          // default PC
+	exec.upc = get_pc();          // default PC (current)
 	exec.reg_n = exec.bit_n = 0;  // Register & Bit
 
 	switch(dcd.opcode) {
@@ -34,7 +34,6 @@ EXEC execute_run(DECODE dcd){
 			exec.opcode = "GOTO";
 			exec.type = MONO_OP;
 			exec.upc = dcd.operand;
-			// set_pc(dcd.operand);
 			break;
 
 	default:
@@ -45,7 +44,6 @@ EXEC execute_run(DECODE dcd){
 
 	return exec;
 }
-
 
 
 /* Return execution information for given ROM instruction */
@@ -66,14 +64,14 @@ char* exec_info(int inst){
 			break;
 
 		case BCF_OP:
-			b = operand >> 5;          // len: 3
-			f = operand & 0b00011111;  // len: 5
+			b = operand >> 5;
+			f = operand & 0b00011111;
 			sprintf(info, "%s[FFFFFF]  [2979FF]%s [98C379]%s [ed400e]%s[FFFFFF], [E98C31]%s", bits_3sec, dtoh(inst, 3), "BCF", dtoh(f, 2), dtoh(b, 2));
 			break;
 
 		case BSF_OP:
-			b = operand >> 5;          // len: 3
-			f = operand & 0b00011111;  // len: 5
+			b = operand >> 5;
+			f = operand & 0b00011111;
 			sprintf(info, "%s[FFFFFF]  [2979FF]%s [98C379]%s [ed400e]%s[FFFFFF], [E98C31]%s", bits_3sec, dtoh(inst, 3), "BSF", dtoh(f, 2), dtoh(b, 2));
 			break;
 
@@ -88,5 +86,25 @@ char* exec_info(int inst){
 
 	strcpy(info, update_color(info, 1));
 	return info;
+}
+
+
+/* Execute & Update BUS */
+void execute(DECODE dcd, EXEC exec, REG *reg){
+	switch(dcd.opcode) {
+
+		// Set selected bit from the register to 1
+		case BSF_OP:
+			reg->registers[exec.reg_n] |= 1 << exec.bit_n;
+			break;
+
+		// Set selected bit from the register to 0
+		case BCF_OP:
+			reg->registers[exec.reg_n] &= ~(1 << exec.bit_n);
+			break;
+
+		default:
+			break;
+	}
 }
 

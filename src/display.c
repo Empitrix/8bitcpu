@@ -6,8 +6,7 @@
 #include <stdlib.h>
 
 
-
-
+/* Update colors and return in (char *) for foreground: [FFFFFF] & for background: {FFFFFF} */
 char *update_color(char *format, int clean){
 	// increase the format size and use 'src'
 	char *src = malloc(MALL * sizeof(char));
@@ -56,82 +55,80 @@ char *update_color(char *format, int clean){
 	str_replace(src, "[{}]", "\033[0m\033[49m");
 	str_replace(src, "[]", "\033[0m");
 	str_replace(src, "{}", "\033[49m");
-
 	str_replace(src, "[u]", "\033[4m");
-
-
 	return src;
 }
 
 
+/* goto given x, y coord (set cursor to [x, y])*/
 void gotoxy(int x, int y){ 
 	printf("\033[%d;%df", y, x); 
 }
 
 
+/* print given char * in given x, y coord */
 void printfxy(char *s, int x, int y){
 	gotoxy(x, y);
 	printf("%s", s);
 }
 
 
-/* dprt: Display Print */
+/* dprt: Decorative Print */
 void dprt(int x, int y, char *frmt, ...) {
 	char buff[MALL];
 	va_list args;
 	va_start(args, frmt);
 	vsprintf(buff, frmt, args);
-	;
 	gotoxy(x, y);
-	// printf("%s%s%s", buff, "\033[39m", "\033[49m");
 	printf("%s", update_color(buff, 1));
 	fflush(NULL);
 	va_end(args);
 }
 
 
+// Line type
 typedef enum LINE_TYPE {
 	HORIZONTAL,
 	VERTICAL,
+	HORIZONTAL_LIGHT,
+	VERTICAL_LIGHT,
 } LINE_TYPE;
 
 
-void draw_line(int x, int y, int size, LINE_TYPE lt, char *a, char *b, int light){ 
+/* Draw a line */
+void draw_line(int x, int y, int size, LINE_TYPE lt, char *a, char *b){ 
 	int i;
 	for(i = 0 ; i < size; ++i){
-
 		if(i == 0)
 			printfxy(a, x, y);
 		else if (i == size - 1)
 			printfxy(b, x, y);
-
-
 		else {
-			if(lt == HORIZONTAL){
+			if(lt == HORIZONTAL || lt == HORIZONTAL_LIGHT){
 				x++;
-				printfxy(light ? "┄": "─", x, y);
+				printfxy(lt == HORIZONTAL_LIGHT ? "┄": "─", x, y);
 			} else {
 				y++;
-				printfxy(light ? "┆": "│", x, y);
+				printfxy(lt == VERTICAL_LIGHT ? "┆": "│", x, y);
 			}
-
 		}
-
 	}
 }
 
 
-void draw_box(int x, int y, int widht, int height){
-	draw_line(x, y, height, VERTICAL, "╭", "╰", 0);
-	draw_line(x + widht, y, height, VERTICAL, "╮", "╯", 0);
-	draw_line(x + 1, y, widht, HORIZONTAL, "─", "─", 0);
-	draw_line(x + 1, y + height - 2, widht, HORIZONTAL, "─", "─", 0);
-	// ╭─╮
-	// │ │
-	// ╰─╯
+/* draw_box: draw a box && use given title if it's not <empty> */
+void draw_box(int x, int y, int widht, int height, char *title){
+	draw_line(x, y, height, VERTICAL, "╭", "╰");
+	draw_line(x + widht, y, height, VERTICAL, "╮", "╯");
+	draw_line(x + 1, y, widht, HORIZONTAL, "─", "─");
+	draw_line(x + 1, y + height - 2, widht, HORIZONTAL, "─", "─");
+	if(strcmp(title, "") != 0){
+		dprt(x + 2, y, " %s ", title);
+	}
 }
 
-
-void enable_cursor(void){ printf("\e[?25h"); fflush(NULL); }   // show cursor
-void disable_cursor(void){ printf("\e[?25l"); fflush(NULL); }  // hide cursor
+// show cursor
+void enable_cursor(void){ printf("\e[?25h"); fflush(NULL); }
+// hide cursor
+void disable_cursor(void){ printf("\e[?25l"); fflush(NULL); }
 

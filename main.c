@@ -10,9 +10,10 @@
 
 
 int main(int argc, char *argv[]){
-	disable_cursor();  // Hide cursor block/line from the terminal
-	init_term();       // No ouput from cursor
-	init_end_sig();    // Fix the cursor when program finishes
+	// hide cursor and no echo for terminal
+	hidden_terminal();
+	// Listen to <C-c> (END OF THE PROGRAM) & take action
+	init_end_sig();
 
 	GFLAGS gflags;
 	FETCH fetch;
@@ -24,41 +25,26 @@ int main(int argc, char *argv[]){
 	RAM ram = ram_init();
 
 
+	// Update general flags
 	update_gflags(&gflags, argc, argv);
 
-
 	do {
-
+		// Capture data for each round
 		fetch = rom_fetch(rom);
 		dcd = decode_run(fetch);
-		exec = execute_run(dcd);
-
+		exec = execute_capture(dcd);
 
 		// Display CPU
 		emulate_cpu(rom, dcd, exec, reg, ram);
 
-		// PC
+		// Update PC
 		if(exec.upc == get_pc())
 			increment_pc();
 		else
 			set_pc(exec.upc);
 
-
-		switch(dcd.opcode) {
-			case BSF_OP: case BCF_OP:
-				if(exec.type == MULTI_OP){
-					if(dcd.opcode == BSF_OP)
-						reg.registers[exec.reg_n] |= 1 << exec.bit_n;
-					else
-						reg.registers[exec.reg_n] &= ~(1 << exec.bit_n);
-				}
-				break;
-			default: break;
-		}
-
-
-
-
+		// Update Reg & Ram
+		execute(dcd, exec, &reg);
 
 		// Interruption
 		if(gflags.stepping == 0)
@@ -66,8 +52,9 @@ int main(int argc, char *argv[]){
 
 	} while(gflags.stepping ? getl() != 'q' : 1);
 
-	normal_terminal();
 
+	// turn the echo on and make cursor visible
+	normal_terminal();
 	return 0;
 }
 

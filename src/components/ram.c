@@ -7,3 +7,4 @@ RAM ram_init(void){
 		ram.ram[i] = 0x00;
 	return ram;
 }
+

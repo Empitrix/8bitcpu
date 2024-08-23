@@ -8,11 +8,12 @@
 #include <unistd.h>
 #include "structs.h"
 #include "strfy.h"
+#include "term.h"
 #include "display.h"
 
 
 
-/* decimal_to_binary: convert given decimal to binary (char *) */
+/* Decimal TO Binary: convert given decimal to binary (char *) */
 char *dtob(int decimal_num, int len) {
 	len = len + 2;
 	char *binary_str = malloc(len + 1);
@@ -37,7 +38,7 @@ char *dtob(int decimal_num, int len) {
 }
 
 
-/* decimal_to_binary: convert given decimal to binary (char *) */
+/* Return Binary LED bar */
 char *dtob_led(int num, int len) {
 	char *buff = malloc(MALL * sizeof(char));
 	buff = dtob(num, len);
@@ -107,80 +108,20 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 
 
 
-/************************** Terminal **************************/
-
-static struct termios old, current;
-
-void init_term(){                   // terminal i/o settings
-	tcgetattr(0, &old);               // grab old terminal i/o settings
-	current = old;                    // make new settings same as old settings
-	current.c_lflag &= ~ICANON;       // disable buffered i/o
-	current.c_lflag &= ~ECHO;         // set no echo mode
-	tcsetattr(0, TCSANOW, &current);  // use these new terminal i/o settings now
-}
-
-void nrm_term(){
-	tcgetattr(0, &old);
-	current = old;
-	current.c_lflag |= ICANON;
-	current.c_lflag |= ECHO;
-	tcsetattr(0, TCSANOW, &current);
-}
-
-char getl(void){
-	char ch;
-	init_term();
-	ch = getchar();
-	nrm_term();
-	return ch;
-}
-
-
-/* ter_size: get terminal size [x, y] */
-TERSIZ term_size(void){
-	TERSIZ siz = {0, 0};
-	struct winsize w;
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-	siz.x = w.ws_col;
-	siz.y = w.ws_row;
-	return siz;
-}
-
-
-void cls_term(void){
-#ifdef linux
-	// printf("\e[3J\033c");
-	system("clear");
-#else
-	printf("\e[1;1H\e[2J");
-#endif
-}
-
-
-
-void normal_terminal(void){
-	cls_term();
-	enable_cursor();
-	nrm_term();
-	fflush(NULL);
-}
-
+/************************** Signals **************************/
 struct sigaction old_action;
 
-void sigint_handler(int sig_no){
+// Action for end of the program signal <C-c>
+void end_sig_func(int sig_no){
 	normal_terminal();
 	sigaction(SIGINT, &old_action, NULL);
 	kill(0, SIGINT);
 }
 
-
+// capture end of program signal <C-c>
 void init_end_sig(){
 	struct sigaction action;
 	memset(&action, 0, sizeof(action));
-	action.sa_handler = &sigint_handler;
+	action.sa_handler = &end_sig_func;
 	sigaction(SIGINT, &action, &old_action);
 }
-
-
-
-
