@@ -15,18 +15,19 @@ int main(int argc, char *argv[]){
 	// Listen to <C-c> (END OF THE PROGRAM) & take action
 	init_end_sig();
 
+
 	GFLAGS gflags;
 	FETCH fetch;
 	DECODE dcd;
 	EXEC exec;
 
-	ROM rom = rom_init();
+	// Update flags
+	update_gflags(&gflags, argc, argv);
+
+
+	ROM rom = rom_init(gflags.program);
 	REG reg = reg_init();
 	RAM ram = ram_init();
-
-
-	// Update general flags
-	update_gflags(&gflags, argc, argv);
 
 	do {
 		// Capture data for each round
@@ -35,7 +36,7 @@ int main(int argc, char *argv[]){
 		exec = execute_capture(dcd);
 
 		// Display CPU
-		emulate_cpu(rom, dcd, exec, reg, ram);
+		emulate_cpu(rom, dcd, exec, reg, ram, gflags);
 
 		// Update PC
 		if(exec.upc == get_pc())
@@ -48,7 +49,7 @@ int main(int argc, char *argv[]){
 
 		// Interruption
 		if(gflags.stepping == 0)
-			usleep(600000);  // 500ms
+			usleep(gflags.frequency);
 
 	} while(gflags.stepping ? getl() != 'q' : 1);
 

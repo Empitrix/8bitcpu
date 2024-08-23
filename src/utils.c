@@ -92,18 +92,60 @@ char *dtoh(int decimal, int siz){
 /* update_gflags: Update Global Flags */
 void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 	gflags->stepping = 0;
+	gflags->frequency = 500000;
+	memset(gflags->program, '\0', MALL);
+	int ps, fs = 0; // program save
 	int i;
 	for(i = 0; i < argc; ++i){
+
+		if(ps == 1){
+			strcpy(gflags->program, argv[i]);
+			ps = 0;
+			continue;
+		}
+		
+		if(fs == 1){
+			gflags->frequency = atoi(argv[i]);
+
+			if(gflags->frequency == 0)
+				gflags->frequency = 500000;
+			else if (gflags->frequency > 1000000)
+				gflags->frequency = 1;
+			else
+				gflags->frequency = 1000000 / gflags->frequency;
+
+			fs = 0;
+			continue;
+		}
+
 		for(int j = 0; j < (int)strlen(argv[i]); ++j){
 			if(argv[i][0] == '-'){
 				switch(argv[i][j]){
 					case 's':
 						gflags->stepping = 1;
 						break;
+					case 'p':
+						ps = 1;
+						break;
+					case 'f':
+						fs = 1;
+						break;
+					default:
+						break;
 				}
 			}
 		}
+
 	}
+
+	if(ps == 1)
+		lprt(1, "After [afaf00]'-p'[ffffff] you should put the path to the supported [f44336].bin[ffffff] file!");
+
+	if(fs == 1)
+		lprt(1, "After [afaf00]'-f'[ffffff] you should put clock frequency!");
+
+	if(strcmp(gflags->program, "") == 0)
+		lprt(1, "By using [afaf00]'-p <path>'[ffffff] specify the path to the program file!");
 }
 
 
@@ -125,3 +167,4 @@ void init_end_sig(){
 	action.sa_handler = &end_sig_func;
 	sigaction(SIGINT, &action, &old_action);
 }
+

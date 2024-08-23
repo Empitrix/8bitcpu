@@ -10,7 +10,7 @@
 
 
 /* emulate_cpu: display CPU's data as a TUI */
-void emulate_cpu(ROM rom, DECODE dcd, EXEC exec, REG reg, RAM ram){
+void emulate_cpu(ROM rom, DECODE dcd, EXEC exec, REG reg, RAM ram, GFLAGS flags){
 	TERSIZ ts = term_size(); ts.y += 1;
 	cls_term();
 
@@ -34,7 +34,7 @@ void emulate_cpu(ROM rom, DECODE dcd, EXEC exec, REG reg, RAM ram){
 
 	// Status Line
 	dprt(2, 2,
-		" [55B6C2]PC[]: [ed400e]%d []  [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]",
+		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]",
 		get_pc(),
 		dtoh(reg.registers[6], 2),
 		dtob_led(reg.registers[6], 8));
@@ -75,6 +75,15 @@ void emulate_cpu(ROM rom, DECODE dcd, EXEC exec, REG reg, RAM ram){
 			dtoh(i + 16, 2),
 			dtob(ram.ram[i], 8),
 			dtoh(ram.ram[i], 2));
+
+
+	// Info
+	dprt(hx + 33, 4, "[2196F3]Mode[FFFFFF]: [8bc34a]%s", flags.stepping ? "Stepping" : "Auto");
+	if(flags.stepping)
+		dprt(hx + 33, 5, "[2196F3]Frequency[FFFFFF]: [FFDFAF]Keyboard Key");
+	else
+		dprt(hx + 33, 5, "[2196F3]Frequency[FFFFFF]: [FFDFAF]%d", flags.frequency);
+	dprt(hx + 33, 6, "[2196F3]Program[FFFFFF]: [98C379]\"%s\"", flags.program);
 
 
 	fflush(NULL);  // Flush the output (ALL)

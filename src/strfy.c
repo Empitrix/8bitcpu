@@ -1,3 +1,4 @@
+#include <ctype.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -38,4 +39,10 @@ char *str_slice(char *src, int start, int end) {
 	strncpy(result, src + start, length);
 	result[length] = '\0'; // Null-terminate the string
 	return result;
+}
+
+void str_lower(char *src){
+	int len, i; len = (int)strlen(src);
+	for(i = 0; i < len; ++i)
+		src[i] = tolower(src[i]);
 }

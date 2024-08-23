@@ -1,5 +1,6 @@
 #include "strfy.h"
 #include "rules.h"
+#include "term.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
@@ -72,6 +73,31 @@ void printfxy(char *s, int x, int y){
 	printf("%s", s);
 }
 
+// Decorative printf
+void pprt(char *frmt, ...){
+	char buff[MALL];
+	va_list args;
+	va_start(args, frmt);
+	vsprintf(buff, frmt, args);
+	printf("%s", update_color(buff, 1));
+	fflush(NULL);
+	va_end(args);
+}
+
+
+// Decorative printf (log pring (exit the program))
+void lprt(int ecode, char *frmt, ...){
+	normal_terminal();
+	char buff[MALL];
+	va_list args;
+	va_start(args, frmt);
+	vsprintf(buff, frmt, args);
+	printf("%s\n", update_color(buff, 1));
+	fflush(NULL);
+	va_end(args);
+	exit(ecode);
+}
+
 
 /* dprt: Decorative Print */
 void dprt(int x, int y, char *frmt, ...) {
@@ -126,9 +152,4 @@ void draw_box(int x, int y, int widht, int height, char *title){
 		dprt(x + 2, y, " %s ", title);
 	}
 }
-
-// show cursor
-void enable_cursor(void){ printf("\e[?25h"); fflush(NULL); }
-// hide cursor
-void disable_cursor(void){ printf("\e[?25l"); fflush(NULL); }
 

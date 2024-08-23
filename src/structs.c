@@ -40,6 +40,8 @@ typedef struct EXEC {
 
 typedef struct GFLAGS {
 	int stepping;
+	int frequency;
+	char program[MALL];
 } GFLAGS;
 
 

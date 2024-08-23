@@ -1,17 +1,21 @@
 #include <stdio.h>
 #include "../structs.h"
 #include "../utils.h"
+#include "../display.h"
 
 static int PC = 0;  // Main PC: Program Counter
 
 
 /* rom_init: setup EEPROM */
-ROM rom_init(void){
+ROM rom_init(char *rom_path){
 	ROM rom;
 	memset(rom.mcode, 0, sizeof(rom.mcode));
 
 	FILE *fp;
-	fp = fopen("./rom.bin", "rb");
+	// fp = fopen("./rom.bin", "rb");
+	fp = fopen(rom_path, "rb");
+	if(fp == NULL)
+		lprt(1, "File \"%s\" does not exist!", rom_path);
 
 	unsigned char buffer[2];
 	int value, idx;

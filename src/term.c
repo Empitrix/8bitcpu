@@ -1,10 +1,14 @@
-#include "display.h"
 #include "structs.h"
 #include <sys/ioctl.h>
 #include <termios.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+
+// show cursor
+void enable_cursor(void){ printf("\e[?25h"); fflush(NULL); }
+// hide cursor
+void disable_cursor(void){ printf("\e[?25l"); fflush(NULL); }
 
 
 static struct termios old, current;
