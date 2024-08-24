@@ -42,6 +42,7 @@ typedef struct GFLAGS {
 	int stepping;
 	int frequency;
 	char program[MALL];
+	int is_pause;
 } GFLAGS;
 
 

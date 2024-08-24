@@ -66,6 +66,6 @@ In stepping mode if you press `q` the program will end.
 ## TODO
 * Control Functions:
 - [ ] Save: Implement the functionality to save the current CPU state to a file.
-- [ ] Run/Pause: Allow the user to start/stop continuous execution of the CPU.
+- [x] Run/Pause: Allow the user to start/stop continuous execution of the CPU.
 - [ ] Add more opcodes: Implement additional instructions to enhance the CPU's capabilities (e.g., arithmetic, logic, control flow).
 

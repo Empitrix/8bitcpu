@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
+#include <fcntl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include "structs.h"
@@ -91,7 +92,7 @@ char *dtoh(int decimal, int siz){
 
 /* update_gflags: Update Global Flags */
 void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
-	gflags->stepping = 0;
+	gflags->stepping = gflags->is_pause = 0;
 	gflags->frequency = 500000;
 	memset(gflags->program, '\0', MALL);
 	int ps, fs = 0; // program save
@@ -166,5 +167,30 @@ void init_end_sig(){
 	memset(&action, 0, sizeof(action));
 	action.sa_handler = &end_sig_func;
 	sigaction(SIGINT, &action, &old_action);
+}
+
+
+/* get use char with no interruption */
+int getc_keep(void){
+	fd_set readfds;
+	struct timeval tv;
+	char ch;
+
+	// Set stdin to non-blocking mode
+	int flags = fcntl(STDIN_FILENO, F_GETFL);
+	fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
+
+	FD_ZERO(&readfds);
+	FD_SET(STDIN_FILENO, &readfds);
+	tv.tv_sec = 0;
+	tv.tv_usec = 0; // Check immediately
+
+	int ready = select(STDIN_FILENO + 1, &readfds, NULL, NULL, &tv);
+	if (ready == 1){
+		read(STDIN_FILENO, &ch, 1);
+		return ch;
+	}
+
+	return -1;
 }
 

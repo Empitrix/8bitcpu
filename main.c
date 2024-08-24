@@ -3,9 +3,11 @@
 #include "src/components/decode.h"
 #include "src/components/reg.h"
 #include "src/components/exec.h"
+#include "src/display.h"
 #include "src/structs.h"
 #include "src/emulator.h"
 #include "src/utils.h"
+#include <stdio.h>
 #include <unistd.h>
 
 
@@ -30,6 +32,19 @@ int main(int argc, char *argv[]){
 	RAM ram = ram_init();
 
 	do {
+
+		if(gflags.stepping == 0){
+			if(getc_keep() == ' ')
+				gflags.is_pause = ~gflags.is_pause;
+
+			if(gflags.is_pause != 0){
+				usleep(gflags.frequency);
+				dprt(term_size().x - 10, 2, "[26aF9a][bl]❚❚ Paused");
+				fflush(NULL);
+				continue;
+			}
+		}
+
 		// Capture data for each round
 		fetch = rom_fetch(rom);
 		dcd = decode_run(fetch);
