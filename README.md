@@ -1,5 +1,5 @@
 # 8-Bit CPU
-
+This project implements a simplified 8-bit CPU architecture in C, along with an assembler, emulator, and a TUI-based visualization tool. It serves as an educational tool for understanding computer architecture, instruction sets, and low-level programming.
 
 ## Build
 Clone the project by:
@@ -36,7 +36,7 @@ In stepping mode if you press `q` the program will end.
 ## CPU Specifications:
 ### Memory
 - 16 bytes of RAM (Addresses `0x10` to `0x1F`)
-- 256 bytes of ROM (Addresses `0x00` to `0xFF`)
+- 256 words of ROM (Addresses `0x00` to `0xFF`)
 
 ### Registers
 - 10 special-purpose registers (Addresses `0x00` to `0x09`)
@@ -61,4 +61,11 @@ In stepping mode if you press `q` the program will end.
 | `-s`        | Stepping Mode | Clock pulse with keyboard keys    |
 | `-f <num>`  | Frequency     | Clock frequency from 1 to 1000000 |
 | `-p <path>` | Program       | Path to `.bin` file from [`assembler`](https://github.com/empitrix/assembler) |
+
+
+## TODO
+* Control Functions:
+- [ ] Save: Implement the functionality to save the current CPU state to a file.
+- [ ] Run/Pause: Allow the user to start/stop continuous execution of the CPU.
+- [ ] Add more opcodes: Implement additional instructions to enhance the CPU's capabilities (e.g., arithmetic, logic, control flow).
 
