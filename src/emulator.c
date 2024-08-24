@@ -83,7 +83,7 @@ void emulate_cpu(ROM rom, DECODE dcd, EXEC exec, REG reg, RAM ram, GFLAGS flags)
 	if(flags.stepping)
 		dprt(hx + 33, 5, "[2196F3]Frequency[FFFFFF]: [FFDFAF]Keyboard Key");
 	else
-		dprt(hx + 33, 5, "[2196F3]Frequency[FFFFFF]: [FFDFAF]%d", flags.frequency);
+		dprt(hx + 33, 5, "[2196F3]Frequency[FFFFFF]: [FFDFAF]%d", 1000000 / flags.frequency);
 
 	dprt(hx + 33, 7, "[2196F3]Program[FFFFFF]:");
 	dprt(hx + 33, 8, "[98C379]\"%s\"", flags.program);

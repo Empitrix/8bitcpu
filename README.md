@@ -33,6 +33,28 @@ Or if you wish to see the instructions step by step use `-s` flag:
 In stepping mode if you press `q` the program will end.
 
 
+## CPU Specifications:
+### Memory
+- 16 bytes of RAM (Addresses `0x10` to `0x1F`)
+- 256 bytes of ROM (Addresses `0x00` to `0xFF`)
+
+### Registers
+- 10 special-purpose registers (Addresses `0x00` to `0x09`)
+  - Register `0x06`: GPIO (General Purpose Input/Output)
+
+### Opcodes
+- `BSF f, b`: Bit set forward (`0101 bbb fffff`)
+- `BCF f, b`: Bit clear file (`0100 bbb fffff`)
+- `GOTO k`: Unconditional Branch (`101k kkkk kkkk`)
+- `NOP`: No Operation (`0000 0000 0000`)
+
+### Opcode Details
+- `BSF`: Bit clear forward: set given bit from given register to 1
+- `BCF`: Bit clear file: set given bit from given register to 0
+- `GOTO`: Goto given lable address
+- `NOP`: No Operation (small delay)
+
+
 ## Flags
 | Flag        | Name          | Description                       |
 |-------------|---------------|-----------------------------------|
