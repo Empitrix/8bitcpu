@@ -1,6 +1,10 @@
 # 8-Bit CPU
 This project implements a simplified 8-bit CPU architecture in C, along with an assembler, emulator, and a TUI-based visualization tool. It serves as an educational tool for understanding computer architecture, instruction sets, and low-level programming.
 
+## Preview
+![8bitcpu](./assets/clip.gif)
+
+
 ## Build
 Clone the project by:
 ```bash
