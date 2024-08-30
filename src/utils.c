@@ -212,6 +212,7 @@ int getc_keep(void){
 }
 
 
+/* save_cpu_state: save current state of CPU to a file */
 void save_cpu_state(GFLAGS gf, REG reg, RAM ram, int pc){
 	FILE *fp;
 	fp = fopen("./cpu_state.txt", "w+");
@@ -229,35 +230,7 @@ void save_cpu_state(GFLAGS gf, REG reg, RAM ram, int pc){
 }
 
 
-/*
-int load_cpu_state(GFLAGS *gf, REG *reg, RAM *ram){
-	FILE *fp;
-	char buff[1000];
-	int pc = 0;
-	fp = fopen(gf->load, "r");
-	fgets(buff, sizeof(buff), fp);
-	strcpy(gf->program, str_slice(buff, 0, (int)strlen(buff) - 1));
-	fgets(buff, sizeof(buff), fp);
-	gf->frequency = atoi(buff);
-	fgets(buff, sizeof(buff), fp);
-	pc = atoi(buff);
-
-	int i;
-	for(i = 0; i < REGSIZ; ++i){
-		fgets(buff, sizeof(buff), fp);
-		reg->registers[i] = atoi(buff);
-	}
-	for(i = 0; i < RAMSIZ; ++i){
-		fgets(buff, sizeof(buff), fp);
-		ram->ram[i] = atoi(buff);
-	}
-	fclose(fp);
-	return pc;
-}
-*/
-
-
-/* return: PC */
+/* load_cpu_state: Load state of CPU from a file and return the PC */
 int load_cpu_state(GFLAGS *gf, REG *reg, RAM *ram) {
 	FILE *fp;
 

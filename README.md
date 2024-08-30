@@ -67,7 +67,7 @@ In stepping mode if you press `q` the program will end.
 | `-p <path>` | Program        | Path to `.bin` file from [`assembler`](https://github.com/empitrix/assembler) |
 | `-l <path>` | Load CPU state | Path to a `.txt` file that contains CPU's state |
 
-- If CPU state is loaded with `-l` don't need to use `-p` to a program to CPU, but make sure that the program is exists for CPU to load it.
+- If CPU state is loaded with `-l` don't need to use `-p` to load a program to CPU, but make sure that the program is exists for CPU to load it.
 
 
 ## Actions
