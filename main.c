@@ -18,6 +18,7 @@ int main(int argc, char *argv[]){
 	init_end_sig();
 
 	int c = ' ';
+	int ppc;
 
 	GFLAGS gflags;
 	FETCH fetch;
@@ -50,7 +51,7 @@ int main(int argc, char *argv[]){
 
 		if(c == 's'){
 			dprt(term_size().x - 10, 2, "   [00FF00][bl]Saved!");
-			save_cpu_state(gflags, reg, ram, get_pc());
+			save_cpu_state(gflags, reg, ram, ppc);
 		}
 
 		if(c != ' ')
@@ -65,7 +66,7 @@ int main(int argc, char *argv[]){
 
 			if(getc_keep() == 's'){
 				dprt(term_size().x - 10, 2, "   [00FF00]Saved!");
-				save_cpu_state(gflags, reg, ram, get_pc());
+				save_cpu_state(gflags, reg, ram, ppc);
 			}
 
 			if(gflags.is_pause != 0){
@@ -84,6 +85,7 @@ int main(int argc, char *argv[]){
 		// Display CPU
 		emulate_cpu(rom, dcd, exec, reg, ram, gflags);
 
+		ppc = get_pc();
 		// Update PC
 		if(exec.upc == get_pc())
 			increment_pc();
