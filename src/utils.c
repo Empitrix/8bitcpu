@@ -7,6 +7,8 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
+#include <wchar.h>
+#include "rules.h"
 #include "structs.h"
 #include "strfy.h"
 #include "term.h"
@@ -56,7 +58,7 @@ char *dtob3sec(int decimal, char *a, char *b, char *c){
 	char *buff = malloc(MALL * sizeof(char));
 	char *out = malloc(MALL * sizeof(char));
 	strcpy(buff, dtob(decimal, len));
-	sprintf(out, "%s%s",        update_color(a, 0), str_slice(buff, 0, 6));
+	sprintf(out, "%s%s",		update_color(a, 0), str_slice(buff, 0, 6));
 	sprintf(out, "%s%s%s", out, update_color(b, 0), str_slice(buff, 6, 9));
 	sprintf(out, "%s%s%s", out, update_color(c, 0), str_slice(buff, 9, 14));
 	return out;
@@ -69,19 +71,19 @@ char *dtob2sec(int decimal, char *a, char *b){
 	char *buff = malloc(MALL * sizeof(char));
 	char *out = malloc(MALL * sizeof(char));
 	strcpy(buff, dtob(decimal, len));
-	sprintf(out, "%s%s",        update_color(a, 0), str_slice(buff, 0, 5));
+	sprintf(out, "%s%s",		update_color(a, 0), str_slice(buff, 0, 5));
 	sprintf(out, "%s%s%s", out, update_color(b, 0), str_slice(buff, 5, 14));
 	return out;
 }
 
 
 /* dtoh: (Decimal TO Hex) converts given decimal into hex string with size of 'siz' */
-char *dtoh(int decimal, int siz){
-	char *hex = (char*)malloc(siz + 3);
+char *dtoh(int decimal, int siz) {
+	char *hex = (char*)malloc(siz + 2); // Allocate siz + 2 bytes for hex string
 	hex[0] = '0';
 	hex[1] = 'x';
-	hex[siz + 3] = '\0';
-	for(int i = siz + 1; i >= 2; i--){
+	hex[siz + 1] = '\0'; // Terminate the string at the correct index
+	for (int i = siz; i >= 2; i--) {
 		int digit = decimal % 16;
 		decimal /= 16;
 		hex[i] = (digit < 10) ? (digit + '0') : (digit - 10 + 'A');
@@ -94,8 +96,10 @@ char *dtoh(int decimal, int siz){
 void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 	gflags->stepping = gflags->is_pause = 0;
 	gflags->frequency = 500000;
+	gflags->pload = PROGRAM_LOAD;
 	memset(gflags->program, '\0', MALL);
-	int ps, fs = 0; // program save
+	memset(gflags->load, '\0', MALL);
+	int ps, fs, ls = 0; // program save
 	int i;
 	for(i = 0; i < argc; ++i){
 
@@ -105,6 +109,13 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 			continue;
 		}
 		
+		if(ls == 1){
+			strcpy(gflags->load, argv[i]);
+			ls = 0;
+			gflags->pload = STATE_LOAD;
+			continue;
+		}
+
 		if(fs == 1){
 			gflags->frequency = atoi(argv[i]);
 
@@ -131,6 +142,9 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 					case 'f':
 						fs = 1;
 						break;
+					case 'l':
+						ls = 1;
+						break;
 					default:
 						break;
 				}
@@ -145,7 +159,10 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 	if(fs == 1)
 		lprt(1, "After [afaf00]'-f'[ffffff] you should put clock frequency!");
 
-	if(strcmp(gflags->program, "") == 0)
+	if(ls == 1)
+		lprt(1, "After [afaf00]'-l'[ffffff] you should put save state file!");
+
+	if(strcmp(gflags->program, "") == 0 && strcmp(gflags->load, "") == 0)
 		lprt(1, "By using [afaf00]'-p <path>'[ffffff] specify the path to the program file!");
 }
 
@@ -194,3 +211,82 @@ int getc_keep(void){
 	return -1;
 }
 
+
+void save_cpu_state(GFLAGS gf, REG reg, RAM ram, int pc){
+	FILE *fp;
+	fp = fopen("./cpu_state.txt", "w+");
+	if(fp == NULL)
+		return;
+	fprintf(fp, "%s\n", gf.program);
+	fprintf(fp, "%d\n", gf.frequency);
+	fprintf(fp, "%d\n", pc);
+	int i;
+	for(i = 0; i < REGSIZ; ++i)
+		fprintf(fp, "%d\n", reg.registers[i]);
+	for(i = 0; i < RAMSIZ; ++i)
+		fprintf(fp, "%d\n", ram.ram[i]);
+	fclose(fp);
+}
+
+
+/*
+int load_cpu_state(GFLAGS *gf, REG *reg, RAM *ram){
+	FILE *fp;
+	char buff[1000];
+	int pc = 0;
+	fp = fopen(gf->load, "r");
+	fgets(buff, sizeof(buff), fp);
+	strcpy(gf->program, str_slice(buff, 0, (int)strlen(buff) - 1));
+	fgets(buff, sizeof(buff), fp);
+	gf->frequency = atoi(buff);
+	fgets(buff, sizeof(buff), fp);
+	pc = atoi(buff);
+
+	int i;
+	for(i = 0; i < REGSIZ; ++i){
+		fgets(buff, sizeof(buff), fp);
+		reg->registers[i] = atoi(buff);
+	}
+	for(i = 0; i < RAMSIZ; ++i){
+		fgets(buff, sizeof(buff), fp);
+		ram->ram[i] = atoi(buff);
+	}
+	fclose(fp);
+	return pc;
+}
+*/
+
+
+/* return: PC */
+int load_cpu_state(GFLAGS *gf, REG *reg, RAM *ram) {
+	FILE *fp;
+
+	int pc = 0;
+
+	fp = fopen(gf->load, "r");
+	if(fp == NULL)
+		return -1;
+
+	if (fscanf(fp, "%s\n%d\n%d\n", gf->program, &gf->frequency, &pc) != 3) {
+		fprintf(stderr, "Error reading file: Invalid format\n");
+		fclose(fp);
+		return -1;
+	}
+
+	for (int i = 0; i < REGSIZ; ++i) {
+		if (fscanf(fp, "%d\n", (int *)&reg->registers[i]) != 1){
+			fclose(fp);
+			return -1;
+		}
+	}
+
+	for (int i = 0; i < RAMSIZ; ++i) {
+		if (fscanf(fp, "%d\n", (int *)&ram->ram[i]) != 1) {
+			fclose(fp);
+			return -1;
+		}
+	}
+
+	fclose(fp);
+	return pc;
+}

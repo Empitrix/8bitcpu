@@ -60,16 +60,25 @@ In stepping mode if you press `q` the program will end.
 
 
 ## Flags
-| Flag        | Name          | Description                       |
-|-------------|---------------|-----------------------------------|
-| `-s`        | Stepping Mode | Clock pulse with keyboard keys    |
-| `-f <num>`  | Frequency     | Clock frequency from 1 to 1000000 |
-| `-p <path>` | Program       | Path to `.bin` file from [`assembler`](https://github.com/empitrix/assembler) |
+| Flag        | Name           | Description                       |
+|-------------|----------------|-----------------------------------|
+| `-s`        | Stepping Mode  | Clock pulse with keyboard keys    |
+| `-f <num>`  | Frequency      | Clock frequency from 1 to 1000000 |
+| `-p <path>` | Program        | Path to `.bin` file from [`assembler`](https://github.com/empitrix/assembler) |
+| `-l <path>` | Load CPU state | Path to a `.txt` file that contains CPU's state |
+
+- If CPU state is loaded with `-l` don't need to use `-p` to a program to CPU, but make sure that the program is exists for CPU to load it.
+
+
+## Actions
+- Press `s` to save the cpu's state to a `cpu_state.txt` file!
+- Press `<space>` to move to the next step in `stepping mode`.
+- Press `<space>` to pause/unpause cpu in `auto mode`.
 
 
 ## TODO
 * Control Functions:
-- [ ] Save: Implement the functionality to save the current CPU state to a file.
+- [x] Save: Implement the functionality to save the current CPU state to a file.
 - [x] Run/Pause: Allow the user to start/stop continuous execution of the CPU.
 - [ ] Add more opcodes: Implement additional instructions to enhance the CPU's capabilities (e.g., arithmetic, logic, control flow).
 

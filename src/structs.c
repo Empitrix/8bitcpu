@@ -38,10 +38,18 @@ typedef struct EXEC {
 } EXEC;
 
 
+typedef enum CPU_LOAD {
+	PROGRAM_LOAD,
+	STATE_LOAD
+} CPU_LOAD;
+
+
 typedef struct GFLAGS {
 	int stepping;
 	int frequency;
+	CPU_LOAD pload;
 	char program[MALL];
+	char load[MALL];
 	int is_pause;
 } GFLAGS;
 

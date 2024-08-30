@@ -17,25 +17,56 @@ int main(int argc, char *argv[]){
 	// Listen to <C-c> (END OF THE PROGRAM) & take action
 	init_end_sig();
 
+	int c = ' ';
 
 	GFLAGS gflags;
 	FETCH fetch;
 	DECODE dcd;
 	EXEC exec;
+	ROM rom;
+	REG reg;
+	RAM ram;
 
 	// Update flags
 	update_gflags(&gflags, argc, argv);
 
+	if(gflags.pload == STATE_LOAD){
+		int tmp;
+		tmp = load_cpu_state(&gflags, &reg, &ram);
+		if(tmp < 0)
+			lprt(1, "Invalid cpu state file!");
+		else
+			set_pc(tmp);
+	}
 
-	ROM rom = rom_init(gflags.program);
-	REG reg = reg_init();
-	RAM ram = ram_init();
+	rom = rom_init(gflags.program);
+
+	if(gflags.pload == PROGRAM_LOAD){
+		reg = reg_init();
+		ram = ram_init();
+	}
 
 	do {
 
+		if(c == 's'){
+			dprt(term_size().x - 10, 2, "   [00FF00][bl]Saved!");
+			save_cpu_state(gflags, reg, ram, get_pc());
+		}
+
+		if(c != ' ')
+			continue;
+
+
 		if(gflags.stepping == 0){
+
 			if(getc_keep() == ' ')
 				gflags.is_pause = ~gflags.is_pause;
+
+
+			if(getc_keep() == 's'){
+				dprt(term_size().x - 10, 2, "   [00FF00]Saved!");
+				save_cpu_state(gflags, reg, ram, get_pc());
+			}
 
 			if(gflags.is_pause != 0){
 				usleep(gflags.frequency);
@@ -66,7 +97,7 @@ int main(int argc, char *argv[]){
 		if(gflags.stepping == 0)
 			usleep(gflags.frequency);
 
-	} while(gflags.stepping ? getl() != 'q' : 1);
+	} while(gflags.stepping ? (c = getl()) != 'q' : 1);
 
 
 	// turn the echo on and make cursor visible

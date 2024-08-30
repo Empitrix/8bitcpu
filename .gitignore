@@ -2,3 +2,4 @@
 /cpu
 /assembler
 *.out
+/cpu_state.txt
