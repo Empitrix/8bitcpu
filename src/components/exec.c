@@ -1,5 +1,6 @@
 #include "../structs.h"
 #include "./decode.h"
+#include "./mem.h"
 #include "rom.h"
 #include <stdio.h>
 
@@ -9,12 +10,17 @@
 EXEC soft_execute(DECODE dcd){
 	EXEC exec;
 
+	exec.sleep = 0;
 	// Default PC
 	exec.upc = get_pc();
 
 	switch(dcd.opcode) {
 		case GOTO_OP:
 			exec.upc = dcd.operand;
+			break;
+
+		case SLEEP_OP:
+			exec.sleep = 1;
 			break;
 
 	default:
@@ -45,7 +51,10 @@ char* exec_info(int inst){
 			break;
 
 		case MONO_OPERAND:
-			sprintf(info, "%s[FFFFFF]  [2979FF]%s [98C379]%s [ed400e]%s", bits_2sec, dtoh(inst, 3), dcd.info, dtoh(dcd.operand, 4));
+			if(dcd.opcode == MOVWF_OP || dcd.opcode == MOVLW_OP || dcd.opcode == CLRF_OP)
+				sprintf(info, "%s[FFFFFF]  [2979FF]%s [98C379]%s [ed400e]%s", bits_2sec, dtoh(inst, 3), dcd.info, dtoh(dcd.operand, 2));
+			else
+				sprintf(info, "%s[FFFFFF]  [2979FF]%s [98C379]%s [ed400e]%s", bits_2sec, dtoh(inst, 3), dcd.info, dtoh(dcd.operand, 3));
 			break;
 
 		default:
@@ -70,6 +79,22 @@ void execute(DECODE dcd, REG *reg){
 		// Set selected bit from the register to 0
 		case BCF_OP:
 			reg->registers[dcd.addr] &= ~(1 << dcd.bits);
+			break;
+
+		case MOVLW_OP:
+			set_w_reg(dcd.bits);
+			break;
+
+		case MOVWF_OP:
+			reg->registers[dcd.addr] = get_w_reg();
+			break;
+
+		case CLRF_OP:
+			reg->registers[dcd.addr] = 0;
+			break;
+		
+		case CLRW_OP:
+			set_w_reg(0);
 			break;
 
 		default:

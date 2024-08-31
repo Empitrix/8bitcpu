@@ -43,7 +43,8 @@ char *dtob(int decimal_num, int len) {
 
 /* Return Binary LED bar */
 char *dtob_led(int num, int len) {
-	char *buff = malloc(MALL * sizeof(char));
+	// char *buff = malloc(len * sizeof(char));
+	char *buff = malloc(50 * sizeof(char));
 	buff = dtob(num, len);
 	sprintf(buff, "%s", str_slice(buff, 2, len + 2));
 	str_replace(buff, "0", "[909090]❚");
@@ -71,25 +72,60 @@ char *dtob2sec(int decimal, char *a, char *b){
 	char *buff = malloc(MALL * sizeof(char));
 	char *out = malloc(MALL * sizeof(char));
 	strcpy(buff, dtob(decimal, len));
-	sprintf(out, "%s%s",		update_color(a, 0), str_slice(buff, 0, 5));
+	sprintf(out, "%s%s",        update_color(a, 0), str_slice(buff, 0, 5));
 	sprintf(out, "%s%s%s", out, update_color(b, 0), str_slice(buff, 5, 14));
 	return out;
 }
 
 
-/* dtoh: (Decimal TO Hex) converts given decimal into hex string with size of 'siz' */
-char *dtoh(int decimal, int siz) {
-	char *hex = (char*)malloc(siz + 2); // Allocate siz + 2 bytes for hex string
-	hex[0] = '0';
-	hex[1] = 'x';
-	hex[siz + 1] = '\0'; // Terminate the string at the correct index
-	for (int i = siz; i >= 2; i--) {
-		int digit = decimal % 16;
-		decimal /= 16;
-		hex[i] = (digit < 10) ? (digit + '0') : (digit - 10 + 'A');
-	}
-	return hex;
+
+char *dtoh(int decimal, int size) {
+    char *hex = malloc(MALL * sizeof(char)); // Allocate space for "0x", hex digits, and null terminator
+    if (hex == NULL) {
+        return NULL;
+    }
+
+    hex[0] = '0';
+    hex[1] = 'x';
+    hex[size + 2] = '\0'; // Add null terminator
+
+    // Handle padding
+    for (int i = size + 1; i >= 2; i--) {
+        if (decimal == 0 && i > 2) {
+            hex[i] = '0';
+        } else {
+            int digit = decimal % 16;
+            if (digit < 10) {
+                hex[i] = '0' + digit;
+            } else {
+                hex[i] = 'A' + digit - 10;
+            }
+            decimal /= 16;
+        }
+    }
+
+    return hex;
 }
+
+// /* dtoh: (Decimal TO Hex) converts given decimal into hex string with size of 'siz' */
+// char *dtoh(int decimal, int size) {
+// 	char *hex = malloc((size + 3) * sizeof(char *));
+// 
+// 	hex[0] = '0';
+// 	hex[1] = 'x';
+// 
+// 	for (int i = size + 1; i > 1; i--) {
+// 		int digit = decimal % 16;
+// 		if (digit < 10) {
+// 			hex[i] = '0' + digit;
+// 		} else {
+// 			hex[i] = 'A' + digit - 10;
+// 		}
+// 		decimal /= 16;
+// 	}
+// 
+// 	return hex;
+// }
 
 
 /* update_gflags: Update Global Flags */
@@ -97,6 +133,7 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 	gflags->stepping = gflags->is_pause = 0;
 	gflags->frequency = 500000;
 	gflags->pload = PROGRAM_LOAD;
+	gflags->is_sleep = 0;
 	memset(gflags->program, '\0', MALL);
 	memset(gflags->load, '\0', MALL);
 	int ps, fs, ls = 0; // program save

@@ -63,3 +63,14 @@ void dump_rom(ROM rom){
 	printf("\n\n");
 }
 
+
+
+void reset_cpu(REG *reg, RAM *ram){
+	set_pc(0);
+	int i;
+	for(i = 0; i < REGSIZ; ++i)
+		reg->registers[i] = 0;
+
+	for(i = 0; i < RAMSIZ; ++i)
+		ram->ram[i] = 0;
+}

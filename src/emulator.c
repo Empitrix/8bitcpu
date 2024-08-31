@@ -34,10 +34,12 @@ void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags){
 
 	// Status Line
 	dprt(2, 2,
-		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]",
+		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2][i]W-Reg[][i]:[] [ed400e]%s",
 		get_pc(),
 		dtoh(reg.registers[6], 2),
-		dtob_led(reg.registers[6], 8));
+		dtob_led(reg.registers[6], 8),
+		dtoh(get_w_reg(), 2)
+	);
 
 
 	// ROM

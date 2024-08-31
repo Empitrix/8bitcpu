@@ -32,8 +32,7 @@ typedef enum EXEC_TYPE {
 
 typedef struct EXEC {
 	int upc;       // Updated PC (Program Counter)
-	int reg_n;     // Register Number
-	int bit_n;     // Bit
+	int sleep;
 } EXEC;
 
 
@@ -50,6 +49,7 @@ typedef struct GFLAGS {
 	char program[MALL];
 	char load[MALL];
 	int is_pause;
+	int is_sleep;
 } GFLAGS;
 
 

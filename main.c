@@ -54,7 +54,9 @@ int main(int argc, char *argv[]){
 			save_cpu_state(gflags, reg, ram, ppc);
 		}
 
-		if(c != ' ')
+		if(c == 'r'){
+			reset_cpu(&reg, &ram);
+		} else if(c != ' ')
 			continue;
 
 
@@ -62,6 +64,9 @@ int main(int argc, char *argv[]){
 
 			if(getc_keep() == ' ')
 				gflags.is_pause = ~gflags.is_pause;
+
+			if(getc_keep() == 'r' && gflags.is_sleep)
+				reset_cpu(&reg, &ram);
 
 
 			if(getc_keep() == 's'){
@@ -85,15 +90,18 @@ int main(int argc, char *argv[]){
 		// Display CPU
 		emulate_cpu(rom, dcd, reg, ram, gflags);
 
-		ppc = get_pc();
-		// Update PC
-		if(exec.upc == get_pc())
-			increment_pc();
-		else
-			set_pc(exec.upc);
+		if((gflags.is_sleep = exec.sleep) == 0){
+			ppc = get_pc();
 
-		// Update Reg & Ram
-		execute(dcd, &reg);
+			// Update PC
+			if(exec.upc == get_pc())
+				increment_pc();
+			else
+				set_pc(exec.upc);
+
+			execute(dcd, &reg); // Update Reg & Ram
+		} else
+			dprt(term_size().x - 6, 2, "[26aF9a][bl]Sleep");
 
 		// Interruption
 		if(gflags.stepping == 0)
