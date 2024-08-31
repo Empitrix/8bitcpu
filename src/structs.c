@@ -24,14 +24,13 @@ typedef struct FETCH {
 
 
 typedef enum EXEC_TYPE {
-	MONO_OP,
-	MULTI_OP,
+	MONO_OPERAND,
+	MULTI_OPERAND,
+	FULL_OPERAND,
 } exec_t;
 
 
 typedef struct EXEC {
-	char *opcode;  // Operation Code
-	exec_t type;   // Number of operands
 	int upc;       // Updated PC (Program Counter)
 	int reg_n;     // Register Number
 	int bit_n;     // Bit
@@ -54,39 +53,17 @@ typedef struct GFLAGS {
 } GFLAGS;
 
 
-/*
 typedef enum OPCODES {
-	NOP_OP  = 0,   // No OPeration
-	BCF_OP  = 4,   // Bit Clear File
-	BSF_OP  = 5,   // Bit Scan Forward
-	GOTO_OP = 10,  // GOTO
-
-	MOVLW_OP,
-	MOVWF_OP,
-	CLRF_OP,
-	CLRW_OP,
-	SLEEP_OP
-
+	NOP_OP,    // NO Operation
+	BCF_OP,    // Bit Clear File
+	BSF_OP,    // Bit Set Forward
+	GOTO_OP,   // Goto
+	MOVLW_OP,  // 
+	MOVWF_OP,  // 
+	CLRF_OP,   // 
+	CLRW_OP,   // 
+	SLEEP_OP   // Sleep
 } OPCODES;
-*/
-
-typedef enum OPCODES {
-	NOP_OP,
-	BCF_OP,
-	BSF_OP,
-	GOTO_OP,
-	MOVLW_OP,
-	MOVWF_OP,
-	CLRF_OP,
-	CLRW_OP,
-	SLEEP_OP
-} OPCODES;
-
-
-typedef struct DECODE {
-	OPCODES opcode;
-	int operand;
-} DECODE;
 
 
 typedef struct TERSIZ {
@@ -94,4 +71,14 @@ typedef struct TERSIZ {
 	int y;
 } TERSIZ;
 
+
+/* Decode Instruction */
+typedef struct DECODE {
+	OPCODES opcode;  // OpCode
+	int operand;     // everything except OpCode
+	int bits;        // Part a Operand (bits)
+	int addr;        // Part b Operand (addr)
+	char *info;      // instruction info
+	exec_t type;     // Instruction type (multi operand or mono)
+} DECODE;
 

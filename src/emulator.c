@@ -10,7 +10,7 @@
 
 
 /* emulate_cpu: display CPU's data as a TUI */
-void emulate_cpu(ROM rom, DECODE dcd, EXEC exec, REG reg, RAM ram, GFLAGS flags){
+void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags){
 	TERSIZ ts = term_size(); ts.y += 1;
 	cls_term();
 

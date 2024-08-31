@@ -79,11 +79,11 @@ int main(int argc, char *argv[]){
 
 		// Capture data for each round
 		fetch = rom_fetch(rom);
-		dcd = decode_run(fetch);
-		exec = execute_capture(dcd);
+		dcd = decode_inst(fetch.data);
+		exec = soft_execute(dcd);
 
 		// Display CPU
-		emulate_cpu(rom, dcd, exec, reg, ram, gflags);
+		emulate_cpu(rom, dcd, reg, ram, gflags);
 
 		ppc = get_pc();
 		// Update PC
@@ -93,7 +93,7 @@ int main(int argc, char *argv[]){
 			set_pc(exec.upc);
 
 		// Update Reg & Ram
-		execute(dcd, exec, &reg);
+		execute(dcd, &reg);
 
 		// Interruption
 		if(gflags.stepping == 0)
