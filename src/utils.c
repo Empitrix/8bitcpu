@@ -263,3 +263,19 @@ int load_cpu_state(GFLAGS *gf, REG *reg, RAM *ram) {
 	fclose(fp);
 	return pc;
 }
+
+
+/* Extract Decimal from binary (start and end are included)*/
+int edfb(int decimal, int start, int end) {
+	start--;
+	end--;
+	// Create a mask to extract the desired bits
+	int mask = (1 << (end - start + 1)) - 1;
+
+	// Shift the mask to the correct position
+	mask <<= start;
+
+	// Extract the desired bits
+	int ebits = (decimal & mask) >> start;
+	return ebits;
+}

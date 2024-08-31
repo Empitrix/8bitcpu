@@ -54,11 +54,32 @@ typedef struct GFLAGS {
 } GFLAGS;
 
 
+/*
 typedef enum OPCODES {
 	NOP_OP  = 0,   // No OPeration
 	BCF_OP  = 4,   // Bit Clear File
 	BSF_OP  = 5,   // Bit Scan Forward
 	GOTO_OP = 10,  // GOTO
+
+	MOVLW_OP,
+	MOVWF_OP,
+	CLRF_OP,
+	CLRW_OP,
+	SLEEP_OP
+
+} OPCODES;
+*/
+
+typedef enum OPCODES {
+	NOP_OP,
+	BCF_OP,
+	BSF_OP,
+	GOTO_OP,
+	MOVLW_OP,
+	MOVWF_OP,
+	CLRF_OP,
+	CLRW_OP,
+	SLEEP_OP
 } OPCODES;
 
 
