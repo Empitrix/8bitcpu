@@ -69,6 +69,11 @@ void gotoxy(int x, int y){
 	printf("\033[%d;%df", y, x); 
 }
 
+char *sgotoxy(int x, int y){ 
+	char *s = malloc(100 * sizeof(char));
+	sprintf(s, "\033[%d;%df", y, x); 
+	return s;
+}
 
 /* print given char * in given x, y coord */
 void printfxy(char *s, int x, int y){

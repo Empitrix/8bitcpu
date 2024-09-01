@@ -6,7 +6,46 @@
 #include "utils.h"
 #include "display.h"
 #include <stdio.h>
+#include <string.h>
 
+
+
+static int cw, ch = 0;
+static char cbuff[50][MALL];
+
+void make_size(int l_len){
+	char tbuff[50][MALL];
+	for(int i = 1; i < l_len; ++i)
+		 strcpy(tbuff[i - 1], cbuff[i]);
+
+	memset(cbuff, 0, sizeof(cbuff));
+
+	for(int i = 0; i < l_len - 1; ++i)
+		strcpy(cbuff[i], tbuff[i]);
+}
+
+
+void update_console(int x, int y, int inst, int max){
+
+	int flush = edfb(inst, 8, 8);
+	int cval = edfb(inst, 1, 7);
+
+	if(flush){
+		if(cval == '\n'){
+			ch++;
+			cw = 0;
+			if(ch == max){
+				make_size(max);
+				ch = max - 1;
+			}
+		} else
+			cbuff[ch][cw++] = cval;
+	}
+
+	// Display
+	for(int i = 0; i < max; ++i)
+		printf("%s%s", sgotoxy(x, y + i), cbuff[i]);
+}
 
 
 /* emulate_cpu: display CPU's data as a TUI */
@@ -34,7 +73,7 @@ void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags){
 
 	// Status Line
 	dprt(2, 2,
-		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2][i]W-Reg[][i]:[] [ed400e]%s",
+		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2]W-Reg[]:[] [ed400e]%s",
 		get_pc(),
 		dtoh(reg.registers[6], 2),
 		dtob_led(reg.registers[6], 8),
@@ -90,6 +129,9 @@ void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags){
 	dprt(hx + 33, 7, "[2196F3]Program[FFFFFF]:");
 	dprt(hx + 33, 8, "[98C379]\"%s\"", flags.program);
 
+
+	// Update console (from register 6)
+	update_console(hx + 29, 16, reg.registers[6], ts.y - 18);
 
 	fflush(NULL);  // Flush the output (ALL)
 }
