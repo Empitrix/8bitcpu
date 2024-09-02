@@ -58,6 +58,9 @@ void update_console(int x, int y, int inst, int max){
 
 /* emulate_cpu: display CPU's data as a TUI */
 void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags){
+	if(flags.is_sleep == 1){
+		return;
+	}
 	TERSIZ ts = term_size(); ts.y += 1;
 	cls_term();
 
