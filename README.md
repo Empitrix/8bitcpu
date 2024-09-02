@@ -36,7 +36,7 @@ Or if you wish to see the instructions step by step use `-s` flag:
 ```
 In stepping mode if you press `q` the program will end.
 
-And to see how console works use `-c` flag and `hello.bin` program in `examples/`:
+And to see how console works use `-c` flag and `hello.bin` program in `examples/` which is running [`hello.asm`](https://github.com/Empitrix/assembler/blob/master/examples/hello.asm):
 ```bash
 ./cpu -p ./examples/hello.bin -c
 ```

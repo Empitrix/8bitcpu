@@ -50,8 +50,9 @@ char *update_color(char *format, int clean){
 	free(tmp);
 
 	// Insert reset codes at the end
-	if(clean == 1)
+	if(clean == 1){
 		strcat(src, "\033[0m\033[49m");
+	}
 
 	str_replace(src, "[{}]", "\033[0m\033[49m");
 	str_replace(src, "[]", "\033[0m");
@@ -133,11 +134,11 @@ typedef enum LINE_TYPE {
 void draw_line(int x, int y, int size, LINE_TYPE lt, char *a, char *b){ 
 	int i;
 	for(i = 0 ; i < size; ++i){
-		if(i == 0)
+		if(i == 0){
 			printfxy(a, x, y);
-		else if (i == size - 1)
+		} else if (i == size - 1){
 			printfxy(b, x, y);
-		else {
+		} else {
 			if(lt == HORIZONTAL || lt == HORIZONTAL_LIGHT){
 				x++;
 				printfxy(lt == HORIZONTAL_LIGHT ? "┄": "─", x, y);

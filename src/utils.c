@@ -79,53 +79,33 @@ char *dtob2sec(int decimal, char *a, char *b){
 
 
 
+/* dtoh: (Decimal TO Hex) converts given decimal into hex string with size of 'siz' */
 char *dtoh(int decimal, int size) {
-    char *hex = malloc(MALL * sizeof(char)); // Allocate space for "0x", hex digits, and null terminator
-    if (hex == NULL) {
-        return NULL;
-    }
+	char *hex = malloc(MALL * sizeof(char));
+	if (hex == NULL) {
+		return NULL;
+	}
 
-    hex[0] = '0';
-    hex[1] = 'x';
-    hex[size + 2] = '\0'; // Add null terminator
+	hex[0] = '0';
+	hex[1] = 'x';
+	hex[size + 2] = '\0'; // Add null terminator
 
-    // Handle padding
-    for (int i = size + 1; i >= 2; i--) {
-        if (decimal == 0 && i > 2) {
-            hex[i] = '0';
-        } else {
-            int digit = decimal % 16;
-            if (digit < 10) {
-                hex[i] = '0' + digit;
-            } else {
-                hex[i] = 'A' + digit - 10;
-            }
-            decimal /= 16;
-        }
-    }
-
-    return hex;
+	// Handle padding
+	for (int i = size + 1; i >= 2; i--) {
+		if (decimal == 0 && i > 2) {
+			hex[i] = '0';
+		} else {
+			int digit = decimal % 16;
+			if (digit < 10) {
+				hex[i] = '0' + digit;
+			} else {
+				hex[i] = 'A' + digit - 10;
+			}
+			decimal /= 16;
+		}
+	}
+	return hex;
 }
-
-// /* dtoh: (Decimal TO Hex) converts given decimal into hex string with size of 'siz' */
-// char *dtoh(int decimal, int size) {
-// 	char *hex = malloc((size + 3) * sizeof(char *));
-// 
-// 	hex[0] = '0';
-// 	hex[1] = 'x';
-// 
-// 	for (int i = size + 1; i > 1; i--) {
-// 		int digit = decimal % 16;
-// 		if (digit < 10) {
-// 			hex[i] = '0' + digit;
-// 		} else {
-// 			hex[i] = 'A' + digit - 10;
-// 		}
-// 		decimal /= 16;
-// 	}
-// 
-// 	return hex;
-// }
 
 
 /* update_gflags: Update Global Flags */
@@ -157,12 +137,13 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 		if(fs == 1){
 			gflags->frequency = atoi(argv[i]);
 
-			if(gflags->frequency == 0)
+			if(gflags->frequency == 0){
 				gflags->frequency = 500000;
-			else if (gflags->frequency > 1000000)
+			} else if (gflags->frequency > 1000000){
 				gflags->frequency = 1;
-			else
+			} else{
 				gflags->frequency = 1000000 / gflags->frequency;
+			}
 
 			fs = 0;
 			continue;
@@ -194,17 +175,21 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 
 	}
 
-	if(ps == 1)
+	if(ps == 1){
 		lprt(1, "After [afaf00]'-p'[ffffff] you should put the path to the supported [f44336].bin[ffffff] file!");
+	}
 
-	if(fs == 1)
+	if(fs == 1){
 		lprt(1, "After [afaf00]'-f'[ffffff] you should put clock frequency!");
+	}
 
-	if(ls == 1)
+	if(ls == 1){
 		lprt(1, "After [afaf00]'-l'[ffffff] you should put save state file!");
+	}
 
-	if(strcmp(gflags->program, "") == 0 && strcmp(gflags->load, "") == 0)
+	if(strcmp(gflags->program, "") == 0 && strcmp(gflags->load, "") == 0){
 		lprt(1, "By using [afaf00]'-p <path>'[ffffff] specify the path to the program file!");
+	}
 }
 
 
@@ -263,10 +248,12 @@ void save_cpu_state(GFLAGS gf, REG reg, RAM ram, int pc){
 	fprintf(fp, "%d\n", gf.frequency);
 	fprintf(fp, "%d\n", pc);
 	int i;
-	for(i = 0; i < REGSIZ; ++i)
+	for(i = 0; i < REGSIZ; ++i){
 		fprintf(fp, "%d\n", reg.registers[i]);
-	for(i = 0; i < RAMSIZ; ++i)
+	}
+	for(i = 0; i < RAMSIZ; ++i){
 		fprintf(fp, "%d\n", ram.ram[i]);
+	}
 	fclose(fp);
 }
 
@@ -278,8 +265,9 @@ int load_cpu_state(GFLAGS *gf, REG *reg, RAM *ram) {
 	int pc = 0;
 
 	fp = fopen(gf->load, "r");
-	if(fp == NULL)
+	if(fp == NULL){
 		return -1;
+	}
 
 	if (fscanf(fp, "%s\n%d\n%d\n", gf->program, &gf->frequency, &pc) != 3) {
 		fprintf(stderr, "Error reading file: Invalid format\n");
@@ -320,3 +308,4 @@ int edfb(int decimal, int start, int end) {
 	int ebits = (decimal & mask) >> start;
 	return ebits;
 }
+

@@ -28,8 +28,9 @@ void str_replace(char *src, char *a, char *b) {
 
 
 void shift_over(char *src, int shift, int size){
-	for(int j = 0; j < size; ++j)
+	for(int j = 0; j < size; ++j){
 		src[j] = src[shift + j];
+	}
 }
 
 
@@ -43,6 +44,7 @@ char *str_slice(char *src, int start, int end) {
 
 void str_lower(char *src){
 	int len, i; len = (int)strlen(src);
-	for(i = 0; i < len; ++i)
+	for(i = 0; i < len; ++i){
 		src[i] = tolower(src[i]);
+	}
 }

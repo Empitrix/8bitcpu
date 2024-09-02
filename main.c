@@ -34,10 +34,11 @@ int main(int argc, char *argv[]){
 	if(gflags.pload == STATE_LOAD){
 		int tmp;
 		tmp = load_cpu_state(&gflags, &reg, &ram);
-		if(tmp < 0)
+		if(tmp < 0){
 			lprt(1, "Invalid cpu state file!");
-		else
+		} else {
 			set_pc(tmp);
+		}
 	}
 
 	rom = rom_init(gflags.program);
@@ -56,17 +57,20 @@ int main(int argc, char *argv[]){
 
 		if(c == 'r'){
 			reset_cpu(&reg, &ram);
-		} else if(c != ' ')
+		} else if(c != ' '){
 			continue;
+		}
 
 
 		if(gflags.stepping == 0){
 
-			if(getc_keep() == ' ')
+			if(getc_keep() == ' '){
 				gflags.is_pause = ~gflags.is_pause;
+			}
 
-			if(getc_keep() == 'r' && gflags.is_sleep)
+			if(getc_keep() == 'r' && gflags.is_sleep){
 				reset_cpu(&reg, &ram);
+			}
 
 
 			if(getc_keep() == 's'){
@@ -94,18 +98,21 @@ int main(int argc, char *argv[]){
 			ppc = get_pc();
 
 			// Update PC
-			if(exec.upc == get_pc())
+			if(exec.upc == get_pc()){
 				increment_pc();
-			else
+			} else {
 				set_pc(exec.upc);
+			}
 
 			execute(dcd, &reg); // Update Reg & Ram
-		} else
+		} else {
 			dprt(term_size().x - 6, 2, "[26aF9a][bl]Sleep");
+		}
 
 		// Interruption
-		if(gflags.stepping == 0)
+		if(gflags.stepping == 0){
 			usleep(gflags.frequency);
+		}
 
 	} while(gflags.stepping ? (c = getl()) != 'q' : 1);
 
