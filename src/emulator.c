@@ -11,6 +11,7 @@
 
 
 static int cw, ch = 0;
+static int cflush = 0;
 static char cbuff[50][MALL];
 
 void make_size(int l_len){
@@ -30,7 +31,7 @@ void update_console(int x, int y, int inst, int max){
 	int flush = edfb(inst, 8, 8);
 	int cval = edfb(inst, 1, 7);
 
-	if(flush){
+	if(flush && cflush == 0){
 		if(cval == '\n'){
 			ch++;
 			cw = 0;
@@ -40,7 +41,9 @@ void update_console(int x, int y, int inst, int max){
 			}
 		} else
 			cbuff[ch][cw++] = cval;
-	}
+		cflush = 1;
+	} else 
+		cflush = 0;
 
 	// Display
 	for(int i = 0; i < max; ++i)
@@ -131,7 +134,10 @@ void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags){
 
 
 	// Update console (from register 6)
-	update_console(hx + 29, 16, reg.registers[6], ts.y - 18);
+	if(flags.console_en)
+		update_console(hx + 29, 16, reg.registers[6], ts.y - 18);
+	else
+		dprt(hx + 29, 16, "[B0B0B0]Use [D84315]'-c'[B0B0B0] to enable console");
 
 	fflush(NULL);  // Flush the output (ALL)
 }

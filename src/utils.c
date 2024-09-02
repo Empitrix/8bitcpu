@@ -134,6 +134,7 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 	gflags->frequency = 500000;
 	gflags->pload = PROGRAM_LOAD;
 	gflags->is_sleep = 0;
+	gflags->console_en = 0;
 	memset(gflags->program, '\0', MALL);
 	memset(gflags->load, '\0', MALL);
 	int ps, fs, ls = 0; // program save
@@ -172,6 +173,9 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 				switch(argv[i][j]){
 					case 's':
 						gflags->stepping = 1;
+						break;
+					case 'c':
+						gflags->console_en = 1;
 						break;
 					case 'p':
 						ps = 1;

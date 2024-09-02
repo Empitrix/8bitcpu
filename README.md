@@ -36,6 +36,12 @@ Or if you wish to see the instructions step by step use `-s` flag:
 ```
 In stepping mode if you press `q` the program will end.
 
+And to see how console works use `-c` flag and `hello.bin` program in `examples/`:
+```bash
+./cpu -p ./examples/hello.bin -c
+```
+
+
 
 ## CPU Specifications:
 ### Memory
@@ -51,33 +57,49 @@ In stepping mode if you press `q` the program will end.
 - `BCF f, b`: Bit clear file (`0100 bbb fffff`)
 - `GOTO k`: Unconditional Branch (`101k kkkk kkkk`)
 - `NOP`: No Operation (`0000 0000 0000`)
+- `MOVLW k`: move a literal into W. (`1100 kkkk kkkk`)
+- `MOVWF f`: Move W to f (register). (`0000 001F FFFF`)
+- `CLRF f`: Clear. (`0000 011F FFFF`)
+- `CLRW`: Clears the W register. (`0000 0100 0000`)
+- `SLEEP`: Sleep (STOP). (`0000 0000 0011`)
+
 
 ### Opcode Details
 - `BSF`: Bit clear forward: set given bit from given register to 1
 - `BCF`: Bit clear file: set given bit from given register to 0
 - `GOTO`: Goto given lable address
 - `NOP`: No Operation (small delay)
+- `MOVLW k`: Loads a literal value into the W register.
+- `MOVWF f`: Moves the contents of the W register to a specified register or memory location.
+- `CLRF f`: Clears (sets to 0) a specified register or memory location.
+- `CLRW`: Clears the W register.
+- `SLEEP`: Puts the CPU into a standby mode.
 
 
 ## Flags
-| Flag        | Name           | Description                       |
-|-------------|----------------|-----------------------------------|
-| `-s`        | Stepping Mode  | Clock pulse with keyboard keys    |
-| `-f <num>`  | Frequency      | Clock frequency from 1 to 1000000 |
+| Flag        | Name           | Description                                                                   |
+|-------------|----------------|-------------------------------------------------------------------------------|
+| `-s`        | Stepping Mode  | Clock pulse with keyboard keys                                                |
+| `-f <num>`  | Frequency      | Clock frequency from 1 to 1000000                                             |
 | `-p <path>` | Program        | Path to `.bin` file from [`assembler`](https://github.com/empitrix/assembler) |
-| `-l <path>` | Load CPU state | Path to a `.txt` file that contains CPU's state |
+| `-l <path>` | Load CPU state | Path to a `.txt` file that contains CPU's state                               |
+| `-c`        | Console        | Enables the `console` and allows loggin for register `0x06` (GPIO)            |
 
 - If CPU state is loaded with `-l` don't need to use `-p` to load a program to CPU, but make sure that the program is exists for CPU to load it.
+
+### What is Console?
+When bit number 7 of register `0x06` (GPIO) turns to 1 (from 0 to 1), Print from bit 0 to 6 (7 in total) as ASCII into the consol window. and it can be enabled by the `-c` flag.
 
 
 ## Actions
 - Press `s` to save the cpu's state to a `cpu_state.txt` file!
 - Press `<space>` to move to the next step in `stepping mode`.
-- Press `<space>` to pause/unpause cpu in `auto mode`.
+- Press `<space>` to pause/unpause CPU in `auto mode`.
+- Press `r` to reset the cpu while CPU is in `SLEEP`.
 
 
 ## TODO
-* Control Functions:
+Control Functions:
 - [x] Save: Implement the functionality to save the current CPU state to a file.
 - [x] Run/Pause: Allow the user to start/stop continuous execution of the CPU.
 - [ ] Add more opcodes: Implement additional instructions to enhance the CPU's capabilities (e.g., arithmetic, logic, control flow).

@@ -50,6 +50,7 @@ typedef struct GFLAGS {
 	char load[MALL];
 	int is_pause;
 	int is_sleep;
+	int console_en;
 } GFLAGS;
 
 
