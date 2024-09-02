@@ -87,8 +87,14 @@ And to see how console works use `-c` flag and `hello.bin` program in `examples/
 
 - If CPU state is loaded with `-l` don't need to use `-p` to load a program to CPU, but make sure that the program is exists for CPU to load it.
 
-### What is Console?
-When bit number 7 of register `0x06` (GPIO) turns to 1 (from 0 to 1), Print from bit 0 to 6 (7 in total) as ASCII into the consol window. and it can be enabled by the `-c` flag.
+### Console
+This section displays ASCII characters directly from the CPU's GPIO port. To print a character, write its 7-bit ASCII code to the port and set the eighth bit (bit 7) to 1. The corresponding ASCII character will appear on the console.
+
+```asm
+MOVLW 'A'     ; Load the ASCII code for 'A' into register W
+MOVWF GPIO    ; Write the value from register W to the GPIO port
+BSF GPIO, 7   ; Set the eighth bit (bit 7) of the GPIO port to 1
+```
 
 
 ## Actions
