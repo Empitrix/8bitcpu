@@ -104,7 +104,7 @@ int main(int argc, char *argv[]){
 				set_pc(exec.upc);
 			}
 
-			execute(dcd, &reg); // Update Reg & Ram
+			execute(dcd, &reg, &ram); // Update Reg & Ram
 		} else {
 			dprt(term_size().x - 6, 2, "[26aF9a][bl]Sleep");
 		}

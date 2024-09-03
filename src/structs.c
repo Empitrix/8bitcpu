@@ -73,6 +73,20 @@ typedef struct TERSIZ {
 } TERSIZ;
 
 
+typedef enum mem_t {
+	TO_RAM,
+	TO_REG,
+} mem_t;
+
+/* Address to memory */
+typedef struct MEM_OUT {
+	mem_t type;
+	int addr;
+	int value;
+	int valid;
+} MEM_OUT;
+
+
 /* Decode Instruction */
 typedef struct DECODE {
 	OPCODES opcode;  // OpCode

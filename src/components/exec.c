@@ -68,17 +68,23 @@ char* exec_info(int inst){
 
 
 /* Execute & Update Memory etc... */
-void execute(DECODE dcd, REG *reg){
+void execute(DECODE dcd, REG *reg, RAM *ram){
+	MEM_OUT m;
+
 	switch(dcd.opcode) {
 
 		// Set selected bit from the register to 1
 		case BSF_OP:
-			reg->registers[dcd.addr] |= 1 << dcd.bits;
+			m = get_mem(reg, ram, dcd.addr);
+			set_mem(reg, ram, m, m.value | (1 << dcd.bits));
+			// reg->registers[dcd.addr] |= 1 << dcd.bits;
 			break;
 
 		// Set selected bit from the register to 0
 		case BCF_OP:
-			reg->registers[dcd.addr] &= ~(1 << dcd.bits);
+			m = get_mem(reg, ram, dcd.addr);
+			set_mem(reg, ram, m, m.value & ~(1 << dcd.bits));
+			// reg->registers[dcd.addr] &= ~(1 << dcd.bits);
 			break;
 
 		case MOVLW_OP:
@@ -86,11 +92,15 @@ void execute(DECODE dcd, REG *reg){
 			break;
 
 		case MOVWF_OP:
-			reg->registers[dcd.addr] = get_w_reg();
+			m = get_mem(reg, ram, dcd.addr);
+			set_mem(reg, ram, m, get_w_reg());
+			// reg->registers[dcd.addr] = get_w_reg();
 			break;
 
 		case CLRF_OP:
-			reg->registers[dcd.addr] = 0;
+			m = get_mem(reg, ram, dcd.addr);
+			set_mem(reg, ram, m, 0);
+			// reg->registers[dcd.addr] = 0;
 			break;
 		
 		case CLRW_OP:
