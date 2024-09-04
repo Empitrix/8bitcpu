@@ -63,8 +63,13 @@ typedef enum OPCODES {
 	MOVWF_OP,
 	CLRF_OP,
 	CLRW_OP,
+
 	DECF_OP,   // Decrement F
 	DECFSZ_OP,
+
+	INCF_OP,   // Increment F
+	INCFSZ_OP,
+
 	SLEEP_OP   // Sleep
 } OPCODES;
 

@@ -75,7 +75,6 @@ DECODE decode_inst(int inst){
 		dcd.addr = edfb(inst, 1, 5);
 
 
-
 	// DECF
 	} else if(edfb(inst, 7, 12) == 0b000011){
 		dcd.opcode = DECF_OP;
@@ -97,6 +96,27 @@ DECODE decode_inst(int inst){
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
+
+	// INCF
+	} else if(edfb(inst, 7, 12) == 0b001010){
+		dcd.opcode = INCF_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "INCF";
+
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+
+	// INCFSZ
+	} else if(edfb(inst, 7, 12) == 0b001111){
+		dcd.opcode = INCFSZ_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "INCFSZ";
+
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
 
 	// GOTO
 	} else if(edfb(inst, 10, 12) == 0b101){

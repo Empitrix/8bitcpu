@@ -144,6 +144,47 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 			break;
 
 
+
+		// INCF
+		case INCF_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			if(m.value != 255){
+				m.value++;
+			} else {
+				m.value = 0;
+			}
+
+			if(dcd.bits == 1){
+				set_mem(reg, ram, m, m.value);
+			} else {
+				set_w_reg(m.value);
+			}
+			break;
+
+
+
+		// INCFSZ
+		case INCFSZ_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			if(m.value != 255){
+				m.value++;
+			} else {
+				m.value = 0;
+			}
+
+			if(dcd.bits == 1){
+				set_mem(reg, ram, m, m.value);
+			} else {
+				set_w_reg(m.value);
+			}
+
+			if(m.value == 0){
+				bypass = 1;
+			}
+
+			break;
+
+
 		default:
 			break;
 	}
