@@ -181,7 +181,24 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 			if(m.value == 0){
 				bypass = 1;
 			}
+			break;
 
+
+		// BTFSS
+		case BTFSS_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			if(edfb(m.value, dcd.bits + 1, dcd.bits + 1) == 1){
+				bypass = 1;
+			}
+			break;
+
+
+		// BTFSC
+		case BTFSC_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			if(edfb(m.value, dcd.bits + 1, dcd.bits + 1) == 0){
+				bypass = 1;
+			}
 			break;
 
 

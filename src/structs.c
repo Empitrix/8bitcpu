@@ -70,6 +70,10 @@ typedef enum OPCODES {
 	INCF_OP,   // Increment F
 	INCFSZ_OP,
 
+
+	BTFSS_OP,   // Test bit F
+	BTFSC_OP,
+
 	SLEEP_OP   // Sleep
 } OPCODES;
 

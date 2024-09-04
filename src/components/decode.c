@@ -118,6 +118,29 @@ DECODE decode_inst(int inst){
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
+
+	// BTFSS
+	} else if(edfb(inst, 9, 12) == 0b0110){
+		dcd.opcode = BTFSS_OP;
+		dcd.operand = edfb(inst, 1, 8);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "BTFSS";
+
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 8);
+
+
+	// BTFSC
+	} else if(edfb(inst, 9, 12) == 0b0111){
+		dcd.opcode = BTFSC_OP;
+		dcd.operand = edfb(inst, 1, 8);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "BTFSC";
+
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 8);
+
+
 	// GOTO
 	} else if(edfb(inst, 10, 12) == 0b101){
 		dcd.opcode = GOTO_OP;
