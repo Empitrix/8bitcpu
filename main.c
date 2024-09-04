@@ -6,6 +6,7 @@
 #include "src/display.h"
 #include "src/structs.h"
 #include "src/emulator.h"
+#include "src/term.h"
 #include "src/utils.h"
 #include <stdio.h>
 #include <unistd.h>
@@ -19,6 +20,7 @@ int main(int argc, char *argv[]){
 
 	int c = ' ';
 	int ppc;
+	int bypass = 0;
 
 	GFLAGS gflags;
 	FETCH fetch;
@@ -104,7 +106,8 @@ int main(int argc, char *argv[]){
 				set_pc(exec.upc);
 			}
 
-			execute(dcd, &reg, &ram); // Update Reg & Ram
+			bypass = execute(dcd, &reg, &ram); // Update Reg & Ram
+
 		} else {
 			dprt(term_size().x - 6, 2, "[26aF9a][bl]Sleep");
 		}
@@ -112,6 +115,13 @@ int main(int argc, char *argv[]){
 		// Interruption
 		if(gflags.stepping == 0){
 			usleep(gflags.frequency);
+		}
+
+
+		if(bypass){
+			bypass = 0;
+			set_pc(get_pc() + 1);
+			continue;
 		}
 
 	} while(gflags.stepping ? (c = getl()) != 'q' : 1);

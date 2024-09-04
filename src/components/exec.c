@@ -68,8 +68,9 @@ char* exec_info(int inst){
 
 
 /* Execute & Update Memory etc... */
-void execute(DECODE dcd, REG *reg, RAM *ram){
+int execute(DECODE dcd, REG *reg, RAM *ram){
 	MEM_OUT m;
+	int bypass = 0;
 
 	switch(dcd.opcode) {
 
@@ -107,8 +108,46 @@ void execute(DECODE dcd, REG *reg, RAM *ram){
 			set_w_reg(0);
 			break;
 
+
+		// DECF
+		case DECF_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			if(m.value != 0){
+				m.value--;
+			}
+
+			if(dcd.bits == 1){
+				set_mem(reg, ram, m, m.value);
+			} else {
+				set_w_reg(m.value);
+			}
+			break;
+
+
+		// DECFSZ
+		case DECFSZ_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			if(m.value != 0){
+				m.value--;
+			}
+
+			if(dcd.bits == 1){
+				set_mem(reg, ram, m, m.value);
+			} else {
+				set_w_reg(m.value);
+			}
+
+			if(m.value == 0){
+				bypass = 1;
+			}
+
+			break;
+
+
 		default:
 			break;
 	}
+
+	return bypass;
 }
 

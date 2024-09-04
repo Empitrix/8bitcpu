@@ -74,6 +74,30 @@ DECODE decode_inst(int inst){
 		
 		dcd.addr = edfb(inst, 1, 5);
 
+
+
+	// DECF
+	} else if(edfb(inst, 7, 12) == 0b000011){
+		dcd.opcode = DECF_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "DECF";
+
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+
+	// DECFSZ
+	} else if(edfb(inst, 7, 12) == 0b001011){
+		dcd.opcode = DECFSZ_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "DECFSZ";
+
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+
 	// GOTO
 	} else if(edfb(inst, 10, 12) == 0b101){
 		dcd.opcode = GOTO_OP;

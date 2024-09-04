@@ -59,10 +59,12 @@ typedef enum OPCODES {
 	BCF_OP,    // Bit Clear File
 	BSF_OP,    // Bit Set Forward
 	GOTO_OP,   // Goto
-	MOVLW_OP,  // 
-	MOVWF_OP,  // 
-	CLRF_OP,   // 
-	CLRW_OP,   // 
+	MOVLW_OP,
+	MOVWF_OP,
+	CLRF_OP,
+	CLRW_OP,
+	DECF_OP,   // Decrement F
+	DECFSZ_OP,
 	SLEEP_OP   // Sleep
 } OPCODES;
 
