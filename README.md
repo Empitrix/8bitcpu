@@ -53,27 +53,291 @@ And to see how console works use `-c` flag and `hello.bin` program in `examples/
   - Register `0x06`: GPIO (General Purpose Input/Output)
 
 ### Opcodes
-- `BSF f, b`: Bit set forward (`0101 bbb fffff`)
-- `BCF f, b`: Bit clear file (`0100 bbb fffff`)
-- `GOTO k`: Unconditional Branch (`101k kkkk kkkk`)
-- `NOP`: No Operation (`0000 0000 0000`)
-- `MOVLW k`: move a literal into W. (`1100 kkkk kkkk`)
-- `MOVWF f`: Move W to f (register). (`0000 001F FFFF`)
-- `CLRF f`: Clear. (`0000 011F FFFF`)
-- `CLRW`: Clears the W register. (`0000 0100 0000`)
-- `SLEEP`: Sleep (STOP). (`0000 0000 0011`)
+<!-- BSF -->
+<details>
+  <summary>BSF f, b</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Set bit (<code>b</code>) at address (<code>f</code>) to 1</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0101 bbbf ffff</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>BSF GPIO, 0</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- BCF -->
+<details>
+  <summary>BCF f, b</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Set bit (<code>b</code>) at address (<code>f</code>) to 0</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0100 bbbf ffff</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>BCF GPIO, 0</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- GOTO -->
+<details>
+  <summary>GOTO k</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Goto given lable</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>101k kkkk kkkk</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>GOTO start</code></td>
+    </tr>
+  </table>
+</details>
 
 
-### Opcode Details
-- `BSF`: Bit clear forward: set given bit from given register to 1
-- `BCF`: Bit clear file: set given bit from given register to 0
-- `GOTO`: Goto given lable address
-- `NOP`: No Operation (small delay)
-- `MOVLW k`: Loads a literal value into the W register.
-- `MOVWF f`: Moves the contents of the W register to a specified register or memory location.
-- `CLRF f`: Clears (sets to 0) a specified register or memory location.
-- `CLRW`: Clears the W register.
-- `SLEEP`: Puts the CPU into a standby mode.
+<!-- NOP -->
+<details>
+  <summary>NOP</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>No operation</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0000 0000 0000</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>NOP</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- MOVLW -->
+<details>
+  <summary>MOVLW K</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Loads a literal (immediate) value into the <code>W</code> register.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>1100 KKKK KKKK</code> (where <code>KKKKKKKK</code> is the 8-bit literal value)</td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>MOVLW 03H</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- MOVWF -->
+<details>
+  <summary>MOVWF f</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Moves the contents of the <code>W</code> register to a specified register or memory location.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0000 001F FFFF</code> (where <code>FFFFF</code> is the 5-bit address)</td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>MOVWF 06H</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- CLRF -->
+<details>
+  <summary>CLRF f</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Clears (sets to 0) a specified register or memory location.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0000 011F FFFF</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>CLRF 06H</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- CLRW -->
+<details>
+  <summary>CLRW</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Clears the <code>W</code> register.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0000 0100 0000</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>CLRW</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- SLEEP -->
+<details>
+  <summary>SLEEP</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Puts the CPU into a standby mode.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0000 0000 0011</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>SLEEP</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- DECF -->
+<details>
+  <summary>DECF f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Decrement register <code>f</code> and store the result back in <code>f</code> only if (<code>d</code>) destination is <code>1</code> otherwise store the resutl into register <code>W</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0000 11dF FFFF</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>DECF 0x01, 1</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- DECFSZ -->
+<details>
+  <summary>DECFSZ f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Decrement the contents of register f. If <code>d</code> is <code>0</code>, place the result in the <code>W</code> register. If <code>d</code> is <code>1</code>, place the result back in register <code>f</code>. If the result is <code>0</code>, skip the next instruction (which is already fetched) and execute a <code>NOP</code> instead.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0010 11dF FFFF</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>DECFSZ 0x02, 1</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- INCF -->
+<details>
+  <summary>INCF f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Increment the contents of register <code>f</code>. If <code>d</code> is <code>0</code>, store the result in the <code>W</code> register. If <code>d</code> is <code>1</code>, store the result back in register <code>f</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0010 10dF FFFF</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>INCF 0x03, 1</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- INCFSZ -->
+<details>
+  <summary>INCFSZ f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Increment the contents of register f. If <code>d</code> is <code>0</code>, place the result in the <code>W</code> register. If <code>d</code> is <code>1</code>, place the result back in register <code>f</code>. If the result is <code>0</code>, skip the next instruction and execute a <code>NOP</code> instead.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0011 11dF FFFF</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>INCFSZ 0x04, 1</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- BTFSS -->
+<details>
+  <summary>BTFSS f, b</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Test the bit <code>b</code> in register <code>f</code>. If bit b is <code>1</code>, skip the next instruction (which is already fetched) and execute a <code>NOP</code> instead.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0110 bbbF FFFF</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>BTFSC 0x06, 2</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- BTFSC -->
+<details>
+  <summary>BTFSC f, b</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Test the bit <code>b</code> in register <code>f</code>. If bit b is <code>0</code>, skip the next instruction (which is already fetched) and execute a <code>NOP</code> instead.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0111 bbbF FFFF</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>BTFSC 0x06, 2</code></td>
+    </tr>
+  </table>
+</details>
 
 
 ## Flags
