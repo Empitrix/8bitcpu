@@ -1,6 +1,7 @@
 /dist
 /cpu
 /assembler
+/examples/test.bin
 *.out
 *.txt
 /cpu_state.txt

@@ -74,7 +74,27 @@ typedef enum OPCODES {
 	BTFSS_OP,   // Test bit F
 	BTFSC_OP,
 
-	SLEEP_OP   // Sleep
+	SLEEP_OP,   // Sleep
+
+	ADDWF_OP,
+	ANDWF_OP,
+	COMF_OP,
+	IORWF_OP,
+	MOVF_OP,
+	RLF_OP,
+	RRF_OP,
+	SUBWF_OP,
+	SWAPF_OP,
+	XORWF_OP,
+	ANDLW_OP,
+	CALL_OP,
+	CLRWDT_OP,
+	IORLW_OP,
+	OPTION_OP,
+	RETLW_OP,
+	TRIS_OP,
+	XORLW_OP,
+	
 } OPCODES;
 
 

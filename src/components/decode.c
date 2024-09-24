@@ -149,6 +149,177 @@ DECODE decode_inst(int inst){
 		dcd.info = "GOTO";
 		
 		dcd.addr = edfb(inst, 1, 9);
+		
+	// P-4
+
+	// ADDWF
+	} else if(edfb(inst, 7, 12) == 0b000111){
+		dcd.opcode = ADDWF_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "ADDWF";
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+	// ANDWF
+	} else if(edfb(inst, 7, 12) == 0b000101){
+		dcd.opcode = ANDWF_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "ANDWF";
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+	// COMF
+	} else if(edfb(inst, 7, 12) == 0b001001){
+		dcd.opcode = COMF_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "COMF";
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+	// IORWF
+	} else if(edfb(inst, 7, 12) == 0b000100){
+		dcd.opcode = IORWF_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "IORWF";
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+	// MOVF
+	} else if(edfb(inst, 7, 12) == 0b001000){
+		dcd.opcode = MOVF_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "MOVF";
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+	// MOVF
+	} else if(edfb(inst, 7, 12) == 0b001000){
+		dcd.opcode = MOVF_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "MOVF";
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+	// RLF
+	} else if(edfb(inst, 7, 12) == 0b001101){
+		dcd.opcode = RLF_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "RLF";
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+	// RRF
+	} else if(edfb(inst, 7, 12) == 0b001100){
+		dcd.opcode = RRF_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "RRF";
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+	// SUBWF
+	} else if(edfb(inst, 7, 12) == 0b000010){
+		dcd.opcode = SUBWF_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "SUBWF";
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+	// SWAPF
+	} else if(edfb(inst, 7, 12) == 0b001110){
+		dcd.opcode = SWAPF_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "SWAPF";
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+	// XORWF
+	} else if(edfb(inst, 7, 12) == 0b000110){
+		dcd.opcode = XORWF_OP;
+		dcd.operand = edfb(inst, 1, 6);
+		dcd.type = MULTI_OPERAND;
+		dcd.info = "XORWF";
+		dcd.addr = edfb(inst, 1, 5);
+		dcd.bits = edfb(inst, 6, 6);
+
+	// ANDLW
+	} else if(edfb(inst, 9, 12) == 0b1110){
+		dcd.opcode = ANDLW_OP;
+		dcd.operand = edfb(inst, 1, 8);
+		dcd.type = MONO_OPERAND;
+		dcd.info = "ANDLW";
+		dcd.addr = edfb(inst, 1, 8);
+
+	// CALL
+	} else if(edfb(inst, 9, 12) == 0b1001){
+		dcd.opcode = CALL_OP;
+		dcd.operand = edfb(inst, 1, 8);
+		dcd.type = MONO_OPERAND;
+		dcd.info = "CALL";
+		dcd.addr = edfb(inst, 1, 8);
+
+	// CLRWDT
+	} else if(edfb(inst, 1, 12) == 0b000000000100){
+		dcd.opcode = CLRWDT_OP;
+		dcd.operand = edfb(inst, 1, 12);
+		dcd.type = FULL_OPERAND;
+		dcd.info = "CLRWDT";
+
+	// IORLW
+	} else if(edfb(inst, 9, 12) == 0b1101){
+		dcd.opcode = IORLW_OP;
+		dcd.operand = edfb(inst, 1, 8);
+		dcd.type = MONO_OPERAND;
+		dcd.info = "IORLW";
+		dcd.addr = edfb(inst, 1, 8);
+
+	// OPTION
+	} else if(edfb(inst, 1, 12) == 0b000000000010){
+		dcd.opcode = OPTION_OP;
+		dcd.operand = edfb(inst, 1, 12);
+		dcd.type = FULL_OPERAND;
+		dcd.info = "OPTION";
+
+	// RETLW
+	} else if(edfb(inst, 9, 12) == 0b1000){
+		dcd.opcode = RETLW_OP;
+		dcd.operand = edfb(inst, 1, 8);
+		dcd.type = MONO_OPERAND;
+		dcd.info = "RETLW";
+		dcd.addr = edfb(inst, 1, 8);
+
+	// XORLW
+	} else if(edfb(inst, 9, 12) == 0b1111){
+		dcd.opcode = XORLW_OP;
+		dcd.operand = edfb(inst, 1, 8);
+		dcd.type = MONO_OPERAND;
+		dcd.info = "XORLW";
+		dcd.addr = edfb(inst, 1, 8);
+
+	// TRIS (6)
+	} else if(edfb(inst, 1, 12) == 0b000000000110){
+		dcd.opcode = TRIS_OP;
+		dcd.operand = edfb(inst, 1, 3);
+		dcd.type = MONO_OPERAND;
+		dcd.info = "TRIS";
+		dcd.addr = edfb(inst, 1, 3);
+
+	// TRIS (7)
+	} else if(edfb(inst, 1, 12) == 0b000000000111){
+		dcd.opcode = TRIS_OP;
+		dcd.operand = edfb(inst, 1, 3);
+		dcd.type = MONO_OPERAND;
+		dcd.info = "TRIS";
+		dcd.addr = edfb(inst, 1, 3);
 
 	// Undefined
 	} else
