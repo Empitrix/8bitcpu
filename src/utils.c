@@ -309,3 +309,26 @@ int edfb(int decimal, int start, int end) {
 	return ebits;
 }
 
+
+
+int any_use_bit(OPCODES op){
+	switch (op) {
+		case ANDLW_OP:
+			return 1;
+		case IORLW_OP:
+			return 1;
+		case RETLW_OP:
+			return 1;
+		case XORLW_OP:
+			return 1;
+		case MOVWF_OP:
+			return 1;
+		case MOVLW_OP:
+			return 1;
+		case CLRF_OP:
+			return 1;
+		default:
+			return 0;
+	}
+	return 0;
+}

@@ -23,6 +23,20 @@ EXEC soft_execute(DECODE dcd){
 			exec.sleep = 1;
 			break;
 
+		case CALL_OP:
+			save_call_pc(exec.upc + 1);
+			exec.upc = dcd.addr;
+			set_in_call(1);
+			break;
+
+		case RETLW_OP:
+			if(get_in_call()){
+				exec.upc = get_call_pc();
+			}
+			set_in_call(0);
+			set_w_reg(dcd.bits);
+			break;
+
 	default:
 		break;
 	}
@@ -51,7 +65,7 @@ char* exec_info(int inst){
 			break;
 
 		case MONO_OPERAND:
-			if(dcd.opcode == MOVWF_OP || dcd.opcode == MOVLW_OP || dcd.opcode == CLRF_OP)
+			if(any_use_bit(dcd.opcode))
 				sprintf(info, "%s[FFFFFF]  [2979FF]%s [98C379]%s [ed400e]%s", bits_2sec, dtoh(inst, 3), dcd.info, dtoh(dcd.operand, 2));
 			else
 				sprintf(info, "%s[FFFFFF]  [2979FF]%s [98C379]%s [ed400e]%s", bits_2sec, dtoh(inst, 3), dcd.info, dtoh(dcd.operand, 3));
@@ -67,10 +81,21 @@ char* exec_info(int inst){
 }
 
 
+// put value into register 'W' if 'dcd.bits == 0' otherwise put if 'f' register
+void update_by_dist(REG *reg, RAM *ram, MEM_OUT mem, DECODE dcd){
+	if(dcd.bits == 1){
+		set_mem(reg, ram, mem, mem.value);
+	} else {
+		set_w_reg(mem.value);
+	}
+}
+
+
 /* Execute & Update Memory etc... */
 int execute(DECODE dcd, REG *reg, RAM *ram){
 	MEM_OUT m;
 	int bypass = 0;
+	int tmp = 0;
 
 	switch(dcd.opcode) {
 
@@ -199,6 +224,103 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 			if(edfb(m.value, dcd.bits + 1, dcd.bits + 1) == 0){
 				bypass = 1;
 			}
+			break;
+
+
+		// ADDWF
+		case ADDWF_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			m.value = m.value + get_w_reg();
+			if(m.value > 255){ m.value = 0; }
+			update_by_dist(reg, ram, m, dcd);
+			break;
+
+		// ANDWF
+		case ANDWF_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			m.value &= get_w_reg();
+			update_by_dist(reg, ram, m, dcd);
+			break;
+
+		// COMF
+		case COMF_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			m.value = ~m.value;
+			update_by_dist(reg, ram, m, dcd);
+			break;
+
+		// IORWF
+		case IORWF_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			m.value |= get_w_reg();
+			update_by_dist(reg, ram, m, dcd);
+			break;
+
+		// MOVF
+		case MOVF_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			update_by_dist(reg, ram, m, dcd);
+			break;
+
+		// RLF
+		case RLF_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			m.value = rotate_left_carry(m.value);
+			update_by_dist(reg, ram, m, dcd);
+			break;
+
+		// RRF
+		case RRF_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			m.value = rotate_right_carry(m.value);
+			update_by_dist(reg, ram, m, dcd);
+			break;
+
+		// SUBWF (W - f)
+		case SUBWF_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			m.value = get_w_reg() - m.value;
+			if(m.value < 0){ m.value = 0; }
+			update_by_dist(reg, ram, m, dcd);
+			break;
+
+		// SWAPF
+		case SWAPF_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			m.value = (m.value >> 4) | (m.value << 4);
+			update_by_dist(reg, ram, m, dcd);
+			break;
+
+		// XORWF
+		case XORWF_OP:
+			m = get_mem(reg, ram, dcd.addr);
+			m.value = m.value ^ get_w_reg();
+			update_by_dist(reg, ram, m, dcd);
+			break;
+
+		// XORWF
+		case ANDLW_OP:
+			set_w_reg(get_w_reg() & dcd.bits);
+			break;
+
+		// CLRWDT
+		case CLRWDT_OP:
+			// TODO: The CLRWDT instruction resets the WDT. It also resets the prescaler, if the prescaler is assigned to the WDT and not Timer0. Status bits TO and PD are set.
+			break;
+
+		// IORLW
+		case IORLW_OP:
+			set_w_reg(get_w_reg() | dcd.bits);
+			break;
+
+		// OPTION
+		case OPTION_OP:
+			set_option_reg(get_w_reg());
+			break;
+
+		// XORLW
+		case XORLW_OP:
+			set_w_reg(get_w_reg() ^ dcd.bits);
 			break;
 
 

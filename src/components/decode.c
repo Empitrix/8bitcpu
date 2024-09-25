@@ -257,7 +257,7 @@ DECODE decode_inst(int inst){
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = MONO_OPERAND;
 		dcd.info = "ANDLW";
-		dcd.addr = edfb(inst, 1, 8);
+		dcd.bits = edfb(inst, 1, 8);
 
 	// CALL
 	} else if(edfb(inst, 9, 12) == 0b1001){
@@ -280,7 +280,7 @@ DECODE decode_inst(int inst){
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = MONO_OPERAND;
 		dcd.info = "IORLW";
-		dcd.addr = edfb(inst, 1, 8);
+		dcd.bits = edfb(inst, 1, 8);
 
 	// OPTION
 	} else if(edfb(inst, 1, 12) == 0b000000000010){
@@ -295,7 +295,7 @@ DECODE decode_inst(int inst){
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = MONO_OPERAND;
 		dcd.info = "RETLW";
-		dcd.addr = edfb(inst, 1, 8);
+		dcd.bits = edfb(inst, 1, 8);
 
 	// XORLW
 	} else if(edfb(inst, 9, 12) == 0b1111){
@@ -303,7 +303,7 @@ DECODE decode_inst(int inst){
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = MONO_OPERAND;
 		dcd.info = "XORLW";
-		dcd.addr = edfb(inst, 1, 8);
+		dcd.bits = edfb(inst, 1, 8);
 
 	// TRIS (6)
 	} else if(edfb(inst, 1, 12) == 0b000000000110){
