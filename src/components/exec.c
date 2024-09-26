@@ -2,7 +2,6 @@
 #include "./decode.h"
 #include "./mem.h"
 #include "rom.h"
-#include <stdio.h>
 
 
 /* return EXEC that contains execute information for given instruction */
@@ -40,40 +39,51 @@ EXEC soft_execute(DECODE dcd){
 }
 
 
-/* Return execution information for the given instruction */
 char* exec_info(int inst){
-	char *info = malloc(MALL * sizeof(char));
+	char *info;
 
 	DECODE dcd = decode_inst(inst);
 
-	char *bits_1sec = dtob(inst, 12);
-	char *bits_2sec = dtob2sec(inst, "[62AEEF]", "[E5C07A]");
-	char *bits_3sec = dtob3sec(inst, "[62AEEF]", "[E5C07A]", "[C678DD]");
 
 	switch(dcd.type) {
-		case FULL_OPERAND:
-			sprintf(info, "[62AEEF]%s  [2979FF]%s [98C379]%s", bits_1sec, dtoh(inst, 3), dcd.info);
+		case FULL:
+			info = setstr("%s0b%012b  %s%s %s%s", KB_P1, inst, K_HEX, dtoh(inst, 3), K_INFO, dcd.info);
 			break;
 
-		case MULTI_OPERAND:
-			sprintf(info, "%s[FFFFFF]  [2979FF]%s [98C379]%s [ed400e]%s[FFFFFF], [E98C31]%s", bits_3sec, dtoh(inst, 3), dcd.info, dtoh(dcd.addr, 2), dtoh(dcd.bits, 2));
+		// KB_P1, edfb(inst, 7, 12), KB_P2, edfb(inst, 6, 6), KB_P3, edfb(inst, 1, 5),
+		case SIX_ONE_FIVE:
+			info = setstr("%s0b%06b%s%01b%s%05b  %s%s %s%s %s%s[FFFFFF], %s%s", KB_P1, edfb(inst, 7, 12), KB_P2, edfb(inst, 6, 6), KB_P3, edfb(inst, 1, 5), K_HEX, dtoh(inst, 3), K_INFO, dcd.info, K_OP1, dtoh(dcd.addr, 2), K_OP2, dtoh(dcd.bits, 2));
 			break;
 
-		case MONO_OPERAND:
-			if(any_use_bit(dcd.opcode))
-				sprintf(info, "%s[FFFFFF]  [2979FF]%s [98C379]%s [ed400e]%s", bits_2sec, dtoh(inst, 3), dcd.info, dtoh(dcd.operand, 2));
-			else
-				sprintf(info, "%s[FFFFFF]  [2979FF]%s [98C379]%s [ed400e]%s", bits_2sec, dtoh(inst, 3), dcd.info, dtoh(dcd.operand, 3));
+		// KB_P1, edfb(inst, 9, 12), KB_P2, edfb(inst, 6, 8), KB_P3, edfb(inst, 1, 5),
+		case FOUR_THREE_FIVE:
+			info = setstr("%s0b%04b%s%03b%s%05b  %s%s %s%s %s%s[FFFFFF], %s%s", KB_P1, edfb(inst, 9, 12), KB_P2, edfb(inst, 6, 8), KB_P3, edfb(inst, 1, 5), K_HEX, dtoh(inst, 3), K_INFO, dcd.info, K_OP1, dtoh(dcd.addr, 2), K_OP2, dtoh(dcd.bits, 2));
+			break;
+
+		// %s0b%04b%s%08b
+		case FOUR_EIGHT:
+			info = setstr("%s0b%04b%s%08b  %s%s %s%s %s%s", KB_P1, edfb(inst, 9, 12), KB_P2, edfb(inst, 1, 8), K_HEX, dtoh(inst, 3), K_INFO, dcd.info, K_OP1, dtoh(dcd.opcode == CALL_OP ? dcd.addr : dcd.bits, 2));
+			break;
+
+		case THREE_NINE:
+			info = setstr("%s0b%03b%s%09b  %s%s %s%s %s%s", KB_P1, edfb(inst, 10, 12), KB_P2, edfb(inst, 1, 9), K_HEX, dtoh(inst, 3), K_INFO, dcd.info, K_OP1, dtoh(dcd.addr, 2));
+			break;
+
+		case SEVEN_FIVE:
+			info = setstr("%s0b%07b%s%05b  %s%s %s%s %s%s", KB_P1, edfb(inst, 6, 12), KB_P2, edfb(inst, 1, 5), K_HEX, dtoh(inst, 3), K_INFO, dcd.info, K_OP1, dtoh(dcd.addr, 2));
 			break;
 
 		default:
-			sprintf(info, "[62AEEF]%s  [2979FF]%s [98C379]%s", bits_1sec, dtoh(inst, 3), "NOP");
+			// sprintf(info, "[62AEEF]%s  [2979FF]%s [98C379]%s", "--------------", dtoh(inst, 3), "NOP");
+			info = setstr("WOWO");
 			break;
 	}
 
 	strcpy(info, update_color(info, 1));
 	return info;
 }
+
+
 
 
 // put value into register 'W' if 'dcd.bits == 0' otherwise put if 'f' register

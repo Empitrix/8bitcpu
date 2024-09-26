@@ -1,7 +1,9 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdarg.h>
 #include <stdlib.h>
+#include "rules.h"
 
 /* str_insert: insert 'm' into 'src' that starts at given 'idx' */
 void str_insert(char *src, char *m, int idx) {
@@ -47,4 +49,16 @@ void str_lower(char *src){
 	for(i = 0; i < len; ++i){
 		src[i] = tolower(src[i]);
 	}
+}
+
+
+
+/* set string poitner */
+char *setstr(char *frmt, ...){
+	char *buffer = (char *)calloc(MALL, sizeof(char));
+	va_list args;
+	va_start(args, frmt);
+	vsprintf(buffer, frmt, args);
+	va_end(args);
+	return buffer;
 }

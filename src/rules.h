@@ -9,16 +9,19 @@
 
 #define MAX_STACK 2  // Max Stack (CALL & RETLW)
 
-/* Registers */
-// #define INDF_REGISTER      0
-// #define TMR0_REGISTER      1
-// #define PCL_REGISTER       2
-// #define STATUS_REGISTER    3
-// #define FSR_REGISTER       4
-// #define OSCCAL_REGISTER    5
-// #define GPIO_REGISTER      6
-// #define CMCON0_REGISTER    7
-// #define TRISGPIO_REGISTER  8
-// #define OPTION_REGISTER    9
+
+/* COLORS */
+#define KB_P1  "[62AEEF]"
+#define KB_P2  "[E5C07A]"
+#define KB_P3  "[C678DD]"
+
+#define K_HEX  "[2979FF]"
+#define K_INFO "[98C379]"
+
+#define K_OP1 "[ed400e]"
+#define K_OP2 "[E98C31]"
+
+
+
 
 #endif
