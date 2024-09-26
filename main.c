@@ -1,3 +1,4 @@
+#include "src/components/mem.h"
 #include "src/components/rom.h"
 #include "src/components/ram.h"
 #include "src/components/decode.h"
@@ -115,7 +116,10 @@ int main(int argc, char *argv[]){
 
 			if(INPUT_EN){
 				if((key_input = get_key()) >= 0){
-					set_sfr(&reg, GPIO_REGISTER, key_input);
+					// set_sfr(&reg, GPIO_REGISTER, ~(key_input | get_w_reg()));
+					set_sfr(&reg, GPIO_REGISTER, (key_input & ~get_w_reg()));
+					// (i & ~w)
+					// c = ~(a & b);
 				}
 			}
 
