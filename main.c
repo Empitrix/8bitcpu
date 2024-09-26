@@ -22,6 +22,8 @@ int main(int argc, char *argv[]){
 	int ppc;
 	int bypass = 0;
 
+	int key_input = 0;
+
 	GFLAGS gflags;
 	FETCH fetch;
 	DECODE dcd;
@@ -97,7 +99,7 @@ int main(int argc, char *argv[]){
 		exec = soft_execute(dcd);
 
 		// Display CPU
-		emulate_cpu(rom, dcd, reg, ram, gflags);
+		emulate_cpu(rom, dcd, reg, ram, gflags, key_input);
 
 		if((gflags.is_sleep = exec.sleep) == 0){
 			ppc = get_pc();
@@ -110,6 +112,12 @@ int main(int argc, char *argv[]){
 			}
 
 			bypass = execute(dcd, &reg, &ram); // Update Reg & Ram
+
+			if(INPUT_EN){
+				if((key_input = get_key()) >= 0){
+					set_sfr(&reg, GPIO_REGISTER, key_input);
+				}
+			}
 
 			// Update Register
 			clear_sfr_bit(&reg, STATUS_REGISTER, 4);

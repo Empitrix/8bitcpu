@@ -57,7 +57,7 @@ void update_console(int x, int y, int inst, int max){
 
 
 /* emulate_cpu: display CPU's data as a TUI */
-void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags){
+void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags, int ukey){
 	if(flags.is_sleep == 1){
 		return;
 	}
@@ -84,13 +84,14 @@ void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags){
 
 	// Status Line
 	dprt(2, 2,
-		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2]W-Reg[]:[ed400e]%s  [55B6C2]S-1[]:[ed400e]%s  [55B6C2]S-2[]:[ed400e]%s",
+		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2]W-Reg[]:[ed400e]%s  [55B6C2]S-1[]:[ed400e]%s  [55B6C2]S-2[]:[ed400e]%s  [55B6C2]UKey[]: [ed400e]%c",
 		get_pc(),
 		dtoh(reg.registers[6], 2),
 		dtob_led(reg.registers[6], 8),
 		dtoh(get_w_reg(), 2),
 		dtoh(get_stack_pos(0), 2),
-		dtoh(get_stack_pos(1), 2)
+		dtoh(get_stack_pos(1), 2),
+		ukey != -1 ? ukey : 0 
 	);
 
 

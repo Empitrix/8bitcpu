@@ -332,3 +332,27 @@ int any_use_bit(OPCODES op){
 	}
 	return 0;
 }
+
+
+
+int get_key(void){
+	fd_set readfds;
+	struct timeval tv;
+	char ch;
+
+	// Set stdin to non-blocking mode
+	int flags = fcntl(STDIN_FILENO, F_GETFL);
+	fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
+
+	FD_ZERO(&readfds);
+	FD_SET(STDIN_FILENO, &readfds);
+	tv.tv_sec = 0;
+	tv.tv_usec = 0; // Check immediately
+
+	int ready = select(STDIN_FILENO + 1, &readfds, NULL, NULL, &tv);
+	if (ready == 1) {
+		read(STDIN_FILENO, &ch, 1);
+		return ch;
+	}
+	return -1;
+}
