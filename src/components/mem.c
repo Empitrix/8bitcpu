@@ -1,10 +1,18 @@
-#include "../structs.h"
+#include "../types.h"
+#include <stdint.h>
 
 static int WReg = 0;
-static int OPTION_REG = 0;
-static int CALL_PC = 0;
-static int IN_CALL = 0;
 static int CARRY_VAL = 0;
+static int gpio_temp = 0;
+
+
+static uint8_t _stack[MAX_STACK];
+static int INPUT_EN = 0;
+
+
+static int CPU_COUNTER = 0;
+int get_cpu_coutner(){ return CPU_COUNTER; }
+void increase_cc(void){ CPU_COUNTER++; }
 
 
 // MEM_OUT get_mem(REG *reg, RAM *ram, int addr){
@@ -54,18 +62,6 @@ int get_w_reg(){
 
 
 
-void set_in_call(int ord){ IN_CALL = ord; }
-int get_in_call(void){ return IN_CALL; }
-
-void save_call_pc(int val){ CALL_PC = val; }
-int get_call_pc(){ return CALL_PC; }
-
-
-
-void set_option_reg(int val){ OPTION_REG = val; }
-// int get_option_reg(){ return OPTION_REG; }
-
-
 
 /* Rotate And Carry */
 
@@ -84,4 +80,58 @@ int rotate_right_carry(uint8_t value) {
 	return (value >> 1) | (get_carry() << 7);
 }
 
+
+
+/* STACK */
+
+void push_stack(uint8_t value){
+	for(int i = MAX_STACK - 1; i > 0; --i){
+		_stack[i] = _stack[i - 1];
+	}
+	_stack[0] = value;
+}
+
+
+uint8_t pop_stack(void){
+	uint8_t popped = _stack[MAX_STACK - 1];
+	for(int i = MAX_STACK - 1; i > 0; --i){
+		_stack[i] = _stack[i - 1];
+	}
+	return popped;
+}
+
+
+int get_stack_pos(int idx){
+	return _stack[idx];
+}
+
+
+/* SFR (SPECIAL FUNCTION REGISTERS) */
+
+/* Set given bit of SRF to 1 */
+void set_sfr_bit(REG *reg, SFR sfr, int bitnum){
+	int regv = reg->registers[sfr];
+	bitnum %= 8;
+	regv |= (1 << bitnum);
+	reg->registers[sfr] = regv;
+}
+
+/* Set given bit of SRF to 0 */
+void clear_sfr_bit(REG *reg, SFR sfr, int bitnum){
+	int regv = reg->registers[sfr];
+	bitnum %= 8;
+	regv &= ~(1 << bitnum);
+	reg->registers[sfr] = regv;
+}
+
+/* set srf value */
+void set_sfr(REG *reg, SFR sfr, int literal){
+	if(literal > 255){ literal = 0; }
+	reg->registers[sfr] = literal;
+}
+
+/* get srf value */
+int get_sfr(REG *reg, SFR sfr){
+	return reg->registers[sfr];
+}
 

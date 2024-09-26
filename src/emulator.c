@@ -2,7 +2,7 @@
 #include "components/exec.h"
 #include "components/reg.h"
 #include "rules.h"
-#include "structs.h"
+#include "types.h"
 #include "utils.h"
 #include "display.h"
 #include <stdio.h>
@@ -84,11 +84,13 @@ void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags){
 
 	// Status Line
 	dprt(2, 2,
-		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2]W-Reg[]:[] [ed400e]%s",
+		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2]W-Reg[]:[ed400e]%s  [55B6C2]S-1[]:[ed400e]%s  [55B6C2]S-2[]:[ed400e]%s",
 		get_pc(),
 		dtoh(reg.registers[6], 2),
 		dtob_led(reg.registers[6], 8),
-		dtoh(get_w_reg(), 2)
+		dtoh(get_w_reg(), 2),
+		dtoh(get_stack_pos(0), 2),
+		dtoh(get_stack_pos(1), 2)
 	);
 
 

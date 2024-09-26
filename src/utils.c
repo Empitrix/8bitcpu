@@ -9,7 +9,7 @@
 #include <unistd.h>
 #include <wchar.h>
 #include "rules.h"
-#include "structs.h"
+#include "types.h"
 #include "strfy.h"
 #include "term.h"
 #include "display.h"

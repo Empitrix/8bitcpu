@@ -1,4 +1,4 @@
-#include "../structs.h"
+#include "../types.h"
 
 
 REG reg_init(){
@@ -13,14 +13,29 @@ REG reg_init(){
 
 
 char *get_reg_name(int reg_addr){
-	char *name = "";
 	switch (reg_addr) {
+		case 0:
+			return "[FFFFFF]INDF";
+		case 1:
+			return "[FFFFFF]TMR0";
+		case 2:
+			return "[FFFFFF]PCL";
+		case 3:
+			return "[FFFFFF]STATUS";
+		case 4:
+			return "[FFFFFF]FSR";
+		case 5:
+			return "[FFFFFF]OSCCAL";
 		case 6:
-			name = "[FFFFFF]GPIO";
-			break;
+			return "[FFFFFF]GPIO";
+		case 7:
+			return "[FFFFFF]CMCON0";
+		case 8:
+			return "[FFFFFF]TRISGPIO";
+		case 9:
+			return "[FFFFFF]OPTION";
 		default:
-			name = "[ABB2BF]RESEVERD";
+			return "[ABB2BF]N/A";
 			break;
 	}
-	return name;
 }

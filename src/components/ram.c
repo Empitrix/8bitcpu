@@ -1,4 +1,4 @@
-#include "../structs.h"
+#include "../types.h"
 
 
 RAM ram_init(void){

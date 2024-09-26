@@ -1,4 +1,4 @@
-#include "../structs.h"
+#include "../types.h"
 #include "./decode.h"
 #include "./mem.h"
 #include "rom.h"
@@ -11,8 +11,7 @@ EXEC soft_execute(DECODE dcd){
 	EXEC exec;
 
 	exec.sleep = 0;
-	// Default PC
-	exec.upc = get_pc();
+	exec.upc = get_pc();  // Default PC
 
 	switch(dcd.opcode) {
 		case GOTO_OP:
@@ -24,17 +23,13 @@ EXEC soft_execute(DECODE dcd){
 			break;
 
 		case CALL_OP:
-			save_call_pc(exec.upc + 1);
+			push_stack(get_pc() + 1);   // (PC + 1) to Stack-1
 			exec.upc = dcd.addr;
-			set_in_call(1);
 			break;
 
 		case RETLW_OP:
-			if(get_in_call()){
-				exec.upc = get_call_pc();
-			}
-			set_in_call(0);
-			set_w_reg(dcd.bits);
+			exec.upc = pop_stack();     // Stack-1 to PC
+			set_w_reg(dcd.bits);        // Load Register W
 			break;
 
 	default:
@@ -97,117 +92,111 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 	int bypass = 0;
 	int tmp = 0;
 
-	switch(dcd.opcode) {
+	set_sfr(reg, PCL_REGISTER, get_pc());
 
-		// Set selected bit from the register to 1
+	// FSR, INDF (set INDF by content of FSR)
+	int fsr = get_sfr(reg, FSR_REGISTER);
+	set_sfr(reg, INDF_REGISTER, fsr);
+
+	set_sfr(reg, TMR0_REGISTER, get_cpu_coutner());
+	
+
+
+	// Update Carry bit in STATUS
+	if(get_carry()){
+		set_sfr_bit(reg, STATUS_REGISTER, 0);
+	} else {
+		clear_sfr_bit(reg, STATUS_REGISTER, 0);
+	}
+
+
+
+	switch(dcd.opcode) {
+		// BSF
 		case BSF_OP:
 			m = get_mem(reg, ram, dcd.addr);
 			set_mem(reg, ram, m, m.value | (1 << dcd.bits));
-			// reg->registers[dcd.addr] |= 1 << dcd.bits;
 			break;
 
-		// Set selected bit from the register to 0
+		// BCF
 		case BCF_OP:
 			m = get_mem(reg, ram, dcd.addr);
 			set_mem(reg, ram, m, m.value & ~(1 << dcd.bits));
-			// reg->registers[dcd.addr] &= ~(1 << dcd.bits);
 			break;
 
+		// MOVLW
 		case MOVLW_OP:
 			set_w_reg(dcd.bits);
 			break;
 
+		// MOVWF
 		case MOVWF_OP:
 			m = get_mem(reg, ram, dcd.addr);
 			set_mem(reg, ram, m, get_w_reg());
-			// reg->registers[dcd.addr] = get_w_reg();
 			break;
 
+		// CLRF
 		case CLRF_OP:
 			m = get_mem(reg, ram, dcd.addr);
 			set_mem(reg, ram, m, 0);
-			// reg->registers[dcd.addr] = 0;
 			break;
 		
+		// CLRW
 		case CLRW_OP:
 			set_w_reg(0);
 			break;
-
 
 		// DECF
 		case DECF_OP:
 			m = get_mem(reg, ram, dcd.addr);
 			if(m.value != 0){
 				m.value--;
-			}
-
-			if(dcd.bits == 1){
-				set_mem(reg, ram, m, m.value);
+				clear_sfr_bit(reg, STATUS_REGISTER, 2);
 			} else {
-				set_w_reg(m.value);
+				set_sfr_bit(reg, STATUS_REGISTER, 2);
 			}
+			update_by_dist(reg, ram, m, dcd);
 			break;
-
 
 		// DECFSZ
 		case DECFSZ_OP:
 			m = get_mem(reg, ram, dcd.addr);
 			if(m.value != 0){
 				m.value--;
-			}
-
-			if(dcd.bits == 1){
-				set_mem(reg, ram, m, m.value);
+				clear_sfr_bit(reg, STATUS_REGISTER, 2);
 			} else {
-				set_w_reg(m.value);
+				set_sfr_bit(reg, STATUS_REGISTER, 2);
 			}
-
-			if(m.value == 0){
-				bypass = 1;
-			}
-
+			update_by_dist(reg, ram, m, dcd);
+			if(m.value == 0){ bypass = 1; }
 			break;
-
-
 
 		// INCF
 		case INCF_OP:
 			m = get_mem(reg, ram, dcd.addr);
 			if(m.value != 255){
 				m.value++;
+				clear_sfr_bit(reg, STATUS_REGISTER, 2);
 			} else {
 				m.value = 0;
+				set_sfr_bit(reg, STATUS_REGISTER, 2);
 			}
-
-			if(dcd.bits == 1){
-				set_mem(reg, ram, m, m.value);
-			} else {
-				set_w_reg(m.value);
-			}
+			update_by_dist(reg, ram, m, dcd);
 			break;
-
-
 
 		// INCFSZ
 		case INCFSZ_OP:
 			m = get_mem(reg, ram, dcd.addr);
 			if(m.value != 255){
 				m.value++;
+				clear_sfr_bit(reg, STATUS_REGISTER, 2);
 			} else {
 				m.value = 0;
+				set_sfr_bit(reg, STATUS_REGISTER, 2);
 			}
-
-			if(dcd.bits == 1){
-				set_mem(reg, ram, m, m.value);
-			} else {
-				set_w_reg(m.value);
-			}
-
-			if(m.value == 0){
-				bypass = 1;
-			}
+			update_by_dist(reg, ram, m, dcd);
+			if(m.value == 0){ bypass = 1; }
 			break;
-
 
 		// BTFSS
 		case BTFSS_OP:
@@ -226,12 +215,18 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 			}
 			break;
 
-
 		// ADDWF
 		case ADDWF_OP:
 			m = get_mem(reg, ram, dcd.addr);
 			m.value = m.value + get_w_reg();
-			if(m.value > 255){ m.value = 0; }
+			if(m.value > 255){
+				m.value = 0;
+				clear_sfr_bit(reg, STATUS_REGISTER, 1);
+				set_sfr_bit(reg, STATUS_REGISTER, 2);
+			} else {
+				set_sfr_bit(reg, STATUS_REGISTER, 1);
+				clear_sfr_bit(reg, STATUS_REGISTER, 2);
+			}
 			update_by_dist(reg, ram, m, dcd);
 			break;
 
@@ -280,7 +275,15 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 		case SUBWF_OP:
 			m = get_mem(reg, ram, dcd.addr);
 			m.value = get_w_reg() - m.value;
-			if(m.value < 0){ m.value = 0; }
+			if(m.value < 0){
+				m.value = 0;
+				clear_sfr_bit(reg, STATUS_REGISTER, 1);
+				set_sfr_bit(reg, STATUS_REGISTER, 2);
+			} else {
+				set_sfr_bit(reg, STATUS_REGISTER, 1);
+				clear_sfr_bit(reg, STATUS_REGISTER, 2);
+			}
+
 			update_by_dist(reg, ram, m, dcd);
 			break;
 
@@ -305,7 +308,8 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 
 		// CLRWDT
 		case CLRWDT_OP:
-			// TODO: The CLRWDT instruction resets the WDT. It also resets the prescaler, if the prescaler is assigned to the WDT and not Timer0. Status bits TO and PD are set.
+			set_sfr_bit(reg, STATUS_REGISTER, 3);
+			set_sfr_bit(reg, STATUS_REGISTER, 4);
 			break;
 
 		// IORLW
@@ -315,7 +319,18 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 
 		// OPTION
 		case OPTION_OP:
-			set_option_reg(get_w_reg());
+			set_sfr(reg, OPTION_REGISTER, get_w_reg());
+			break;
+
+
+		// CLRWDT
+		case TRIS_OP:
+			set_sfr(reg, TRISGPIO_REGISTER, dcd.addr);
+			if(dcd.addr == 6){
+				INPUT_EN = 1;
+			} else {
+				INPUT_EN = 0;
+			}
 			break;
 
 		// XORLW
@@ -328,6 +343,7 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 			break;
 	}
 
+	increase_cc();  // increase cpu timer (counter)
 	return bypass;
 }
 

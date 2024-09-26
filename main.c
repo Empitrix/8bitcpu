@@ -4,7 +4,7 @@
 #include "src/components/reg.h"
 #include "src/components/exec.h"
 #include "src/display.h"
-#include "src/structs.h"
+#include "src/types.h"
 #include "src/emulator.h"
 #include "src/term.h"
 #include "src/utils.h"
@@ -29,6 +29,9 @@ int main(int argc, char *argv[]){
 	ROM rom;
 	REG reg;
 	RAM ram;
+
+	// OSCCAL;
+	
 
 	// Update flags
 	update_gflags(&gflags, argc, argv);
@@ -108,8 +111,17 @@ int main(int argc, char *argv[]){
 
 			bypass = execute(dcd, &reg, &ram); // Update Reg & Ram
 
+			// Update Register
+			clear_sfr_bit(&reg, STATUS_REGISTER, 4);
+			set_sfr_bit(&reg, STATUS_REGISTER, 6);
+			if(gpio_temp != get_sfr(&reg, GPIO_REGISTER)){
+				gpio_temp = get_sfr(&reg, GPIO_REGISTER);
+				set_sfr_bit(&reg, STATUS_REGISTER, 7);
+			}
+
 		} else {
 			dprt(term_size().x - 6, 2, "[26aF9a][bl]Sleep");
+			set_sfr_bit(&reg, STATUS_REGISTER, 4);
 		}
 
 		// Interruption

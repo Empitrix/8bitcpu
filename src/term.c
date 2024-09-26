@@ -1,4 +1,4 @@
-#include "structs.h"
+#include "types.h"
 #include <sys/ioctl.h>
 #include <termios.h>
 #include <stdio.h>

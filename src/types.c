@@ -128,3 +128,18 @@ typedef struct DECODE {
 	exec_t type;     // Instruction type (multi operand or mono)
 } DECODE;
 
+
+
+typedef enum SFR {
+	INDF_REGISTER,
+	TMR0_REGISTER,
+	PCL_REGISTER,
+	STATUS_REGISTER,
+	FSR_REGISTER,
+	OSCCAL_REGISTER,
+	GPIO_REGISTER,
+	CMCON0_REGISTER,
+	TRISGPIO_REGISTER,
+	OPTION_REGISTER
+} SFR;
+

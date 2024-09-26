@@ -1,6 +1,7 @@
 #include <stdio.h>
-#include "../structs.h"
+#include "../types.h"
 #include "../utils.h"
+#include "mem.h"
 #include "../display.h"
 
 static int PC = 0;  // Main PC: Program Counter
@@ -68,9 +69,12 @@ void dump_rom(ROM rom){
 void reset_cpu(REG *reg, RAM *ram){
 	set_pc(0);
 	int i;
-	for(i = 0; i < REGSIZ; ++i)
+	for(i = 0; i < REGSIZ; ++i){
 		reg->registers[i] = 0;
+	}
 
-	for(i = 0; i < RAMSIZ; ++i)
+	for(i = 0; i < RAMSIZ; ++i){
 		ram->ram[i] = 0;
+	}
+	clear_sfr_bit(reg, STATUS_REGISTER, 7);
 }
