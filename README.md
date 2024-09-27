@@ -340,6 +340,355 @@ And to see how console works use `-c` flag and `hello.bin` program in `examples/
 </details>
 
 
+<!-- ADDWF -->
+<details>
+  <summary>ADDWF f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Add the value in <code>W</code> register to the specified file register. If <code>d</code> is <code>0</code>, place the result in the <code>W</code> register. If <code>d</code> is <code>1</code>, place the result back in register <code>f</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0001 11df ffff</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>ADDWF 0x06, 1</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- ANDWF -->
+<details>
+  <summary>ANDWF f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>AND the value in <code>W</code> register with the specified file register. If <code>d</code> is <code>0</code>, place the result in the <code>W</code> register. If <code>d</code> is <code>1</code>, place the result back in register <code>f</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0001 01df ffff</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>ANDWF 0x06, 1</code></td>
+    </tr>
+  </table>
+</details>
+
+
+<!-- COMF -->
+<details>
+  <summary>COMF f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Complement the specified file register. If <code>d</code> is <code>0</code>, place the result in the <code>W</code> register. If <code>d</code> is <code>1</code>, place the result back in register <code>f</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0010 01df ffff</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>COMF 0x06, 1</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- IORWF -->
+<details>
+  <summary>IORWF f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Inclusive OR the value in <cod>W</cod> register with the specified file register. If <code>d</code> is <code>0</code>, place the result in the <code>W</code> register. If <code>d</code> is <code>1</code>, place the result back in register <code>f</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0001 00df ffff</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>IORWF 0x06, 1</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- MOVF -->
+<details>
+  <summary>MOVF f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Move content of the specified register. If <code>d</code> is <code>0</code>, place the result in the <code>W</code> register. If <code>d</code> is <code>1</code>, place the result back in register <code>f</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0010 00df ffff</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>MOVF 0x06, 0</code></td>
+    </tr>
+  </table>
+</details>
+
+
+<!-- RLF -->
+<details>
+  <summary>RLF f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Rotate the specified file register left through the Carry flag. If <code>d</code> is <code>0</code>, place the result in the <code>W</code> register. If <code>d</code> is <code>1</code>, place the result back in register <code>f</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0011 01df ffff</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>RLF 0x06, 0</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- RRF -->
+<details>
+  <summary>RRF f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Rotate the specified file register right through the Carry flag. If <code>d</code> is <code>0</code>, place the result in the <code>W</code> register. If <code>d</code> is <code>1</code>, place the result back in register <code>f</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0011 00df ffff</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>RRF 0x06, 0</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- SUBWF -->
+<details>
+  <summary>SUBWF f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Subtract the value in <code>W</code> register from the specified file register. If <code>d</code> is <code>0</code>, place the result in the <code>W</code> register. If <code>d</code> is <code>1</code>, place the result back in register <code>f</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0000 10df ffff</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>SUBWF 0x06, 0</code></td>
+    </tr>
+  </table>
+</details>
+
+
+<!-- SWAPF -->
+<details>
+  <summary>SWAPF f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Swap the upper and lower nibbles of the specified file register. If <code>d</code> is <code>0</code>, place the result in the <code>W</code> register. If <code>d</code> is <code>1</code>, place the result back in register <code>f</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0011 10df ffff</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>SWAPF 0x06, 0</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- XORWF -->
+<details>
+  <summary>XORWF f, d</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Exclusive OR the value in <code>W</code> register with the specified file register. If <code>d</code> is <code>0</code>, place the result in the <code>W</code> register. If <code>d</code> is <code>1</code>, place the result back in register <code>f</code>.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0001 10df ffff</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>XORWF 0x06, 0</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- ANDLW -->
+<details>
+  <summary>ANDLW k</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>AND a literal value with the <code>W</code> register</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>1110 kkkk kkkk</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>ANDLW 0b00000110</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- ANDLW -->
+<details>
+  <summary>ANDLW k</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Call a subroutine.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>1001 kkkk kkkk</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>CALL start</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- CLRWDT -->
+<details>
+  <summary>CLRWDT</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Clear the Watchdog Timer.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0000 0000 0100</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>CLRWDT</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- IORLW -->
+<details>
+  <summary>IORLW k</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Inclusive OR a literal value with the <code>W</code> register.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>1101 kkkk kkkk</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>IORLW 05H</code></td>
+    </tr>
+  </table>
+</details>
+
+
+<!-- OPTION -->
+<details>
+  <summary>OPTION</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Load the OPTION register.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0000 0000 0010</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>OPTION</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- RETLW -->
+<details>
+  <summary>RETLW k</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Return from a subroutine and place a literal value in the W register.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>1000 kkkk kkkk</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>RETLW 07H</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- TRIS -->
+<details>
+  <summary>TRIS f</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Load the TRIS register.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>0000 0000 0fff</code> (<code>0000 0000 0110</code> or <code>0000 0000 0111</code>)</td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>TRIS 07H</code> or <code>TRIS 06H</code></td>
+    </tr>
+  </table>
+</details>
+
+<!-- XORLW -->
+<details>
+  <summary>XORLW k</summary>
+  <table>
+    <tr>
+      <td><strong>Description</strong></td>
+      <td>Exclusive OR a literal value with the <code>W</code> register.</td>
+    </tr>
+    <tr>
+      <td><strong>Encoding</strong></td>
+      <td><code>1111 kkkk kkkk</code></td>
+    </tr>
+    <tr>
+      <td><strong>Example</strong></td>
+      <td><code>XORLW 12H</code></td>
+    </tr>
+  </table>
+</details>
+
+
+
+
 ## Flags
 | Flag        | Name           | Description                                                                   |
 |-------------|----------------|-------------------------------------------------------------------------------|

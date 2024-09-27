@@ -320,6 +320,7 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 		case CLRWDT_OP:
 			set_sfr_bit(reg, STATUS_REGISTER, 3);
 			set_sfr_bit(reg, STATUS_REGISTER, 4);
+			set_sfr(reg, TMR0_REGISTER, 0);   // clear TIMER
 			break;
 
 		// IORLW
