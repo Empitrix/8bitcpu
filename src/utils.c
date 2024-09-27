@@ -8,6 +8,7 @@
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <wchar.h>
+#include "components/mem.h"
 #include "rules.h"
 #include "types.h"
 #include "strfy.h"
@@ -44,40 +45,13 @@ char *dtob(int decimal_num, int len) {
 /* Return Binary LED bar */
 char *dtob_led(int num, int len) {
 	// char *buff = malloc(len * sizeof(char));
-	char *buff = malloc(50 * sizeof(char));
+	char *buff = (char *)calloc(50, sizeof(char));
 	buff = dtob(num, len);
 	sprintf(buff, "%s", str_slice(buff, 2, len + 2));
 	str_replace(buff, "0", "[909090]❚");
 	str_replace(buff, "1", "[00FF00]❚");
 	return buff;
 }
-
-
-/* (Decimal TO Binary) convert decimal to 12 letter binary with colors */
-char *dtob3sec(int decimal, char *a, char *b, char *c){
-	int len = 12;
-	char *buff = malloc(MALL * sizeof(char));
-	char *out = malloc(MALL * sizeof(char));
-	strcpy(buff, dtob(decimal, len));
-	sprintf(out, "%s%s",		update_color(a, 0), str_slice(buff, 0, 6));
-	sprintf(out, "%s%s%s", out, update_color(b, 0), str_slice(buff, 6, 9));
-	sprintf(out, "%s%s%s", out, update_color(c, 0), str_slice(buff, 9, 14));
-	return out;
-}
-
-
-/* decimal to binary for 2 section */
-char *dtob2sec(int decimal, char *a, char *b){
-	int len = 12;
-	char *buff = malloc(MALL * sizeof(char));
-	char *out = malloc(MALL * sizeof(char));
-	strcpy(buff, dtob(decimal, len));
-	sprintf(out, "%s%s",        update_color(a, 0), str_slice(buff, 0, 5));
-	sprintf(out, "%s%s%s", out, update_color(b, 0), str_slice(buff, 5, 14));
-	return out;
-}
-
-
 
 /* dtoh: (Decimal TO Hex) converts given decimal into hex string with size of 'siz' */
 char *dtoh(int decimal, int size) {
@@ -352,7 +326,82 @@ int get_key(void){
 	int ready = select(STDIN_FILENO + 1, &readfds, NULL, NULL, &tv);
 	if (ready == 1) {
 		read(STDIN_FILENO, &ch, 1);
-		return ch;
+		// return ch;  // if you want to return char
+
+		ch = ch - '1';
+		if(ch >= 0 && ch <= 7){
+			return 0b00000000 | 1 << (ch);
+		} else {
+			return -1;
+		}
 	}
 	return -1;
 }
+
+
+
+
+// char *binary_led(int num, int keynum) {
+// 	char *binary = (char *)calloc(100, sizeof(char));
+// 	int idx = 7;
+// 	while (idx >= 0) {
+// 		if(edfb(keynum, idx + 1, idx + 1) == 1){
+// 			strcat(binary, "[FF0000]❚");
+// 		} else {
+// 			if((num & 1) == 1){
+// 				strcat(binary, "[00FF00]❚");
+// 			} else {
+// 				strcat(binary, "[909090]❚");
+// 			}
+// 		}
+// 		num >>= 1;
+// 		idx--;
+// 	}
+// 	return binary;
+// }
+
+int is_input_on(REG *reg, int inpt, int idx){
+	idx = idx % 8;
+	int binary = (inpt & ~get_w_reg());
+	return edfb(binary, idx + 1, idx + 1) == 1;
+}
+
+
+int is_bit_input(int idx){
+	idx = idx % 8;
+	return edfb(get_w_reg(), idx + 1, idx + 1) == 0;
+}
+
+
+char *binary_led(REG *reg, int num, uint8_t keynum) {
+	char *binary = (char *)calloc(100, sizeof(char));
+	int idx = 0;
+
+	for (int i = 7; i >= 0; i--) {
+		if(INPUT_EN && is_bit_input(i)){
+			if(is_input_on(reg, keynum, i)){
+				strcat(binary, "[FF0000]❚");
+			} else {
+				strcat(binary, "[909090]❚");
+			}
+		} else {
+			if (num & (1 << i)) {
+				strcat(binary, "[00FF00]❚");
+			} else {
+				strcat(binary, "[909090]❚");
+			}
+		}
+
+		/*
+		if(edfb(keynum, idx + 1, idx + 1) == 1){
+			strcat(binary, "[FF0000]❚");
+		} else if(edfb(~keynum, idx + 1, idx + 1) == 1) {
+			strcat(binary, "[00FF00]❚");
+		} else {
+			strcat(binary, "[909090]❚");
+		}
+		*/
+	}
+	return binary;
+}
+

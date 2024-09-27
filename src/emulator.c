@@ -1,3 +1,4 @@
+#include "components/mem.h"
 #include "components/rom.h"
 #include "components/exec.h"
 #include "components/reg.h"
@@ -84,14 +85,16 @@ void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags, int ukey){
 
 	// Status Line
 	dprt(2, 2,
-		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2]W-Reg[]:[ed400e]%s  [55B6C2]S-1[]:[ed400e]%s  [55B6C2]S-2[]:[ed400e]%s  [55B6C2]UKey[]: [ed400e]%c",
+		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2]W-Reg[]: [ed400e]0b%08b  [55B6C2]S-1[]: [ed400e]%s  [55B6C2]S-2[]: [ed400e]%s  [55B6C2]Carry[]: %s",
 		get_pc(),
 		dtoh(reg.registers[6], 2),
-		dtob_led(reg.registers[6], 8),
-		dtoh(get_w_reg(), 2),
+		// dtob_led(reg.registers[6], 8),
+		binary_led(&reg, reg.registers[6], ukey),
+		// dtoh(get_w_reg(), 2),
+		get_w_reg(),
 		dtoh(get_stack_pos(0), 2),
 		dtoh(get_stack_pos(1), 2),
-		ukey != -1 ? ukey : 0 
+		get_carry() ? "[00FF00]⬤" : "[909090]⬤"
 	);
 
 

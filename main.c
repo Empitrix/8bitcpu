@@ -24,6 +24,7 @@ int main(int argc, char *argv[]){
 	int bypass = 0;
 
 	int key_input = 0;
+	int input_value = 0;
 
 	GFLAGS gflags;
 	FETCH fetch;
@@ -100,7 +101,7 @@ int main(int argc, char *argv[]){
 		exec = soft_execute(dcd);
 
 		// Display CPU
-		emulate_cpu(rom, dcd, reg, ram, gflags, key_input);
+		emulate_cpu(rom, dcd, reg, ram, gflags, input_value);
 
 		if((gflags.is_sleep = exec.sleep) == 0){
 			ppc = get_pc();
@@ -118,6 +119,7 @@ int main(int argc, char *argv[]){
 				if((key_input = get_key()) >= 0){
 					// set_sfr(&reg, GPIO_REGISTER, ~(key_input | get_w_reg()));
 					set_sfr(&reg, GPIO_REGISTER, (key_input & ~get_w_reg()));
+					input_value = (key_input & ~get_w_reg());
 					// (i & ~w)
 					// c = ~(a & b);
 				}
