@@ -3,11 +3,13 @@
 #include "components/exec.h"
 #include "components/reg.h"
 #include "rules.h"
+#include "term.h"
 #include "types.h"
 #include "utils.h"
 #include "display.h"
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 
 
@@ -29,10 +31,10 @@ void make_size(int l_len){
 }
 
 
-void update_console(int x, int y, int inst, int max){
+void update_console(int x, int y, int max){
 
-	int flush = edfb(inst, 8, 8);
-	int cval = edfb(inst, 1, 7);
+	int flush = edfb(REGISTERS[6], 8, 8);
+	int cval = edfb(REGISTERS[6], 1, 7);
 
 	if(flush && cflush == 0){
 		if(cval == '\n'){
@@ -43,7 +45,9 @@ void update_console(int x, int y, int inst, int max){
 				ch = max - 1;
 			}
 		} else{
-			cbuff[ch][cw++] = cval;
+			if(cval != '\0'){
+				cbuff[ch][cw++] = cval;
+			}
 		}
 		cflush = 1;
 	} else {
@@ -58,8 +62,8 @@ void update_console(int x, int y, int inst, int max){
 
 
 /* emulate_cpu: display CPU's data as a TUI */
-void emulate_cpu(DECODE dcd, GFLAGS flags, int ukey){
-	if(flags.is_sleep == 1){
+void emulate_cpu(DECODE *dcd, GFLAGS *flags, int ukey){
+	if(flags->is_sleep == 1){
 		return;
 	}
 	TERSIZ ts = term_size(); ts.y += 1;
@@ -141,20 +145,20 @@ void emulate_cpu(DECODE dcd, GFLAGS flags, int ukey){
 
 
 	// Info
-	dprt(hx + 33, 4, "[2196F3]Mode[FFFFFF]: [8bc34a]%s", flags.stepping ? "Stepping" : "Auto");
-	if(flags.stepping){
+	dprt(hx + 33, 4, "[2196F3]Mode[FFFFFF]: [8bc34a]%s", flags->stepping ? "Stepping" : "Auto");
+	if(flags->stepping){
 		dprt(hx + 33, 5, "[2196F3]Frequency[FFFFFF]: [FFDFAF]Keyboard Key");
 	} else {
-		dprt(hx + 33, 5, "[2196F3]Frequency[FFFFFF]: [FFDFAF]%d", 1000000 / flags.frequency);
+		dprt(hx + 33, 5, "[2196F3]Frequency[FFFFFF]: [FFDFAF]%d", 1000000 / flags->frequency);
 	}
 
 	dprt(hx + 33, 7, "[2196F3]Program[FFFFFF]:");
-	dprt(hx + 33, 8, "[98C379]\"%s\"", flags.program);
+	dprt(hx + 33, 8, "[98C379]\"%s\"", flags->program);
 
 
 	// Update console (from register 6)
-	if(flags.console_en){
-		update_console(hx + 29, 16, REGISTERS[6], ts.y - 18);
+	if(flags->console_en){
+		update_console(hx + 29, 16, ts.y - 18);
 	} else {
 		dprt(hx + 29, 16, "[B0B0B0]Use [D84315]'-c'[B0B0B0] to enable console");
 	}

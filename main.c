@@ -98,7 +98,7 @@ int main(int argc, char *argv[]){
 		exec = soft_execute(dcd);
 
 		// Display CPU
-		emulate_cpu(dcd, gflags, input_value);
+		emulate_cpu(&dcd, &gflags, input_value);
 
 		if((gflags.is_sleep = exec.sleep) == 0){
 			ppc = get_pc();
