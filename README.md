@@ -716,10 +716,10 @@ BSF GPIO, 7   ; Set the eighth bit (bit 7) of the GPIO port to 1
 - Press `<space>` to pause/unpause CPU in `auto mode`.
 - Press `r` to reset the cpu while CPU is in `SLEEP`.
 
-
+<!--
 ## TODO
 Control Functions:
 - [x] Save: Implement the functionality to save the current CPU state to a file.
 - [x] Run/Pause: Allow the user to start/stop continuous execution of the CPU.
 - [ ] Add more opcodes: Implement additional instructions to enhance the CPU's capabilities (e.g., arithmetic, logic, control flow).
-
+-->
