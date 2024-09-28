@@ -552,9 +552,9 @@ And to see how console works use `-c` flag and `hello.bin` program in `examples/
   </table>
 </details>
 
-<!-- ANDLW -->
+<!-- CALL -->
 <details>
-  <summary>ANDLW k</summary>
+  <summary>CALL k</summary>
   <table>
     <tr>
       <td><strong>Description</strong></td>
