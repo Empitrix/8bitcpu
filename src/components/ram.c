@@ -1,10 +1,8 @@
 #include "../types.h"
 
 
-RAM ram_init(void){
-	RAM ram;
+void ram_init(void){
 	for(int i = 0; i < RAMSIZ; ++i)
-		ram.ram[i] = 0x00;
-	return ram;
+		RAM[i] = 0x00;
 }
 

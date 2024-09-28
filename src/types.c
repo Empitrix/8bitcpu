@@ -2,19 +2,9 @@
 #include "rules.h"
 
 
-typedef struct ROM {
-	int mcode[ROMSIZ];  // Machine Code
-} ROM;
-
-
-typedef struct RAM {
-	uint8_t ram[RAMSIZ];
-} RAM;
-
-
-typedef struct REG {
-	uint8_t registers[REGSIZ];
-} REG;
+short int ROM[ROMSIZ];
+uint8_t RAM[RAMSIZ];
+uint8_t REGISTERS[REGSIZ];
 
 
 typedef struct FETCH {
@@ -70,19 +60,13 @@ typedef enum OPCODES {
 	MOVWF_OP,
 	CLRF_OP,
 	CLRW_OP,
-
 	DECF_OP,   // Decrement F
 	DECFSZ_OP,
-
 	INCF_OP,   // Increment F
 	INCFSZ_OP,
-
-
 	BTFSS_OP,   // Test bit F
 	BTFSC_OP,
-
 	SLEEP_OP,   // Sleep
-
 	ADDWF_OP,
 	ANDWF_OP,
 	COMF_OP,
@@ -101,7 +85,6 @@ typedef enum OPCODES {
 	RETLW_OP,
 	TRIS_OP,
 	XORLW_OP,
-	
 } OPCODES;
 
 

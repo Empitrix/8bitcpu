@@ -213,7 +213,7 @@ int getc_keep(void){
 
 
 /* save_cpu_state: save current state of CPU to a file */
-void save_cpu_state(GFLAGS gf, REG reg, RAM ram, int pc){
+void save_cpu_state(GFLAGS gf, int pc){
 	FILE *fp;
 	fp = fopen("./cpu_state.txt", "w+");
 	if(fp == NULL)
@@ -223,17 +223,17 @@ void save_cpu_state(GFLAGS gf, REG reg, RAM ram, int pc){
 	fprintf(fp, "%d\n", pc);
 	int i;
 	for(i = 0; i < REGSIZ; ++i){
-		fprintf(fp, "%d\n", reg.registers[i]);
+		fprintf(fp, "%d\n", REGISTERS[i]);
 	}
 	for(i = 0; i < RAMSIZ; ++i){
-		fprintf(fp, "%d\n", ram.ram[i]);
+		fprintf(fp, "%d\n", RAM[i]);
 	}
 	fclose(fp);
 }
 
 
 /* load_cpu_state: Load state of CPU from a file and return the PC */
-int load_cpu_state(GFLAGS *gf, REG *reg, RAM *ram) {
+int load_cpu_state(GFLAGS *gf) {
 	FILE *fp;
 
 	int pc = 0;
@@ -250,14 +250,14 @@ int load_cpu_state(GFLAGS *gf, REG *reg, RAM *ram) {
 	}
 
 	for (int i = 0; i < REGSIZ; ++i) {
-		if (fscanf(fp, "%d\n", (int *)&reg->registers[i]) != 1){
+		if (fscanf(fp, "%d\n", (int *)&REGISTERS[i]) != 1){
 			fclose(fp);
 			return -1;
 		}
 	}
 
 	for (int i = 0; i < RAMSIZ; ++i) {
-		if (fscanf(fp, "%d\n", (int *)&ram->ram[i]) != 1) {
+		if (fscanf(fp, "%d\n", (int *)&RAM[i]) != 1) {
 			fclose(fp);
 			return -1;
 		}
@@ -360,7 +360,7 @@ int get_key(void){
 // 	return binary;
 // }
 
-int is_input_on(REG *reg, int inpt, int idx){
+int is_input_on(int inpt, int idx){
 	idx = idx % 8;
 	int binary = (inpt & ~get_w_reg());
 	return edfb(binary, idx + 1, idx + 1) == 1;
@@ -373,13 +373,13 @@ int is_bit_input(int idx){
 }
 
 
-char *binary_led(REG *reg, int num, uint8_t keynum) {
+char *binary_led(int num, uint8_t keynum) {
 	char *binary = (char *)calloc(100, sizeof(char));
 	int idx = 0;
 
 	for (int i = 7; i >= 0; i--) {
 		if(INPUT_EN && is_bit_input(i)){
-			if(is_input_on(reg, keynum, i)){
+			if(is_input_on(keynum, i)){
 				strcat(binary, "[FF0000]❚");
 			} else {
 				strcat(binary, "[909090]❚");

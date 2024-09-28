@@ -87,9 +87,9 @@ char* exec_info(int inst){
 
 
 // put value into register 'W' if 'dcd.bits == 0' otherwise put if 'f' register
-void update_by_dist(REG *reg, RAM *ram, MEM_OUT mem, DECODE dcd){
+void update_by_dist(MEM_OUT mem, DECODE dcd){
 	if(dcd.bits == 1){
-		set_mem(reg, ram, mem, mem.value);
+		set_mem(mem, mem.value);
 	} else {
 		set_w_reg(mem.value);
 	}
@@ -97,26 +97,26 @@ void update_by_dist(REG *reg, RAM *ram, MEM_OUT mem, DECODE dcd){
 
 
 /* Execute & Update Memory etc... */
-int execute(DECODE dcd, REG *reg, RAM *ram){
+int execute(DECODE dcd){
 	MEM_OUT m;
 	int bypass = 0;
 	int tmp = 0;
 
-	set_sfr(reg, PCL_REGISTER, get_pc());
+	// set_sfr(PCL_REGISTER, get_pc());
 
 	// FSR, INDF (set INDF by content of FSR)
-	int fsr = get_sfr(reg, FSR_REGISTER);
-	set_sfr(reg, INDF_REGISTER, fsr);
+	int fsr = get_sfr(FSR_REGISTER);
+	set_sfr(INDF_REGISTER, fsr);
 
-	set_sfr(reg, TMR0_REGISTER, get_cpu_coutner());
+	set_sfr(TMR0_REGISTER, get_cpu_coutner());
 	
 
 
 	// Update Carry bit in STATUS
 	if(get_carry()){
-		set_sfr_bit(reg, STATUS_REGISTER, 0);
+		set_sfr_bit(STATUS_REGISTER, 0);
 	} else {
-		clear_sfr_bit(reg, STATUS_REGISTER, 0);
+		clear_sfr_bit(STATUS_REGISTER, 0);
 	}
 
 
@@ -124,14 +124,14 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 	switch(dcd.opcode) {
 		// BSF
 		case BSF_OP:
-			m = get_mem(reg, ram, dcd.addr);
-			set_mem(reg, ram, m, m.value | (1 << dcd.bits));
+			m = get_mem(dcd.addr);
+			set_mem(m, m.value | (1 << dcd.bits));
 			break;
 
 		// BCF
 		case BCF_OP:
-			m = get_mem(reg, ram, dcd.addr);
-			set_mem(reg, ram, m, m.value & ~(1 << dcd.bits));
+			m = get_mem(dcd.addr);
+			set_mem(m, m.value & ~(1 << dcd.bits));
 			break;
 
 		// MOVLW
@@ -141,14 +141,14 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 
 		// MOVWF
 		case MOVWF_OP:
-			m = get_mem(reg, ram, dcd.addr);
-			set_mem(reg, ram, m, get_w_reg());
+			m = get_mem(dcd.addr);
+			set_mem(m, get_w_reg());
 			break;
 
 		// CLRF
 		case CLRF_OP:
-			m = get_mem(reg, ram, dcd.addr);
-			set_mem(reg, ram, m, 0);
+			m = get_mem(dcd.addr);
+			set_mem(m, 0);
 			break;
 		
 		// CLRW
@@ -158,59 +158,59 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 
 		// DECF
 		case DECF_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			if(m.value != 0){
 				m.value--;
-				clear_sfr_bit(reg, STATUS_REGISTER, 2);
+				clear_sfr_bit(STATUS_REGISTER, 2);
 			} else {
-				set_sfr_bit(reg, STATUS_REGISTER, 2);
+				set_sfr_bit(STATUS_REGISTER, 2);
 			}
-			update_by_dist(reg, ram, m, dcd);
+			update_by_dist(m, dcd);
 			break;
 
 		// DECFSZ
 		case DECFSZ_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			if(m.value != 0){
 				m.value--;
-				clear_sfr_bit(reg, STATUS_REGISTER, 2);
+				clear_sfr_bit(STATUS_REGISTER, 2);
 			} else {
-				set_sfr_bit(reg, STATUS_REGISTER, 2);
+				set_sfr_bit(STATUS_REGISTER, 2);
 			}
-			update_by_dist(reg, ram, m, dcd);
+			update_by_dist(m, dcd);
 			if(m.value == 0){ bypass = 1; }
 			break;
 
 		// INCF
 		case INCF_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			if(m.value != 255){
 				m.value++;
-				clear_sfr_bit(reg, STATUS_REGISTER, 2);
+				clear_sfr_bit(STATUS_REGISTER, 2);
 			} else {
 				m.value = 0;
-				set_sfr_bit(reg, STATUS_REGISTER, 2);
+				set_sfr_bit(STATUS_REGISTER, 2);
 			}
-			update_by_dist(reg, ram, m, dcd);
+			update_by_dist(m, dcd);
 			break;
 
 		// INCFSZ
 		case INCFSZ_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			if(m.value != 255){
 				m.value++;
-				clear_sfr_bit(reg, STATUS_REGISTER, 2);
+				clear_sfr_bit(STATUS_REGISTER, 2);
 			} else {
 				m.value = 0;
-				set_sfr_bit(reg, STATUS_REGISTER, 2);
+				set_sfr_bit(STATUS_REGISTER, 2);
 			}
-			update_by_dist(reg, ram, m, dcd);
+			update_by_dist(m, dcd);
 			if(m.value == 0){ bypass = 1; }
 			break;
 
 		// BTFSS
 		case BTFSS_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			if(edfb(m.value, dcd.bits + 1, dcd.bits + 1) == 1){
 				bypass = 1;
 			}
@@ -219,7 +219,7 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 
 		// BTFSC
 		case BTFSC_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			if(edfb(m.value, dcd.bits + 1, dcd.bits + 1) == 0){
 				bypass = 1;
 			}
@@ -227,88 +227,88 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 
 		// ADDWF
 		case ADDWF_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			m.value = m.value + get_w_reg();
 			if(m.value > 255){
 				m.value = 0;
-				clear_sfr_bit(reg, STATUS_REGISTER, 1);
-				set_sfr_bit(reg, STATUS_REGISTER, 2);
+				clear_sfr_bit(STATUS_REGISTER, 1);
+				set_sfr_bit(STATUS_REGISTER, 2);
 			} else {
-				set_sfr_bit(reg, STATUS_REGISTER, 1);
-				clear_sfr_bit(reg, STATUS_REGISTER, 2);
+				set_sfr_bit(STATUS_REGISTER, 1);
+				clear_sfr_bit(STATUS_REGISTER, 2);
 			}
-			update_by_dist(reg, ram, m, dcd);
+			update_by_dist(m, dcd);
 			break;
 
 		// ANDWF
 		case ANDWF_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			m.value &= get_w_reg();
-			update_by_dist(reg, ram, m, dcd);
+			update_by_dist(m, dcd);
 			break;
 
 		// COMF
 		case COMF_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			m.value = ~m.value;
-			update_by_dist(reg, ram, m, dcd);
+			update_by_dist(m, dcd);
 			break;
 
 		// IORWF
 		case IORWF_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			m.value |= get_w_reg();
-			update_by_dist(reg, ram, m, dcd);
+			update_by_dist(m, dcd);
 			break;
 
 		// MOVF
 		case MOVF_OP:
-			m = get_mem(reg, ram, dcd.addr);
-			update_by_dist(reg, ram, m, dcd);
+			m = get_mem(dcd.addr);
+			update_by_dist(m, dcd);
 			break;
 
 		// RLF
 		case RLF_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			m.value = rotate_left_carry(m.value);
-			update_by_dist(reg, ram, m, dcd);
+			update_by_dist(m, dcd);
 			break;
 
 		// RRF
 		case RRF_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			m.value = rotate_right_carry(m.value);
-			update_by_dist(reg, ram, m, dcd);
+			update_by_dist(m, dcd);
 			break;
 
 		// SUBWF (W - f)
 		case SUBWF_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			m.value = get_w_reg() - m.value;
 			if(m.value < 0){
 				m.value = 0;
-				clear_sfr_bit(reg, STATUS_REGISTER, 1);
-				set_sfr_bit(reg, STATUS_REGISTER, 2);
+				clear_sfr_bit(STATUS_REGISTER, 1);
+				set_sfr_bit(STATUS_REGISTER, 2);
 			} else {
-				set_sfr_bit(reg, STATUS_REGISTER, 1);
-				clear_sfr_bit(reg, STATUS_REGISTER, 2);
+				set_sfr_bit(STATUS_REGISTER, 1);
+				clear_sfr_bit(STATUS_REGISTER, 2);
 			}
 
-			update_by_dist(reg, ram, m, dcd);
+			update_by_dist(m, dcd);
 			break;
 
 		// SWAPF
 		case SWAPF_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			m.value = (m.value >> 4) | (m.value << 4);
-			update_by_dist(reg, ram, m, dcd);
+			update_by_dist(m, dcd);
 			break;
 
 		// XORWF
 		case XORWF_OP:
-			m = get_mem(reg, ram, dcd.addr);
+			m = get_mem(dcd.addr);
 			m.value = m.value ^ get_w_reg();
-			update_by_dist(reg, ram, m, dcd);
+			update_by_dist(m, dcd);
 			break;
 
 		// XORWF
@@ -318,9 +318,9 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 
 		// CLRWDT
 		case CLRWDT_OP:
-			set_sfr_bit(reg, STATUS_REGISTER, 3);
-			set_sfr_bit(reg, STATUS_REGISTER, 4);
-			set_sfr(reg, TMR0_REGISTER, 0);   // clear TIMER
+			set_sfr_bit(STATUS_REGISTER, 3);
+			set_sfr_bit(STATUS_REGISTER, 4);
+			set_sfr(TMR0_REGISTER, 0);   // clear TIMER
 			break;
 
 		// IORLW
@@ -330,13 +330,13 @@ int execute(DECODE dcd, REG *reg, RAM *ram){
 
 		// OPTION
 		case OPTION_OP:
-			set_sfr(reg, OPTION_REGISTER, get_w_reg());
+			set_sfr(OPTION_REGISTER, get_w_reg());
 			break;
 
 
 		// CLRWDT
 		case TRIS_OP:
-			set_sfr(reg, TRISGPIO_REGISTER, dcd.addr);
+			set_sfr(TRISGPIO_REGISTER, dcd.addr);
 			if(dcd.addr == 6){
 				INPUT_EN = 1;
 			} else {

@@ -1,14 +1,10 @@
 #include "../types.h"
 
 
-REG reg_init(){
-	REG reg;
-
+void reg_init(void){
 	for(int i = 0; i < REGSIZ; ++i){
-		reg.registers[i] = 0;
+		REGISTERS[i] = 0;
 	}
-
-	return reg;
 }
 
 

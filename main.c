@@ -1,12 +1,12 @@
 #include "src/components/mem.h"
 #include "src/components/rom.h"
 #include "src/components/ram.h"
-#include "src/components/decode.h"
 #include "src/components/reg.h"
+#include "src/components/decode.h"
 #include "src/components/exec.h"
 #include "src/display.h"
-#include "src/types.h"
 #include "src/emulator.h"
+#include "src/types.h"
 #include "src/term.h"
 #include "src/utils.h"
 #include <stdio.h>
@@ -30,9 +30,6 @@ int main(int argc, char *argv[]){
 	FETCH fetch;
 	DECODE dcd;
 	EXEC exec;
-	ROM rom;
-	REG reg;
-	RAM ram;
 
 	// OSCCAL;
 	
@@ -42,7 +39,7 @@ int main(int argc, char *argv[]){
 
 	if(gflags.pload == STATE_LOAD){
 		int tmp;
-		tmp = load_cpu_state(&gflags, &reg, &ram);
+		tmp = load_cpu_state(&gflags);
 		if(tmp < 0){
 			lprt(1, "Invalid cpu state file!");
 		} else {
@@ -50,22 +47,22 @@ int main(int argc, char *argv[]){
 		}
 	}
 
-	rom = rom_init(gflags.program);
+	rom_init(gflags.program);
 
 	if(gflags.pload == PROGRAM_LOAD){
-		reg = reg_init();
-		ram = ram_init();
+		reg_init();
+		ram_init();
 	}
 
 	do {
 
 		if(c == 's'){
 			dprt(term_size().x - 10, 2, "   [00FF00][bl]Saved!");
-			save_cpu_state(gflags, reg, ram, ppc);
+			save_cpu_state(gflags, ppc);
 		}
 
 		if(c == 'r'){
-			reset_cpu(&reg, &ram);
+			reset_cpu();
 		} else if(c != ' '){
 			continue;
 		}
@@ -78,13 +75,13 @@ int main(int argc, char *argv[]){
 			}
 
 			if(getc_keep() == 'r' && gflags.is_sleep){
-				reset_cpu(&reg, &ram);
+				reset_cpu();
 			}
 
 
 			if(getc_keep() == 's'){
 				dprt(term_size().x - 10, 2, "   [00FF00]Saved!");
-				save_cpu_state(gflags, reg, ram, ppc);
+				save_cpu_state(gflags, ppc);
 			}
 
 			if(gflags.is_pause != 0){
@@ -96,12 +93,12 @@ int main(int argc, char *argv[]){
 		}
 
 		// Capture data for each round
-		fetch = rom_fetch(rom);
+		fetch = rom_fetch();
 		dcd = decode_inst(fetch.data);
 		exec = soft_execute(dcd);
 
 		// Display CPU
-		emulate_cpu(rom, dcd, reg, ram, gflags, input_value);
+		emulate_cpu(dcd, gflags, input_value);
 
 		if((gflags.is_sleep = exec.sleep) == 0){
 			ppc = get_pc();
@@ -113,12 +110,12 @@ int main(int argc, char *argv[]){
 				set_pc(exec.upc);
 			}
 
-			bypass = execute(dcd, &reg, &ram); // Update Reg & Ram
+			bypass = execute(dcd); // Update Reg & Ram
 
 			if(INPUT_EN){
 				if((key_input = get_key()) >= 0){
 					// set_sfr(&reg, GPIO_REGISTER, ~(key_input | get_w_reg()));
-					set_sfr(&reg, GPIO_REGISTER, (key_input & ~get_w_reg()));
+					set_sfr(GPIO_REGISTER, (key_input & ~get_w_reg()));
 					input_value = (key_input & ~get_w_reg());
 					// (i & ~w)
 					// c = ~(a & b);
@@ -126,16 +123,16 @@ int main(int argc, char *argv[]){
 			}
 
 			// Update Register
-			clear_sfr_bit(&reg, STATUS_REGISTER, 4);
-			set_sfr_bit(&reg, STATUS_REGISTER, 6);
-			if(gpio_temp != get_sfr(&reg, GPIO_REGISTER)){
-				gpio_temp = get_sfr(&reg, GPIO_REGISTER);
-				set_sfr_bit(&reg, STATUS_REGISTER, 7);
+			clear_sfr_bit(STATUS_REGISTER, 4);
+			set_sfr_bit(STATUS_REGISTER, 6);
+			if(gpio_temp != get_sfr(GPIO_REGISTER)){
+				gpio_temp = get_sfr(GPIO_REGISTER);
+				set_sfr_bit(STATUS_REGISTER, 7);
 			}
 
 		} else {
 			dprt(term_size().x - 6, 2, "[26aF9a][bl]Sleep");
-			set_sfr_bit(&reg, STATUS_REGISTER, 4);
+			set_sfr_bit(STATUS_REGISTER, 4);
 		}
 
 		// Interruption

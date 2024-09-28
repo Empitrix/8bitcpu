@@ -58,7 +58,7 @@ void update_console(int x, int y, int inst, int max){
 
 
 /* emulate_cpu: display CPU's data as a TUI */
-void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags, int ukey){
+void emulate_cpu(DECODE dcd, GFLAGS flags, int ukey){
 	if(flags.is_sleep == 1){
 		return;
 	}
@@ -87,9 +87,9 @@ void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags, int ukey){
 	dprt(2, 2,
 		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2]W-Reg[]: [ed400e]0b%08b  [55B6C2]S-1[]: [ed400e]%s  [55B6C2]S-2[]: [ed400e]%s  [55B6C2]Carry[]: %s",
 		get_pc(),
-		dtoh(reg.registers[6], 2),
-		// dtob_led(reg.registers[6], 8),
-		binary_led(&reg, reg.registers[6], ukey),
+		dtoh(REGISTERS[6], 2),
+		// dtob_led(REGISTERS[6], 8),
+		binary_led(REGISTERS[6], ukey),
 		// dtoh(get_w_reg(), 2),
 		get_w_reg(),
 		dtoh(get_stack_pos(0), 2),
@@ -112,9 +112,9 @@ void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags, int ukey){
 	// ROM list view
 	for(int i = 0; i < max_h; ++i){
 		if((linen + i) == get_pc()){
-			dprt(4, 4 + i, "%s%-4s [{}][u]%s", (linen + i) == 0 ? "[F44336]" : "[fcd200]", dtoh(linen + i, 4), exec_info(rom.mcode[linen + i]));
+			dprt(4, 4 + i, "%s%-4s [{}][u]%s", (linen + i) == 0 ? "[F44336]" : "[fcd200]", dtoh(linen + i, 4), exec_info(ROM[linen + i]));
 		} else {
-			dprt(4, 4 + i, "%s%-4s [{}]%s", (linen + i) == 0 ? "[D32F2F]" : "[808080]", dtoh(linen + i, 4), exec_info(rom.mcode[linen + i]));
+			dprt(4, 4 + i, "%s%-4s [{}]%s", (linen + i) == 0 ? "[D32F2F]" : "[808080]", dtoh(linen + i, 4), exec_info(ROM[linen + i]));
 		}
 	}
 
@@ -124,8 +124,8 @@ void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags, int ukey){
 		dprt(hx + 5, 4 + i,
 			"%-16s [E06B74]%s [98C379]%s",
 			get_reg_name(i),
-			dtob(reg.registers[i], 8),
-			dtoh(reg.registers[i], 2));
+			dtob(REGISTERS[i], 8),
+			dtoh(REGISTERS[i], 2));
 	}
 
 
@@ -135,8 +135,8 @@ void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags, int ukey){
 		dprt(hx + 5, 16 + i,
 			"[ABB2BF]%-4s [E06B74]%s [98C379]%s",
 			dtoh(i + 16, 2),
-			dtob(ram.ram[i], 8),
-			dtoh(ram.ram[i], 2));
+			dtob(RAM[i], 8),
+			dtoh(RAM[i], 2));
 	}
 
 
@@ -154,7 +154,7 @@ void emulate_cpu(ROM rom, DECODE dcd, REG reg, RAM ram, GFLAGS flags, int ukey){
 
 	// Update console (from register 6)
 	if(flags.console_en){
-		update_console(hx + 29, 16, reg.registers[6], ts.y - 18);
+		update_console(hx + 29, 16, REGISTERS[6], ts.y - 18);
 	} else {
 		dprt(hx + 29, 16, "[B0B0B0]Use [D84315]'-c'[B0B0B0] to enable console");
 	}
