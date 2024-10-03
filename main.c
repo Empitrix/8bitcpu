@@ -11,12 +11,13 @@
 #include "src/utils.h"
 #include <stdio.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 
 int main(int argc, char *argv[]){
 	// hide cursor and no echo for terminal
 	hidden_terminal();
-	// Listen to <C-c> (END OF THE PROGRAM) & take action
+	// Listen to <C-c> (END OF THE PROGRAM) & take action & clear screen (one time only)
 	init_end_sig();
 
 	int c = ' ';
@@ -72,6 +73,9 @@ int main(int argc, char *argv[]){
 
 			if(getc_keep() == ' '){
 				gflags.is_pause = ~gflags.is_pause;
+				if(gflags.is_pause == 0){
+					system("clear");
+				}
 			}
 
 			if(getc_keep() == 'r' && gflags.is_sleep){

@@ -56,7 +56,7 @@ void update_console(int x, int y, int max){
 
 	// Display
 	for(int i = 0; i < max; ++i){
-		printf("%s%s", sgotoxy(x, y + i), cbuff[i]);
+		printf("%s%-*s", sgotoxy(x, y + i), max, cbuff[i]);
 	}
 }
 
@@ -116,9 +116,9 @@ void emulate_cpu(DECODE *dcd, GFLAGS *flags, int ukey){
 	// ROM list view
 	for(int i = 0; i < max_h; ++i){
 		if((linen + i) == get_pc()){
-			dprt(4, 4 + i, "%s%-4s [{}][u]%s", (linen + i) == 0 ? "[F44336]" : "[fcd200]", dtoh(linen + i, 4), exec_info(ROM[linen + i]));
+			fixed_dprt(4, 4 + i, hx, "%s%-4s [{}][u]%s", (linen + i) == 0 ? "[F44336]" : "[fcd200]", dtoh(linen + i, 4), exec_info(ROM[linen + i]));
 		} else {
-			dprt(4, 4 + i, "%s%-4s [{}]%s", (linen + i) == 0 ? "[D32F2F]" : "[808080]", dtoh(linen + i, 4), exec_info(ROM[linen + i]));
+			fixed_dprt(4, 4 + i, hx, "%s%-4s [{}]%s", (linen + i) == 0 ? "[D32F2F]" : "[808080]", dtoh(linen + i, 4), exec_info(ROM[linen + i]));
 		}
 	}
 

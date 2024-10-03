@@ -184,6 +184,7 @@ void init_end_sig(){
 	memset(&action, 0, sizeof(action));
 	action.sa_handler = &end_sig_func;
 	sigaction(SIGINT, &action, &old_action);
+	system("clear");  // clear screen when start the program
 }
 
 

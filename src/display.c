@@ -121,6 +121,31 @@ void dprt(int x, int y, char *frmt, ...) {
 }
 
 
+/* dprt: Decorative Print */
+void fixed_dprt(int x, int y, int widht, char *frmt, ...) {
+	char buff[MALL];
+	va_list args;
+	va_start(args, frmt);
+	vsprintf(buff, frmt, args);
+	gotoxy(x, y);
+	va_end(args);
+
+	char *output = (char *)calloc(MALL, sizeof(char));
+	sprintf(output, "%s", update_color(buff, 1));
+
+	int len = (int)strlen(output);
+	// for(int i = len; i < len + 10; ++i){
+	// 	if(output[i] == '\0'){
+	// 		output[i] = '+';
+	// 	}
+	// }
+
+	printf("%-*s\n", len + 10, output);
+	free(output);
+	fflush(NULL);
+}
+
+
 // Line type
 typedef enum LINE_TYPE {
 	HORIZONTAL,

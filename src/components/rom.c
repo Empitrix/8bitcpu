@@ -58,4 +58,5 @@ void reset_cpu(){
 		RAM[i] = 0;
 	}
 	clear_sfr_bit(STATUS_REGISTER, 7);
+	system("clear");
 }

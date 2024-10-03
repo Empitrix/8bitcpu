@@ -56,7 +56,8 @@ TERSIZ term_size(void){
 void cls_term(void){
 #ifdef linux
 	// printf("\e[3J\033c");
-	system("clear");
+	// system("clear");
+	printf("\033[H");
 #else
 	printf("\e[1;1H\e[2J");
 #endif
@@ -64,7 +65,8 @@ void cls_term(void){
 
 /* turn the echo on and make cursor visible */
 void normal_terminal(void){
-	cls_term();
+	//cls_term();
+	system("clear");
 	enable_cursor();
 	nrm_term();
 	fflush(NULL);
