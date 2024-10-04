@@ -88,7 +88,10 @@ void pprt(char *frmt, ...){
 	va_list args;
 	va_start(args, frmt);
 	vsprintf(buff, frmt, args);
-	printf("%s", update_color(buff, 1));
+	char *colored = update_color(buff, 1);
+	printf("%s", colored);
+	free(colored);
+	colored = NULL;
 	fflush(NULL);
 	va_end(args);
 }
@@ -101,7 +104,10 @@ void lprt(int ecode, char *frmt, ...){
 	va_list args;
 	va_start(args, frmt);
 	vsprintf(buff, frmt, args);
-	printf("%s\n", update_color(buff, 1));
+	char *colored = update_color(buff, 1);
+	printf("%s\n", colored);
+	free(colored);
+	colored = NULL;
 	fflush(NULL);
 	va_end(args);
 	exit(ecode);
@@ -115,7 +121,10 @@ void dprt(int x, int y, char *frmt, ...) {
 	va_start(args, frmt);
 	vsprintf(buff, frmt, args);
 	gotoxy(x, y);
-	printf("%s", update_color(buff, 1));
+	char *colored = update_color(buff, 1);
+	printf("%s", colored);
+	free(colored);
+	colored = NULL;
 	fflush(NULL);
 	va_end(args);
 }
@@ -131,7 +140,10 @@ void fixed_dprt(int x, int y, int widht, char *frmt, ...) {
 	va_end(args);
 
 	char *output = (char *)calloc(MALL, sizeof(char));
-	sprintf(output, "%s", update_color(buff, 1));
+	char *colord = update_color(buff, 1);
+	sprintf(output, "%s", colord);
+	free(colord);
+	colord = NULL;
 
 	int len = (int)strlen(output);
 	// for(int i = len; i < len + 10; ++i){
@@ -178,13 +190,19 @@ void draw_line(int x, int y, int size, LINE_TYPE lt, char *a, char *b){
 
 /* draw_box: draw a box && use given title if it's not <empty> */
 void draw_box(int x, int y, int widht, int height, char *title){
-	printf("%s", update_color("[808080]", 0));
+	char *colored = update_color("[808080]", 0);
+	printf("%s", colored);
+	free(colored);
+	colored = NULL;
 	draw_line(x, y, height, VERTICAL, "╭", "╰");
 	draw_line(x + widht, y, height, VERTICAL, "╮", "╯");
 	draw_line(x + 1, y, widht, HORIZONTAL, "─", "─");
 	draw_line(x + 1, y + height - 2, widht, HORIZONTAL, "─", "─");
 	if(strcmp(title, "") != 0){
-		printf("%s", update_color("[F0F0F0]", 0));
+		colored = update_color("[F0F0F0]", 0);
+		printf("%s", colored);
+		free(colored);
+		colored = NULL;
 		dprt(x + 2, y, " %s ", title);
 	}
 }

@@ -74,12 +74,14 @@ char* exec_info(int inst){
 			break;
 
 		default:
-			// sprintf(info, "[62AEEF]%s  [2979FF]%s [98C379]%s", "--------------", dtoh(inst, 3), "NOP");
-			info = setstr("WOWO");
+			sprintf(info, "[62AEEF]%s  [2979FF]%s [98C379]%s", "--------------", dtoh(inst, 3), "NOP");
 			break;
 	}
 
-	strcpy(info, update_color(info, 1));
+	char *colored = update_color(info, 1);
+	strcpy(info, colored);
+	free(colored);
+	colored = NULL;
 	return info;
 }
 
