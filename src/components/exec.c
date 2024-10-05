@@ -39,50 +39,65 @@ EXEC soft_execute(DECODE dcd){
 }
 
 
-char* exec_info(int inst){
-	char *info;
+void exec_info(char info[], int inst){
+	// char info[MAXSIZ];
 
 	DECODE dcd = decode_inst(inst);
-
+	char dth[MAXSIZ];   // decimal (hex)
+	char dta[MAXSIZ];   // decimal (addr)
+	char dtb[MAXSIZ];   // decimal (bits)
 
 	switch(dcd.type) {
 		case FULL:
-			info = setstr("%s0b%012b  %s%s %s%s", KB_P1, inst, K_HEX, dtoh(inst, 3), K_INFO, dcd.info);
+			dtoh(inst, 3, dth);
+			setstr(info, "%s0b%012b  %s%s %s%s", KB_P1, inst, K_HEX, dth, K_INFO, dcd.info);
 			break;
 
 		// KB_P1, edfb(inst, 7, 12), KB_P2, edfb(inst, 6, 6), KB_P3, edfb(inst, 1, 5),
 		case SIX_ONE_FIVE:
-			info = setstr("%s0b%06b%s%01b%s%05b  %s%s %s%s %s%s[FFFFFF], %s%s", KB_P1, edfb(inst, 7, 12), KB_P2, edfb(inst, 6, 6), KB_P3, edfb(inst, 1, 5), K_HEX, dtoh(inst, 3), K_INFO, dcd.info, K_OP1, dtoh(dcd.addr, 2), K_OP2, dtoh(dcd.bits, 2));
+			dtoh(dcd.bits, 2, dtb);
+			dtoh(dcd.addr, 2, dta);
+			dtoh(inst, 3, dth);
+			setstr(info, "%s0b%06b%s%01b%s%05b  %s%s %s%s %s%s[FFFFFF], %s%s", KB_P1, edfb(inst, 7, 12), KB_P2, edfb(inst, 6, 6), KB_P3, edfb(inst, 1, 5), K_HEX, dth, K_INFO, dcd.info, K_OP1, dta, K_OP2, dtb);
 			break;
 
 		// KB_P1, edfb(inst, 9, 12), KB_P2, edfb(inst, 6, 8), KB_P3, edfb(inst, 1, 5),
 		case FOUR_THREE_FIVE:
-			info = setstr("%s0b%04b%s%03b%s%05b  %s%s %s%s %s%s[FFFFFF], %s%s", KB_P1, edfb(inst, 9, 12), KB_P2, edfb(inst, 6, 8), KB_P3, edfb(inst, 1, 5), K_HEX, dtoh(inst, 3), K_INFO, dcd.info, K_OP1, dtoh(dcd.addr, 2), K_OP2, dtoh(dcd.bits, 2));
+			dtoh(dcd.bits, 2, dtb);
+			dtoh(dcd.addr, 2, dta);
+			dtoh(inst, 3, dth);
+			setstr(info, "%s0b%04b%s%03b%s%05b  %s%s %s%s %s%s[FFFFFF], %s%s", KB_P1, edfb(inst, 9, 12), KB_P2, edfb(inst, 6, 8), KB_P3, edfb(inst, 1, 5), K_HEX, dth, K_INFO, dcd.info, K_OP1, dta, K_OP2, dtb);
 			break;
 
 		// %s0b%04b%s%08b
 		case FOUR_EIGHT:
-			info = setstr("%s0b%04b%s%08b  %s%s %s%s %s%s", KB_P1, edfb(inst, 9, 12), KB_P2, edfb(inst, 1, 8), K_HEX, dtoh(inst, 3), K_INFO, dcd.info, K_OP1, dtoh(dcd.opcode == CALL_OP ? dcd.addr : dcd.bits, 2));
+			dtoh(dcd.bits, 2, dtb);
+			dtoh(dcd.addr, 2, dta);
+			dtoh(inst, 3, dth);
+			setstr(info, "%s0b%04b%s%08b  %s%s %s%s %s%s", KB_P1, edfb(inst, 9, 12), KB_P2, edfb(inst, 1, 8), K_HEX, dth, K_INFO, dcd.info, K_OP1, dcd.opcode == CALL_OP ? dta : dtb);
 			break;
 
 		case THREE_NINE:
-			info = setstr("%s0b%03b%s%09b  %s%s %s%s %s%s", KB_P1, edfb(inst, 10, 12), KB_P2, edfb(inst, 1, 9), K_HEX, dtoh(inst, 3), K_INFO, dcd.info, K_OP1, dtoh(dcd.addr, 2));
+			dtoh(dcd.addr, 2, dta);
+			dtoh(inst, 3, dth);
+			setstr(info, "%s0b%03b%s%09b  %s%s %s%s %s%s", KB_P1, edfb(inst, 10, 12), KB_P2, edfb(inst, 1, 9), K_HEX, dth, K_INFO, dcd.info, K_OP1, dta);
 			break;
 
 		case SEVEN_FIVE:
-			info = setstr("%s0b%07b%s%05b  %s%s %s%s %s%s", KB_P1, edfb(inst, 6, 12), KB_P2, edfb(inst, 1, 5), K_HEX, dtoh(inst, 3), K_INFO, dcd.info, K_OP1, dtoh(dcd.addr, 2));
+			dtoh(dcd.addr, 2, dta);
+			dtoh(inst, 3, dth);
+			setstr(info, "%s0b%07b%s%05b  %s%s %s%s %s%s", KB_P1, edfb(inst, 6, 12), KB_P2, edfb(inst, 1, 5), K_HEX, dth, K_INFO, dcd.info, K_OP1, dta);
 			break;
 
 		default:
-			sprintf(info, "[62AEEF]%s  [2979FF]%s [98C379]%s", "--------------", dtoh(inst, 3), "NOP");
+			dtoh(inst, 3, dth);
+			sprintf(info, "[62AEEF]%s  [2979FF]%s [98C379]%s", "--------------", dth, "NOP");
 			break;
 	}
 
-	char *colored = update_color(info, 1);
+	char colored[MAXSIZ];
+	update_color(info, 1, colored);
 	strcpy(info, colored);
-	free(colored);
-	colored = NULL;
-	return info;
 }
 
 

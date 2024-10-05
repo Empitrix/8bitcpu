@@ -6,9 +6,16 @@
 #include <unistd.h>
 
 // show cursor
-void enable_cursor(void){ printf("\e[?25h"); fflush(NULL); }
+void enable_cursor(void){
+	printf("\033[?25h");
+	fflush(NULL);
+}
+
 // hide cursor
-void disable_cursor(void){ printf("\e[?25l"); fflush(NULL); }
+void disable_cursor(void){
+	printf("\033[?25l");
+	fflush(NULL);
+}
 
 
 static struct termios old, current;
@@ -55,11 +62,9 @@ TERSIZ term_size(void){
 /* clear terminal */
 void cls_term(void){
 #ifdef linux
-	// printf("\e[3J\033c");
-	// system("clear");
 	printf("\033[H");
 #else
-	printf("\e[1;1H\e[2J");
+	printf("\033[1;1H\033[2J");
 #endif
 }
 

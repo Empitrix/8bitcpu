@@ -56,7 +56,9 @@ void update_console(int x, int y, int max){
 
 	// Display
 	for(int i = 0; i < max; ++i){
-		printf("%s%-*s", sgotoxy(x, y + i), max, cbuff[i]);
+		char goto_buff[100];
+		sgotoxy(x, y + i, goto_buff);
+		printf("%s%-*s", goto_buff, max, cbuff[i]);
 	}
 }
 
@@ -87,17 +89,31 @@ void emulate_cpu(DECODE *dcd, GFLAGS *flags, int ukey){
 	draw_box(hx + 27, 15, ts.x - (hx + 28), ts.y - 15, "Console");
 
 
+	// get binary led
+	char bin_led[100];
+	binary_led(REGISTERS[6], ukey, bin_led, 100);
+
+	char gpio_buff[MAXSIZ];
+	dtoh(REGISTERS[6], 2, gpio_buff);
+
+
+	char stack_0[100];
+	char stack_1[100];
+
+	dtoh(get_stack_pos(0), 2, stack_0);
+	dtoh(get_stack_pos(1), 2, stack_1);
+
 	// Status Line
 	dprt(2, 2,
 		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2]W-Reg[]: [ed400e]0b%08b  [55B6C2]S-1[]: [ed400e]%s  [55B6C2]S-2[]: [ed400e]%s  [55B6C2]Carry[]: %s",
 		get_pc(),
-		dtoh(REGISTERS[6], 2),
+		gpio_buff,
 		// dtob_led(REGISTERS[6], 8),
-		binary_led(REGISTERS[6], ukey),
+		bin_led,
 		// dtoh(get_w_reg(), 2),
 		get_w_reg(),
-		dtoh(get_stack_pos(0), 2),
-		dtoh(get_stack_pos(1), 2),
+		stack_0,
+		stack_1,
 		get_carry() ? "[00FF00]⬤" : "[909090]⬤"
 	);
 
@@ -115,32 +131,50 @@ void emulate_cpu(DECODE *dcd, GFLAGS *flags, int ukey){
 
 	// ROM list view
 	for(int i = 0; i < max_h; ++i){
+
+		char einfo[MAXSIZ];
+		exec_info(einfo, ROM[linen + i]);
+
+		char hex_buff[MAXSIZ];
+		dtoh(linen + i, 4, hex_buff);
+
 		if((linen + i) == get_pc()){
-			fixed_dprt(4, 4 + i, hx, "%s%-4s [{}][u]%s", (linen + i) == 0 ? "[F44336]" : "[fcd200]", dtoh(linen + i, 4), exec_info(ROM[linen + i]));
+			fixed_dprt(4, 4 + i, 15, "%s%-4s [{}][u]%s", (linen + i) == 0 ? "[F44336]" : "[fcd200]", hex_buff, einfo);
 		} else {
-			fixed_dprt(4, 4 + i, hx, "%s%-4s [{}]%s", (linen + i) == 0 ? "[D32F2F]" : "[808080]", dtoh(linen + i, 4), exec_info(ROM[linen + i]));
+			fixed_dprt(4, 4 + i, 15, "%s%-4s [{}]%s", (linen + i) == 0 ? "[D32F2F]" : "[808080]", hex_buff, einfo);
 		}
 	}
 
 
+	char addr_buff[MAXSIZ];
+	char ram_buff[MAXSIZ];
+	char bin_buff[MAXSIZ];
+
 	// REG
 	for(int i = 0; i < REGSIZ; ++i){
+		dtoh(REGISTERS[i], 2, addr_buff);
+		dtob(REGISTERS[i], 8, bin_buff),
+
 		dprt(hx + 5, 4 + i,
 			"%-16s [E06B74]%s [98C379]%s",
 			get_reg_name(i),
-			dtob(REGISTERS[i], 8),
-			dtoh(REGISTERS[i], 2));
+			bin_buff,
+			addr_buff);
 	}
 
 
 	int ram_ps = ts.y - 18;  // ram pannel size
 	// RAM
 	for(int i = 0; i < (ram_ps >= 16 ? 16 : ram_ps); ++i){
+		dtoh(i + 16, 2, addr_buff);
+		dtoh(RAM[i], 2, ram_buff);
+		dtob(RAM[i], 8, bin_buff),
+
 		dprt(hx + 5, 16 + i,
 			"[ABB2BF]%-4s [E06B74]%s [98C379]%s",
-			dtoh(i + 16, 2),
-			dtob(RAM[i], 8),
-			dtoh(RAM[i], 2));
+			addr_buff,
+			bin_buff,
+			ram_buff);
 	}
 
 

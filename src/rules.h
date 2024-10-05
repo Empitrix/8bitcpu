@@ -7,6 +7,8 @@
 
 #define MALL 1000    // Max Assembly Line Length
 
+#define MAXSIZ 1024  // String size
+
 #define MAX_STACK 2  // Max Stack (CALL & RETLW)
 
 

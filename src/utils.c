@@ -11,16 +11,14 @@
 #include "components/mem.h"
 #include "rules.h"
 #include "types.h"
-#include "strfy.h"
 #include "term.h"
 #include "display.h"
 
 
 
 /* Decimal TO Binary: convert given decimal to binary (char *) */
-char *dtob(int decimal_num, int len) {
+void dtob(int decimal_num, int len, char binary_str[]) {
 	len = len + 2;
-	char *binary_str = malloc(len + 1);
 
 	// Fill with '0'
 	memset(binary_str, '0', len);
@@ -38,24 +36,12 @@ char *dtob(int decimal_num, int len) {
 		index--;
 	}
 
-	return binary_str;
+	// return binary_str;
 }
 
-
-/* Return Binary LED bar */
-char *dtob_led(int num, int len) {
-	// char *buff = malloc(len * sizeof(char));
-	char *buff = (char *)calloc(50, sizeof(char));
-	buff = dtob(num, len);
-	sprintf(buff, "%s", str_slice(buff, 2, len + 2));
-	str_replace(buff, "0", "[909090]❚");
-	str_replace(buff, "1", "[00FF00]❚");
-	return buff;
-}
 
 /* dtoh: (Decimal TO Hex) converts given decimal into hex string with size of 'siz' */
-char *dtoh(int decimal, int size) {
-	char *hex = malloc(MALL * sizeof(char));
+char *dtoh(int decimal, int size, char hex[]){
 	if (hex == NULL) {
 		return NULL;
 	}
@@ -84,7 +70,8 @@ char *dtoh(int decimal, int size) {
 
 /* update_gflags: Update Global Flags */
 void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
-	gflags->stepping = gflags->is_pause = 0;
+	gflags->stepping = 0;
+	gflags->is_pause = 0;
 	gflags->frequency = 500000;
 	gflags->pload = PROGRAM_LOAD;
 	gflags->is_sleep = 0;
@@ -172,7 +159,7 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 struct sigaction old_action;
 
 // Action for end of the program signal <C-c>
-void end_sig_func(int sig_no){
+void end_sig_func(){
 	normal_terminal();
 	sigaction(SIGINT, &old_action, NULL);
 	kill(0, SIGINT);
@@ -340,27 +327,6 @@ int get_key(void){
 }
 
 
-
-
-// char *binary_led(int num, int keynum) {
-// 	char *binary = (char *)calloc(100, sizeof(char));
-// 	int idx = 7;
-// 	while (idx >= 0) {
-// 		if(edfb(keynum, idx + 1, idx + 1) == 1){
-// 			strcat(binary, "[FF0000]❚");
-// 		} else {
-// 			if((num & 1) == 1){
-// 				strcat(binary, "[00FF00]❚");
-// 			} else {
-// 				strcat(binary, "[909090]❚");
-// 			}
-// 		}
-// 		num >>= 1;
-// 		idx--;
-// 	}
-// 	return binary;
-// }
-
 int is_input_on(int inpt, int idx){
 	idx = idx % 8;
 	int binary = (inpt & ~get_w_reg());
@@ -374,9 +340,9 @@ int is_bit_input(int idx){
 }
 
 
-char *binary_led(int num, uint8_t keynum) {
-	char *binary = (char *)calloc(100, sizeof(char));
+void binary_led(int num, uint8_t keynum, char binary[], int len){
 	int idx = 0;
+	memset(binary, 0, len);
 
 	for (int i = 7; i >= 0; i--) {
 		if(INPUT_EN && is_bit_input(i)){
@@ -392,17 +358,6 @@ char *binary_led(int num, uint8_t keynum) {
 				strcat(binary, "[909090]❚");
 			}
 		}
-
-		/*
-		if(edfb(keynum, idx + 1, idx + 1) == 1){
-			strcat(binary, "[FF0000]❚");
-		} else if(edfb(~keynum, idx + 1, idx + 1) == 1) {
-			strcat(binary, "[00FF00]❚");
-		} else {
-			strcat(binary, "[909090]❚");
-		}
-		*/
 	}
-	return binary;
 }
 

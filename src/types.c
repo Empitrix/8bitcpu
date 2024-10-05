@@ -14,10 +14,6 @@ typedef struct FETCH {
 
 
 typedef enum EXEC_TYPE {
-	// MONO_OPERAND,
-	// MULTI_OPERAND,
-	// FULL_OPERAND,
-
 	SIX_ONE_FIVE,
 	FOUR_THREE_FIVE,
 	FOUR_EIGHT,
@@ -114,7 +110,7 @@ typedef struct DECODE {
 	int operand;     // everything except OpCode
 	int bits;        // Part a Operand (bits)
 	int addr;        // Part b Operand (addr)
-	char *info;      // instruction info
+	char info[MAXSIZ];      // instruction info
 	exec_t type;     // Instruction type (multi operand or mono)
 } DECODE;
 

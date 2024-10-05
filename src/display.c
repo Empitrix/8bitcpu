@@ -8,15 +8,18 @@
 
 
 /* Update colors and return in (char *) for foreground: [FFFFFF] & for background: {FFFFFF} */
-char *update_color(char *format, int clean){
-	// increase the format size and use 'src'
-	char *src = malloc(MALL * sizeof(char));
+void update_color(char *format, int clean, char src[]){
 	strcpy(src, format);
 
 	size_t src_len = strlen(src);
-	char *tmp = malloc(src_len * 2 + 1); // Allocate temporary buffer
+	// char *tmp = malloc(src_len * 2 + 1); // Allocate temporary buffer
+	// char *tmp = malloc(src_len * 2 + 1); // Allocate temporary buffer
+	char tmp[MAXSIZ]; // Allocate temporary buffer
 	char *dst = tmp;
 	char *ptr = src;
+
+	int dst_idx = 0;
+	int ptr_idx = 0;
 
 	while (*ptr) {
 		if (*ptr == '[' || *ptr == '{') {
@@ -47,7 +50,7 @@ char *update_color(char *format, int clean){
 	// Copy the modified string back to the original buffer
 	strncpy(src, tmp, dst - tmp);
 	src[dst - tmp] = '\0';
-	free(tmp);
+	// free(tmp);
 
 	// Insert reset codes at the end
 	if(clean == 1){
@@ -61,7 +64,6 @@ char *update_color(char *format, int clean){
 	str_replace(src, "[bl]", "\x1b[5m");
 	str_replace(src, "[b]", "\x1b[1m");
 	str_replace(src, "[i]", "\x1b[3m");
-	return src;
 }
 
 
@@ -70,10 +72,8 @@ void gotoxy(int x, int y){
 	printf("\033[%d;%df", y, x); 
 }
 
-char *sgotoxy(int x, int y){ 
-	char *s = malloc(100 * sizeof(char));
-	sprintf(s, "\033[%d;%df", y, x); 
-	return s;
+void sgotoxy(int x, int y, char src[]){ 
+	sprintf(src, "\033[%d;%df", y, x); 
 }
 
 /* print given char * in given x, y coord */
@@ -88,10 +88,9 @@ void pprt(char *frmt, ...){
 	va_list args;
 	va_start(args, frmt);
 	vsprintf(buff, frmt, args);
-	char *colored = update_color(buff, 1);
+	char colored[MAXSIZ];
+	update_color(buff, 1, colored);
 	printf("%s", colored);
-	free(colored);
-	colored = NULL;
 	fflush(NULL);
 	va_end(args);
 }
@@ -104,11 +103,9 @@ void lprt(int ecode, char *frmt, ...){
 	va_list args;
 	va_start(args, frmt);
 	vsprintf(buff, frmt, args);
-	char *colored = update_color(buff, 1);
+	char colored[MAXSIZ];
+	update_color(buff, 1, colored);
 	printf("%s\n", colored);
-	free(colored);
-	colored = NULL;
-	fflush(NULL);
 	va_end(args);
 	exit(ecode);
 }
@@ -121,17 +118,16 @@ void dprt(int x, int y, char *frmt, ...) {
 	va_start(args, frmt);
 	vsprintf(buff, frmt, args);
 	gotoxy(x, y);
-	char *colored = update_color(buff, 1);
+	char colored[MAXSIZ];
+	update_color(buff, 1, colored);
 	printf("%s", colored);
-	free(colored);
-	colored = NULL;
 	fflush(NULL);
 	va_end(args);
 }
 
 
 /* dprt: Decorative Print */
-void fixed_dprt(int x, int y, int widht, char *frmt, ...) {
+void fixed_dprt(int x, int y, int width, char *frmt, ...) {
 	char buff[MALL];
 	va_list args;
 	va_start(args, frmt);
@@ -139,22 +135,12 @@ void fixed_dprt(int x, int y, int widht, char *frmt, ...) {
 	gotoxy(x, y);
 	va_end(args);
 
-	char *output = (char *)calloc(MALL, sizeof(char));
-	char *colord = update_color(buff, 1);
-	sprintf(output, "%s", colord);
-	free(colord);
-	colord = NULL;
-
+	char output[MAXSIZ];
+	char colored[MAXSIZ];
+	update_color(buff, 1, colored);
+	sprintf(output, "%s", colored);
 	int len = (int)strlen(output);
-	// for(int i = len; i < len + 10; ++i){
-	// 	if(output[i] == '\0'){
-	// 		output[i] = '+';
-	// 	}
-	// }
-
-	printf("%-*s\n", len + 10, output);
-	free(output);
-	fflush(NULL);
+	printf("%-*s\n", len + width, output);
 }
 
 
@@ -190,19 +176,16 @@ void draw_line(int x, int y, int size, LINE_TYPE lt, char *a, char *b){
 
 /* draw_box: draw a box && use given title if it's not <empty> */
 void draw_box(int x, int y, int widht, int height, char *title){
-	char *colored = update_color("[808080]", 0);
+	char colored[MAXSIZ];
+	update_color("[808080]", 0, colored);
 	printf("%s", colored);
-	free(colored);
-	colored = NULL;
 	draw_line(x, y, height, VERTICAL, "╭", "╰");
 	draw_line(x + widht, y, height, VERTICAL, "╮", "╯");
 	draw_line(x + 1, y, widht, HORIZONTAL, "─", "─");
 	draw_line(x + 1, y + height - 2, widht, HORIZONTAL, "─", "─");
 	if(strcmp(title, "") != 0){
-		colored = update_color("[F0F0F0]", 0);
+		update_color("[F0F0F0]", 0, colored);
 		printf("%s", colored);
-		free(colored);
-		colored = NULL;
 		dprt(x + 2, y, " %s ", title);
 	}
 }

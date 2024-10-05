@@ -12,26 +12,26 @@ DECODE decode_inst(int inst){
 	if(inst == 0b000000000000){
 		dcd.opcode = NOP_OP;
 		dcd.type = FULL;
-		dcd.info = "NOP";
+		strcpy(dcd.info, "NOP");
 
 		// CLRW
 	} else if(inst == 0b000001000000){
 		dcd.opcode = CLRW_OP;
 		dcd.type = FULL;
-		dcd.info = "CLRW";
+		strcpy(dcd.info, "CLRW");
 
 		// SLEEP
 	} else if(inst == 0b000000000011){
 		dcd.opcode = SLEEP_OP;
 		dcd.type = FULL;
-		dcd.info = "SLEEP";
+		strcpy(dcd.info, "SLEEP");
 
 		// BSF
 	} else if(edfb(inst, 9, 12) == 0b0101){
 		dcd.opcode = BSF_OP;
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = FOUR_THREE_FIVE;
-		dcd.info = "BSF";
+		strcpy(dcd.info, "BSF");
 		dcd.bits = edfb(inst, 6, 8);
 		dcd.addr = edfb(inst, 1, 5);
 
@@ -40,7 +40,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = BCF_OP;
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = FOUR_THREE_FIVE;
-		dcd.info = "BCF";
+		strcpy(dcd.info, "BCF");
 		dcd.bits = edfb(inst, 6, 8);
 		dcd.addr = edfb(inst, 1, 5);
 
@@ -49,7 +49,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = MOVLW_OP;
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = FOUR_EIGHT;
-		dcd.info = "MOVLW";
+		strcpy(dcd.info, "MOVLW");
 		dcd.bits = edfb(inst, 1, 8);
 
 	// MOVWF
@@ -57,7 +57,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = MOVWF_OP;
 		dcd.operand = edfb(inst, 1, 5);
 		dcd.type = SEVEN_FIVE;
-		dcd.info = "MOVWF";
+		strcpy(dcd.info, "MOVWF");
 		dcd.addr = edfb(inst, 1, 5);
 
 	// CLRF
@@ -65,7 +65,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = CLRF_OP;
 		dcd.operand = edfb(inst, 1, 5);
 		dcd.type = SEVEN_FIVE;
-		dcd.info = "CLRF";
+		strcpy(dcd.info, "CLRF");
 		dcd.addr = edfb(inst, 1, 5);
 
 	// DECF
@@ -73,7 +73,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = DECF_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "DECF";
+		strcpy(dcd.info, "DECF");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -82,7 +82,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = DECFSZ_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "DECFSZ";
+		strcpy(dcd.info, "DECFSZ");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -91,7 +91,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = INCF_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "INCF";
+		strcpy(dcd.info, "INCF");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -100,7 +100,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = INCFSZ_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "INCFSZ";
+		strcpy(dcd.info, "INCFSZ");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -109,7 +109,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = BTFSS_OP;
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = FOUR_THREE_FIVE;
-		dcd.info = "BTFSS";
+		strcpy(dcd.info, "BTFSS");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 8);
 
@@ -118,7 +118,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = BTFSC_OP;
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = FOUR_THREE_FIVE;
-		dcd.info = "BTFSC";
+		strcpy(dcd.info, "BTFSC");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 8);
 
@@ -127,7 +127,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = GOTO_OP;
 		dcd.operand = edfb(inst, 1, 9);
 		dcd.type = THREE_NINE;
-		dcd.info = "GOTO";
+		strcpy(dcd.info, "GOTO");
 		dcd.addr = edfb(inst, 1, 9);
 
 	// ADDWF
@@ -135,7 +135,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = ADDWF_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "ADDWF";
+		strcpy(dcd.info, "ADDWF");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -144,7 +144,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = ANDWF_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "ANDWF";
+		strcpy(dcd.info, "ANDWF");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -153,7 +153,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = COMF_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "COMF";
+		strcpy(dcd.info, "COMF");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -162,7 +162,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = IORWF_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "IORWF";
+		strcpy(dcd.info, "IORWF");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -171,7 +171,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = MOVF_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "MOVF";
+		strcpy(dcd.info, "MOVF");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -180,7 +180,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = RLF_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "RLF";
+		strcpy(dcd.info, "RLF");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -189,7 +189,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = RRF_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "RRF";
+		strcpy(dcd.info, "RRF");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -198,7 +198,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = SUBWF_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "SUBWF";
+		strcpy(dcd.info, "SUBWF");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -207,7 +207,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = SWAPF_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "SWAPF";
+		strcpy(dcd.info, "SWAPF");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -216,7 +216,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = XORWF_OP;
 		dcd.operand = edfb(inst, 1, 6);
 		dcd.type = SIX_ONE_FIVE;
-		dcd.info = "XORWF";
+		strcpy(dcd.info, "XORWF");
 		dcd.addr = edfb(inst, 1, 5);
 		dcd.bits = edfb(inst, 6, 6);
 
@@ -225,7 +225,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = ANDLW_OP;
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = FOUR_EIGHT;
-		dcd.info = "ANDLW";
+		strcpy(dcd.info, "ANDLW");
 		dcd.bits = edfb(inst, 1, 8);
 
 	// CALL
@@ -233,7 +233,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = CALL_OP;
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = FOUR_EIGHT;
-		dcd.info = "CALL";
+		strcpy(dcd.info, "CALL");
 		dcd.addr = edfb(inst, 1, 8);
 
 	// CLRWDT
@@ -241,14 +241,14 @@ DECODE decode_inst(int inst){
 		dcd.opcode = CLRWDT_OP;
 		dcd.operand = edfb(inst, 1, 12);
 		dcd.type = FULL;
-		dcd.info = "CLRWDT";
+		strcpy(dcd.info, "CLRWDT");
 
 	// IORLW
 	} else if(edfb(inst, 9, 12) == 0b1101){
 		dcd.opcode = IORLW_OP;
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = FOUR_EIGHT;
-		dcd.info = "IORLW";
+		strcpy(dcd.info, "IORLW");
 		dcd.bits = edfb(inst, 1, 8);
 
 	// OPTION
@@ -256,14 +256,14 @@ DECODE decode_inst(int inst){
 		dcd.opcode = OPTION_OP;
 		dcd.operand = edfb(inst, 1, 12);
 		dcd.type = FULL;
-		dcd.info = "OPTION";
+		strcpy(dcd.info, "OPTION");
 
 	// RETLW
 	} else if(edfb(inst, 9, 12) == 0b1000){
 		dcd.opcode = RETLW_OP;
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = FOUR_EIGHT;
-		dcd.info = "RETLW";
+		strcpy(dcd.info, "RETLW");
 		dcd.bits = edfb(inst, 1, 8);
 
 	// XORLW
@@ -271,7 +271,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = XORLW_OP;
 		dcd.operand = edfb(inst, 1, 8);
 		dcd.type = FOUR_EIGHT;
-		dcd.info = "XORLW";
+		strcpy(dcd.info, "XORLW");
 		dcd.bits = edfb(inst, 1, 8);
 
 	// TRIS
@@ -279,7 +279,7 @@ DECODE decode_inst(int inst){
 		dcd.opcode = TRIS_OP;
 		dcd.operand = edfb(inst, 1, 3);
 		dcd.type = FULL;
-		dcd.info = "TRIS";
+		strcpy(dcd.info, "TRIS");
 		dcd.addr = edfb(inst, 1, 3);
 
 	// Undefined

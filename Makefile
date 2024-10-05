@@ -9,3 +9,6 @@ windows:
 # To compile for 'linux' using "cc" compiler
 linux:
 	@ cc ./main.c -lm -o ./cpu
+
+debug:
+	@ gcc -g -fanalyzer -Wall -Wextra -pedantic -fsanitize=undefined,address,leak ./main.c -lm -o ./cpu
