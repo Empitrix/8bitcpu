@@ -68,6 +68,16 @@ char *dtoh(int decimal, int size, char hex[]){
 }
 
 
+
+// Function to convert an integer to a binary string
+void i2b(unsigned int num, char* output, int bit_length) {
+	for (int i = bit_length - 1; i >= 0; i--) {
+		output[bit_length - i - 1] = (num & (1 << i)) ? '1' : '0';
+	}
+	output[bit_length] = '\0';  // Null-terminate the string
+}
+
+
 /* update_gflags: Update Global Flags */
 void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 	gflags->stepping = 0;

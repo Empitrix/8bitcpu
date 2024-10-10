@@ -47,10 +47,22 @@ void exec_info(char info[], int inst){
 	char dta[MAXSIZ];   // decimal (addr)
 	char dtb[MAXSIZ];   // decimal (bits)
 
+	char four[5];
+	char three[4];
+	char eight[9];
+
+	char six[7];
+	char seven[8];
+	char one[2];
+	char five[6];
+	char nine[10];
+
 	switch(dcd.type) {
 		case FULL:
 			dtoh(inst, 3, dth);
-			setstr(info, "%s0b%012b  %s%s %s%s", KB_P1, inst, K_HEX, dth, K_INFO, dcd.info);
+			char ib[13];
+			i2b(inst, ib, 12);
+			sprintf(info, "%s0b%s  %s%s %s%s", KB_P1, ib, K_HEX, dth, K_INFO, dcd.info);
 			break;
 
 		// KB_P1, edfb(inst, 7, 12), KB_P2, edfb(inst, 6, 6), KB_P3, edfb(inst, 1, 5),
@@ -58,7 +70,12 @@ void exec_info(char info[], int inst){
 			dtoh(dcd.bits, 2, dtb);
 			dtoh(dcd.addr, 2, dta);
 			dtoh(inst, 3, dth);
-			setstr(info, "%s0b%06b%s%01b%s%05b  %s%s %s%s %s%s[FFFFFF], %s%s", KB_P1, edfb(inst, 7, 12), KB_P2, edfb(inst, 6, 6), KB_P3, edfb(inst, 1, 5), K_HEX, dth, K_INFO, dcd.info, K_OP1, dta, K_OP2, dtb);
+
+			i2b(edfb(inst, 7, 12), six, 6);
+			i2b(edfb(inst, 6, 6), one, 1);
+			i2b(edfb(inst, 1, 5), five, 5);
+
+			sprintf(info, "%s0b%s%s%s%s%s  %s%s %s%s %s%s[FFFFFF], %s%s", KB_P1, six, KB_P2, one, KB_P3, five, K_HEX, dth, K_INFO, dcd.info, K_OP1, dta, K_OP2, dtb);
 			break;
 
 		// KB_P1, edfb(inst, 9, 12), KB_P2, edfb(inst, 6, 8), KB_P3, edfb(inst, 1, 5),
@@ -66,7 +83,12 @@ void exec_info(char info[], int inst){
 			dtoh(dcd.bits, 2, dtb);
 			dtoh(dcd.addr, 2, dta);
 			dtoh(inst, 3, dth);
-			setstr(info, "%s0b%04b%s%03b%s%05b  %s%s %s%s %s%s[FFFFFF], %s%s", KB_P1, edfb(inst, 9, 12), KB_P2, edfb(inst, 6, 8), KB_P3, edfb(inst, 1, 5), K_HEX, dth, K_INFO, dcd.info, K_OP1, dta, K_OP2, dtb);
+
+			i2b(edfb(inst, 9, 12), four, 4);
+			i2b(edfb(inst, 6, 8), three, 3);
+			i2b(edfb(inst, 1, 5), five, 5);
+
+			sprintf(info, "%s0b%s%s%s%s%s  %s%s %s%s %s%s[FFFFFF], %s%s", KB_P1, four, KB_P2, three, KB_P3, five, K_HEX, dth, K_INFO, dcd.info, K_OP1, dta, K_OP2, dtb);
 			break;
 
 		// %s0b%04b%s%08b
@@ -74,19 +96,31 @@ void exec_info(char info[], int inst){
 			dtoh(dcd.bits, 2, dtb);
 			dtoh(dcd.addr, 2, dta);
 			dtoh(inst, 3, dth);
-			setstr(info, "%s0b%04b%s%08b  %s%s %s%s %s%s", KB_P1, edfb(inst, 9, 12), KB_P2, edfb(inst, 1, 8), K_HEX, dth, K_INFO, dcd.info, K_OP1, dcd.opcode == CALL_OP ? dta : dtb);
+
+			i2b(edfb(inst, 9, 12), four, 4);
+			i2b(edfb(inst, 1, 8), eight, 8);
+
+			sprintf(info, "%s0b%s%s%s  %s%s %s%s %s%s", KB_P1, four, KB_P2, eight, K_HEX, dth, K_INFO, dcd.info, K_OP1, dcd.opcode == CALL_OP ? dta : dtb);
 			break;
 
 		case THREE_NINE:
 			dtoh(dcd.addr, 2, dta);
 			dtoh(inst, 3, dth);
-			setstr(info, "%s0b%03b%s%09b  %s%s %s%s %s%s", KB_P1, edfb(inst, 10, 12), KB_P2, edfb(inst, 1, 9), K_HEX, dth, K_INFO, dcd.info, K_OP1, dta);
+
+			i2b(edfb(inst, 10, 12), three, 3);
+			i2b(edfb(inst, 1, 9), nine, 9);
+
+			sprintf(info, "%s0b%s%s%s  %s%s %s%s %s%s", KB_P1, three, KB_P2, nine, K_HEX, dth, K_INFO, dcd.info, K_OP1, dta);
 			break;
 
 		case SEVEN_FIVE:
 			dtoh(dcd.addr, 2, dta);
 			dtoh(inst, 3, dth);
-			setstr(info, "%s0b%07b%s%05b  %s%s %s%s %s%s", KB_P1, edfb(inst, 6, 12), KB_P2, edfb(inst, 1, 5), K_HEX, dth, K_INFO, dcd.info, K_OP1, dta);
+
+			i2b(edfb(inst, 6, 12), seven, 7);
+			i2b(edfb(inst, 1, 5), five, 5);
+
+			sprintf(info, "%s0b%s%s%s  %s%s %s%s %s%s", KB_P1, seven, KB_P2, five, K_HEX, dth, K_INFO, dcd.info, K_OP1, dta);
 			break;
 
 		default:
