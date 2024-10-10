@@ -117,7 +117,6 @@ void update_by_dist(MEM_OUT mem, DECODE dcd){
 int execute(DECODE dcd){
 	MEM_OUT m;
 	int bypass = 0;
-	int tmp = 0;
 
 	// set_sfr(PCL_REGISTER, get_pc());
 

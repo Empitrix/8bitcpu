@@ -11,15 +11,12 @@
 void update_color(char *format, int clean, char src[]){
 	strcpy(src, format);
 
-	size_t src_len = strlen(src);
 	// char *tmp = malloc(src_len * 2 + 1); // Allocate temporary buffer
 	// char *tmp = malloc(src_len * 2 + 1); // Allocate temporary buffer
 	char tmp[MAXSIZ]; // Allocate temporary buffer
 	char *dst = tmp;
 	char *ptr = src;
 
-	int dst_idx = 0;
-	int ptr_idx = 0;
 
 	while (*ptr) {
 		if (*ptr == '[' || *ptr == '{') {
@@ -30,7 +27,7 @@ void update_color(char *format, int clean, char src[]){
 
 			// Convert hex color to RGB
 			int r, g, b;
-			if (sscanf(color_code, "%2x%2x%2x", &r, &g, &b) == 3) {
+			if (sscanf(color_code, "%2x%2x%2x", (unsigned int *)&r, (unsigned int *)&g, (unsigned int *)&b) == 3) {
 				if (*ptr == '[') {
 					dst += sprintf(dst, "\033[38;2;%d;%d;%dm", r, g, b);  // fg
 				} else if (*ptr == '{') {

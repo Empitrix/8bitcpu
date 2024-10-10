@@ -21,7 +21,7 @@ int main(int argc, char *argv[]){
 	init_end_sig();
 
 	int c = ' ';
-	int ppc;
+	int ppc = 0;
 	int bypass = 0;
 
 	int key_input = 0;
@@ -102,7 +102,7 @@ int main(int argc, char *argv[]){
 		exec = soft_execute(dcd);
 
 		// Display CPU
-		emulate_cpu(&dcd, &gflags, input_value);
+		emulate_cpu(&gflags, input_value);
 
 		if((gflags.is_sleep = exec.sleep) == 0){
 			ppc = get_pc();

@@ -78,7 +78,11 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 	gflags->console_en = 0;
 	memset(gflags->program, '\0', MALL);
 	memset(gflags->load, '\0', MALL);
-	int ps, fs, ls = 0; // program save
+	// int ps, fs, ls = 0; // program save
+	int ps = 0;  // program save
+	int fs = 0;  // File save
+	int ls = 0;  // load save
+
 	int i;
 	for(i = 0; i < argc; ++i){
 
@@ -318,7 +322,7 @@ int get_key(void){
 
 		ch = ch - '1';
 		if(ch >= 0 && ch <= 7){
-			return 0b00000000 | 1 << (ch);
+			return 0x00 | 1 << (ch);  // 0b00000000 | 1 << (c)
 		} else {
 			return -1;
 		}
@@ -341,7 +345,6 @@ int is_bit_input(int idx){
 
 
 void binary_led(int num, uint8_t keynum, char binary[], int len){
-	int idx = 0;
 	memset(binary, 0, len);
 
 	for (int i = 7; i >= 0; i--) {

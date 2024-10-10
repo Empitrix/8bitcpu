@@ -64,7 +64,7 @@ void update_console(int x, int y, int max){
 
 
 /* emulate_cpu: display CPU's data as a TUI */
-void emulate_cpu(DECODE *dcd, GFLAGS *flags, int ukey){
+void emulate_cpu(GFLAGS *flags, int ukey){
 	if(flags->is_sleep == 1){
 		return;
 	}
@@ -75,7 +75,7 @@ void emulate_cpu(DECODE *dcd, GFLAGS *flags, int ukey){
 	draw_box(1, 1, ts.x - 1, ts.y, " [98C379]8-BIT CPU[{}] ");
 
 	int hx = (ts.x / 2);  // Half of x
-	int hy = (ts.y / 2);  // Half of x
+	// int hy = (ts.y / 2);  // Half of x
 
 	// ROM Pannel
 	draw_box(2, 3, hx, ts.y - 3, "ROM");
