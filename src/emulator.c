@@ -103,15 +103,15 @@ void emulate_cpu(GFLAGS *flags, int ukey){
 	dtoh(get_stack_pos(0), 2, stack_0);
 	dtoh(get_stack_pos(1), 2, stack_1);
 
+	char wreg[9];
+	i2b(get_w_reg(), wreg, 8);
 	// Status Line
 	dprt(2, 2,
-		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2]W-Reg[]: [ed400e]0b%08b  [55B6C2]S-1[]: [ed400e]%s  [55B6C2]S-2[]: [ed400e]%s  [55B6C2]Carry[]: %s",
+		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2]W-Reg[]: [ed400e]0b%s  [55B6C2]S-1[]: [ed400e]%s  [55B6C2]S-2[]: [ed400e]%s  [55B6C2]Carry[]: %s",
 		get_pc(),
 		gpio_buff,
-		// dtob_led(REGISTERS[6], 8),
 		bin_led,
-		// dtoh(get_w_reg(), 2),
-		get_w_reg(),
+		wreg,
 		stack_0,
 		stack_1,
 		get_carry() ? "[00FF00]⬤" : "[909090]⬤"
