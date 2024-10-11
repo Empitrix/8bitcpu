@@ -10,5 +10,10 @@ windows:
 linux:
 	@ cc ./main.c -lm -o ./cpu
 
+# Debug (show diagnostics)
 debug:
 	@ gcc -g -fanalyzer -Wall -Wextra -pedantic -fsanitize=undefined,address,leak ./main.c -lm -o ./cpu
+
+# Run cppcheck
+check:
+	@ cppcheck . --check-level=exhaustive

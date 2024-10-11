@@ -11,8 +11,6 @@
 void update_color(char *format, int clean, char src[]){
 	strcpy(src, format);
 
-	// char *tmp = malloc(src_len * 2 + 1); // Allocate temporary buffer
-	// char *tmp = malloc(src_len * 2 + 1); // Allocate temporary buffer
 	char tmp[MAXSIZ]; // Allocate temporary buffer
 	char *dst = tmp;
 	char *ptr = src;
@@ -79,21 +77,8 @@ void printfxy(char *s, int x, int y){
 	printf("%s", s);
 }
 
-// Decorative printf
-void pprt(char *frmt, ...){
-	char buff[MALL];
-	va_list args;
-	va_start(args, frmt);
-	vsprintf(buff, frmt, args);
-	char colored[MAXSIZ];
-	update_color(buff, 1, colored);
-	printf("%s", colored);
-	fflush(NULL);
-	va_end(args);
-}
 
-
-// Decorative printf (log pring (exit the program))
+// Decorative printf (pring & exit the program)
 void lprt(int ecode, char *frmt, ...){
 	normal_terminal();
 	char buff[MALL];
@@ -123,7 +108,7 @@ void dprt(int x, int y, char *frmt, ...) {
 }
 
 
-/* dprt: Decorative Print */
+/* fixed_dprt: Decorative Print with right margin (width) */
 void fixed_dprt(int x, int y, int width, char *frmt, ...) {
 	char buff[MALL];
 	va_list args;

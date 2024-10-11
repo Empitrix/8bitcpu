@@ -62,8 +62,9 @@ int main(int argc, char *argv[]){
 			save_cpu_state(gflags, ppc);
 		}
 
-		if(c == 'r'){
-			reset_cpu();
+		if(c == 'r' && gflags.is_sleep){
+			reset_cpu(0);
+			// emulate_cpu(&gflags, input_value);  // ?
 		} else if(c != ' '){
 			continue;
 		}
@@ -73,13 +74,13 @@ int main(int argc, char *argv[]){
 
 			if(getc_keep() == ' '){
 				gflags.is_pause = ~gflags.is_pause;
-				if(gflags.is_pause == 0){
-					system("clear");
-				}
+
+				// clear while paused (*)
+				// if(gflags.is_pause == 0){ system("clear"); }
 			}
 
 			if(getc_keep() == 'r' && gflags.is_sleep){
-				reset_cpu();
+				reset_cpu(1);
 			}
 
 
@@ -93,6 +94,9 @@ int main(int argc, char *argv[]){
 				dprt(term_size().x - 10, 2, "[26aF9a][bl]❚❚ Paused");
 				fflush(NULL);
 				continue;
+			} else {
+				// clear "paused"
+				dprt(term_size().x - 10, 2, "[26aF9a][bl]         ");
 			}
 		}
 
@@ -134,6 +138,7 @@ int main(int argc, char *argv[]){
 				set_sfr_bit(STATUS_REGISTER, 7);
 			}
 
+			dprt(term_size().x - 6, 2, "     ");  // clear sleep text
 		} else {
 			dprt(term_size().x - 6, 2, "[26aF9a][bl]Sleep");
 			set_sfr_bit(STATUS_REGISTER, 4);

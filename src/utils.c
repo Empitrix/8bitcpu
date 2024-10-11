@@ -15,7 +15,6 @@
 #include "display.h"
 
 
-
 /* Decimal TO Binary: convert given decimal to binary (char *) */
 void dtob(int decimal_num, int len, char binary_str[]) {
 	len = len + 2;
@@ -35,8 +34,6 @@ void dtob(int decimal_num, int len, char binary_str[]) {
 		decimal_num /= 2;
 		index--;
 	}
-
-	// return binary_str;
 }
 
 
@@ -69,7 +66,7 @@ char *dtoh(int decimal, int size, char hex[]){
 
 
 
-// Function to convert an integer to a binary string
+/* Function to convert an integer to a binary string */
 void i2b(unsigned int num, char* output, int bit_length) {
 	for (int i = bit_length - 1; i >= 0; i--) {
 		output[bit_length - i - 1] = (num & (1 << i)) ? '1' : '0';
@@ -86,6 +83,7 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 	gflags->pload = PROGRAM_LOAD;
 	gflags->is_sleep = 0;
 	gflags->console_en = 0;
+
 	memset(gflags->program, '\0', MALL);
 	memset(gflags->load, '\0', MALL);
 	// int ps, fs, ls = 0; // program save
@@ -189,7 +187,7 @@ void init_end_sig(){
 }
 
 
-/* get use char with no interruption */
+/* get a char from user with no interruption */
 int getc_keep(void){
 	fd_set readfds;
 	struct timeval tv;
@@ -241,9 +239,7 @@ int load_cpu_state(GFLAGS *gf) {
 	int pc = 0;
 
 	fp = fopen(gf->load, "r");
-	if(fp == NULL){
-		return -1;
-	}
+	if(fp == NULL){ return -1; }
 
 	if (fscanf(fp, "%s\n%d\n%d\n", gf->program, &gf->frequency, &pc) != 3) {
 		fprintf(stderr, "Error reading file: Invalid format\n");
@@ -270,10 +266,11 @@ int load_cpu_state(GFLAGS *gf) {
 }
 
 
-/* Extract Decimal from binary (start and end are included)*/
+/* Extract Decimal From Binary (start and end are included)*/
 int edfb(int decimal, int start, int end) {
 	start--;
 	end--;
+
 	// Create a mask to extract the desired bits
 	int mask = (1 << (end - start + 1)) - 1;
 
@@ -286,31 +283,7 @@ int edfb(int decimal, int start, int end) {
 }
 
 
-
-int any_use_bit(OPCODES op){
-	switch (op) {
-		case ANDLW_OP:
-			return 1;
-		case IORLW_OP:
-			return 1;
-		case RETLW_OP:
-			return 1;
-		case XORLW_OP:
-			return 1;
-		case MOVWF_OP:
-			return 1;
-		case MOVLW_OP:
-			return 1;
-		case CLRF_OP:
-			return 1;
-		default:
-			return 0;
-	}
-	return 0;
-}
-
-
-
+/* Get keyboard key with no interruption & no echo */
 int get_key(void){
 	fd_set readfds;
 	struct timeval tv;
@@ -341,19 +314,21 @@ int get_key(void){
 }
 
 
+/* is_input_on: Check that if bit is 1 (GPIO)*/
 int is_input_on(int inpt, int idx){
 	idx = idx % 8;
 	int binary = (inpt & ~get_w_reg());
 	return edfb(binary, idx + 1, idx + 1) == 1;
 }
 
-
+/* is_bit_input: check that given bit is for input (GPIO)*/
 int is_bit_input(int idx){
 	idx = idx % 8;
 	return edfb(get_w_reg(), idx + 1, idx + 1) == 0;
 }
 
 
+/* Binary LED (input: red, output: green) for GPIO (0x06) */
 void binary_led(int num, uint8_t keynum, char binary[], int len){
 	memset(binary, 0, len);
 

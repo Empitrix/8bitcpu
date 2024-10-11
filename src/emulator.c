@@ -13,10 +13,13 @@
 
 
 
-static int cw, ch = 0;
+static int cw = 0;
+static int ch = 0;
 static int cflush = 0;
 static char cbuff[50][MALL];
 
+
+/* Make size for console */
 void make_size(int l_len){
 	char tbuff[50][MALL];
 	for(int i = 1; i < l_len; ++i){
@@ -73,9 +76,7 @@ void emulate_cpu(GFLAGS *flags, int ukey){
 
 	// Main frame && header
 	draw_box(1, 1, ts.x - 1, ts.y, " [98C379]8-BIT CPU[{}] ");
-
 	int hx = (ts.x / 2);  // Half of x
-	// int hy = (ts.y / 2);  // Half of x
 
 	// ROM Pannel
 	draw_box(2, 3, hx, ts.y - 3, "ROM");
@@ -103,8 +104,10 @@ void emulate_cpu(GFLAGS *flags, int ukey){
 	dtoh(get_stack_pos(0), 2, stack_0);
 	dtoh(get_stack_pos(1), 2, stack_1);
 
+	// Wreg binary
 	char wreg[9];
 	i2b(get_w_reg(), wreg, 8);
+
 	// Status Line
 	dprt(2, 2,
 		" [55B6C2]PC[]: [ed400e]%-4d[] [55B6C2]GPIO[]: [ed400e]%s[]  %s[{}]  [55B6C2]W-Reg[]: [ed400e]0b%s  [55B6C2]S-1[]: [ed400e]%s  [55B6C2]S-2[]: [ed400e]%s  [55B6C2]Carry[]: %s",
@@ -139,9 +142,9 @@ void emulate_cpu(GFLAGS *flags, int ukey){
 		dtoh(linen + i, 4, hex_buff);
 
 		if((linen + i) == get_pc()){
-			fixed_dprt(4, 4 + i, 15, "%s%-4s [{}][u]%s", (linen + i) == 0 ? "[F44336]" : "[fcd200]", hex_buff, einfo);
+			fixed_dprt(4, 4 + i, 13, "%s%-4s [{}][u]%s", (linen + i) == 0 ? "[F44336]" : "[fcd200]", hex_buff, einfo);
 		} else {
-			fixed_dprt(4, 4 + i, 15, "%s%-4s [{}]%s", (linen + i) == 0 ? "[D32F2F]" : "[808080]", hex_buff, einfo);
+			fixed_dprt(4, 4 + i, 13, "%s%-4s [{}]%s", (linen + i) == 0 ? "[D32F2F]" : "[808080]", hex_buff, einfo);
 		}
 	}
 
@@ -164,6 +167,7 @@ void emulate_cpu(GFLAGS *flags, int ukey){
 
 
 	int ram_ps = ts.y - 18;  // ram pannel size
+
 	// RAM
 	for(int i = 0; i < (ram_ps >= 16 ? 16 : ram_ps); ++i){
 		dtoh(i + 16, 2, addr_buff);
@@ -177,7 +181,6 @@ void emulate_cpu(GFLAGS *flags, int ukey){
 			ram_buff);
 	}
 
-
 	// Info
 	dprt(hx + 33, 4, "[2196F3]Mode[FFFFFF]: [8bc34a]%s", flags->stepping ? "Stepping" : "Auto");
 	if(flags->stepping){
@@ -186,11 +189,11 @@ void emulate_cpu(GFLAGS *flags, int ukey){
 		dprt(hx + 33, 5, "[2196F3]Frequency[FFFFFF]: [FFDFAF]%d", 1000000 / flags->frequency);
 	}
 
+	// Show program path
 	dprt(hx + 33, 7, "[2196F3]Program[FFFFFF]:");
 	dprt(hx + 33, 8, "[98C379]\"%s\"", flags->program);
 
-
-	// Update console (from register 6)
+	// Update console (from register 6 (GPIO))
 	if(flags->console_en){
 		update_console(hx + 29, 16, ts.y - 18);
 	} else {
@@ -199,3 +202,4 @@ void emulate_cpu(GFLAGS *flags, int ukey){
 
 	fflush(NULL);  // Flush the output (ALL)
 }
+

@@ -8,7 +8,7 @@ void reg_init(void){
 }
 
 
-char *get_reg_name(int reg_addr){
+const char *get_reg_name(int reg_addr){
 	switch (reg_addr) {
 		case 0:
 			return "[FFFFFF]INDF";
@@ -32,6 +32,5 @@ char *get_reg_name(int reg_addr){
 			return "[FFFFFF]OPTION";
 		default:
 			return "[ABB2BF]N/A";
-			break;
 	}
 }

@@ -15,7 +15,6 @@ int get_cpu_coutner(){ return CPU_COUNTER; }
 void increase_cc(void){ CPU_COUNTER++; }
 
 
-// MEM_OUT get_mem(REG *reg, RAM *ram, int addr){
 MEM_OUT get_mem(int addr){
 	MEM_OUT mem;
 	mem.valid = 1;
@@ -52,22 +51,18 @@ int set_mem(MEM_OUT mem, int val){
 }
 
 
-void set_w_reg(int val){
-	WReg = val;
-}
+/* set W register */
+void set_w_reg(int val){ WReg = val; }
 
-int get_w_reg(){
-	return WReg;
-}
+/* get W register */
+int get_w_reg(){ return WReg; }
 
 
 
 
-/* Rotate And Carry */
-
+/* Rotate with Carry */
 void set_carry(int val){ CARRY_VAL = val; }
 int get_carry(){ return CARRY_VAL; }
-
 
 
 int rotate_left_carry(uint8_t value){
@@ -100,9 +95,7 @@ uint8_t pop_stack(void){
 }
 
 
-int get_stack_pos(int idx){
-	return _stack[idx];
-}
+int get_stack_pos(int idx){ return _stack[idx]; }
 
 
 /* SFR (SPECIAL FUNCTION REGISTERS) */
@@ -130,7 +123,5 @@ void set_sfr(SFR sfr, int literal){
 }
 
 /* get srf value */
-int get_sfr(SFR sfr){
-	return REGISTERS[sfr];
-}
+int get_sfr(SFR sfr){ return REGISTERS[sfr]; }
 

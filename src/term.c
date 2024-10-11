@@ -70,7 +70,6 @@ void cls_term(void){
 
 /* turn the echo on and make cursor visible */
 void normal_terminal(void){
-	//cls_term();
 	system("clear");
 	enable_cursor();
 	nrm_term();
@@ -84,3 +83,4 @@ void hidden_terminal(void){
 	init_term();       // No ouput from cursor
 	fflush(NULL);
 }
+

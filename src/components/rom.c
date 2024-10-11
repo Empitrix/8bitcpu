@@ -10,8 +10,10 @@ void rom_init(char *rom_path){
 
 	FILE *fp;
 	fp = fopen(rom_path, "rb");
-	if(fp == NULL)
+	if(fp == NULL){
 		lprt(1, "File \"%s\" does not exist!", rom_path);
+	}
+
 
 	unsigned char buffer[2];
 	int value, idx;
@@ -41,13 +43,13 @@ void increment_pc(void){
 	set_sfr(PCL_REGISTER, pcl + 1);
 }
 
+/* Get program counter */
 int get_pc(void){
-	// return PC;
 	return get_sfr(PCL_REGISTER);
 }
 
-
-void reset_cpu(){
+/* Reset CPU (clear everything) */
+void reset_cpu(int clear){
 	set_pc(0);
 	int i;
 	for(i = 0; i < REGSIZ; ++i){
@@ -58,5 +60,6 @@ void reset_cpu(){
 		RAM[i] = 0;
 	}
 	clear_sfr_bit(STATUS_REGISTER, 7);
-	system("clear");
+	if(clear){ system("clear"); }
 }
+

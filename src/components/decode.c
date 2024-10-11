@@ -285,8 +285,9 @@ DECODE decode_inst(int inst){
 		dcd.addr = edfb(inst, 1, 3);
 
 	// Undefined
-	} else
+	} else {
 		dcd.opcode = NOP_OP;
+	}
 
 	return dcd;
 }

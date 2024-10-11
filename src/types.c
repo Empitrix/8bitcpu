@@ -115,7 +115,7 @@ typedef struct DECODE {
 } DECODE;
 
 
-
+/* Special Function Registers */
 typedef enum SFR {
 	INDF_REGISTER,
 	TMR0_REGISTER,

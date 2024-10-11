@@ -31,8 +31,8 @@ EXEC soft_execute(DECODE dcd){
 			set_w_reg(dcd.bits);        // Load Register W
 			break;
 
-	default:
-		break;
+		default:
+			break;
 	}
 
 	return exec;
@@ -40,21 +40,18 @@ EXEC soft_execute(DECODE dcd){
 
 
 void exec_info(char info[], int inst){
-	// char info[MAXSIZ];
-
 	DECODE dcd = decode_inst(inst);
 	char dth[MAXSIZ];   // decimal (hex)
 	char dta[MAXSIZ];   // decimal (addr)
 	char dtb[MAXSIZ];   // decimal (bits)
 
-	char four[5];
+	char one[2];
 	char three[4];
-	char eight[9];
-
+	char four[5];
+	char five[6];
 	char six[7];
 	char seven[8];
-	char one[2];
-	char five[6];
+	char eight[9];
 	char nine[10];
 
 	switch(dcd.type) {
@@ -152,15 +149,9 @@ int execute(DECODE dcd){
 	MEM_OUT m;
 	int bypass = 0;
 
-	// set_sfr(PCL_REGISTER, get_pc());
-
-	// FSR, INDF (set INDF by content of FSR)
 	int fsr = get_sfr(FSR_REGISTER);
 	set_sfr(INDF_REGISTER, fsr);
-
 	set_sfr(TMR0_REGISTER, get_cpu_coutner());
-	
-
 
 	// Update Carry bit in STATUS
 	if(get_carry()){
@@ -168,8 +159,6 @@ int execute(DECODE dcd){
 	} else {
 		clear_sfr_bit(STATUS_REGISTER, 0);
 	}
-
-
 
 	switch(dcd.opcode) {
 		// BSF
@@ -383,7 +372,6 @@ int execute(DECODE dcd){
 			set_sfr(OPTION_REGISTER, get_w_reg());
 			break;
 
-
 		// CLRWDT
 		case TRIS_OP:
 			set_sfr(TRISGPIO_REGISTER, dcd.addr);
@@ -398,7 +386,6 @@ int execute(DECODE dcd){
 		case XORLW_OP:
 			set_w_reg(get_w_reg() ^ dcd.bits);
 			break;
-
 
 		default:
 			break;

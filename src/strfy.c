@@ -12,6 +12,7 @@ void str_insert(char *src, char *m, int idx) {
 	memcpy(src + idx, m, len2);
 }
 
+
 /* str_replace: replaces all of the 'a' with 'b' in the given 'src' */
 void str_replace(char src[], char *a, char *b) {
 	int len_a = strlen(a);
@@ -41,11 +42,3 @@ void str_lower(char *src){
 	}
 }
 
-
-/* set string poitner */
-void setstr(char *buffer, char *frmt, ...){
-	va_list args;
-	va_start(args, frmt);
-	vsprintf(buffer, frmt, args);
-	va_end(args);
-}
