@@ -96,7 +96,8 @@ int main(int argc, char *argv[]){
 				continue;
 			} else {
 				// clear "paused"
-				dprt(term_size().x - 10, 2, "[26aF9a][bl]         ");
+				// dprt(term_size().x - 10, 2, "[26aF9a][bl]         ");
+				printfxy("         ", term_size().x - 10, 2);
 			}
 		}
 
@@ -138,7 +139,8 @@ int main(int argc, char *argv[]){
 				set_sfr_bit(STATUS_REGISTER, 7);
 			}
 
-			dprt(term_size().x - 6, 2, "     ");  // clear sleep text
+			// dprt(term_size().x - 6, 2, "     ");  // clear sleep text
+			printfxy("     ", term_size().x - 6, 2);
 		} else {
 			dprt(term_size().x - 6, 2, "[26aF9a][bl]Sleep");
 			set_sfr_bit(STATUS_REGISTER, 4);
