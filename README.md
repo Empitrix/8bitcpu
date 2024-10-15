@@ -1,6 +1,6 @@
-<div align="center" style="margin: 20px">
+<div align="center" style="margin: 10px">
 	<picture>
-		<img alt="Amethyst" src="./assets/amethyst.svg" width="40%">
+		<img alt="Amethyst" src="./assets/amethyst.png" width="60%">
 	</picture>
 	<h1>Amethyst</h1>
 	<p>This project implements a simplified 8-bit CPU architecture in C, along with an assembler, emulator, and a TUI-based visualization tool. It serves as an educational tool for understanding computer architecture, instruction sets, and low-level programming.</p>
