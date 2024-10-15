@@ -723,3 +723,5 @@ Control Functions:
 - [x] Run/Pause: Allow the user to start/stop continuous execution of the CPU.
 - [ ] Add more opcodes: Implement additional instructions to enhance the CPU's capabilities (e.g., arithmetic, logic, control flow).
 -->
+## Todo
+- [ ] Possible `seg fult` for `update_console` in `./src/emulator.c` when changing terminal size with high frequency so fast...

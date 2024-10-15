@@ -48,17 +48,6 @@ char getl(void){
 }
 
 
-/* ter_size: get terminal size [x, y] */
-TERSIZ term_size(void){
-	TERSIZ siz = {0, 0};
-	struct winsize w;
-	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
-	siz.x = w.ws_col;
-	siz.y = w.ws_row;
-	return siz;
-}
-
-
 /* clear terminal */
 void cls_term(void){
 #ifdef linux
@@ -66,6 +55,26 @@ void cls_term(void){
 #else
 	printf("\033[1;1H\033[2J");
 #endif
+}
+
+
+// static int tmp_y_siz = 0;
+// static int tmp_x_siz = 0;
+
+/* ter_size: get terminal size [x, y] */
+TERSIZ term_size(void){
+	TERSIZ siz = {0, 0};
+	struct winsize w;
+	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
+	siz.x = w.ws_col;
+	siz.y = w.ws_row;
+
+	// // Clear terminal if user changes the window
+	// if(siz.x != tmp_x_siz || siz.y != tmp_y_siz){ system("clear"); }
+	// tmp_y_siz = siz.y;
+	// tmp_x_siz = siz.x;
+
+	return siz;
 }
 
 /* turn the echo on and make cursor visible */
