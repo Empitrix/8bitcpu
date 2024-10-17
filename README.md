@@ -8,14 +8,14 @@
 
 
 ## Preview
-![8bitcpu](./assets/clip.gif)
+![Amethyst](./assets/clip.gif)
 
 
 ## Build
 Clone the project by:
 ```bash
-git clone https://github.com/empitrix/8bitcpu
-cd ./8bitcpu
+git clone https://github.com/empitrix/amethyst
+cd ./amethyst
 ```
 
 To build the project using `gnu make` run:
