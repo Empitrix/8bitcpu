@@ -1,6 +1,10 @@
 #include "../utils.h"
 #include "../types.h"
 
+#ifdef _MSC_VER
+#pragma warning(push)
+#pragma warning(disable : 4996)
+#endif
 
 /* Return a struct that contains the given instruction's information */
 DECODE decode_inst(int inst){

@@ -1,12 +1,8 @@
-#include <signal.h>
 #include <stdlib.h>
-#include <termios.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdarg.h>
 #include <fcntl.h>
-#include <sys/ioctl.h>
-#include <unistd.h>
 #include <wchar.h>
 #include "components/mem.h"
 #include "rules.h"
@@ -14,6 +10,16 @@
 #include "term.h"
 #include "display.h"
 
+#ifdef linux
+#include <termios.h>
+#include <sys/ioctl.h>
+#include <unistd.h>
+#include <signal.h>
+
+#elif _WIN32
+#include <conio.h>
+#include <windows.h>
+#endif
 
 /* Decimal TO Binary: convert given decimal to binary (char *) */
 void dtob(int decimal_num, int len, char binary_str[]) {
@@ -168,31 +174,46 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 
 
 /************************** Signals **************************/
+#ifdef linux
 struct sigaction old_action;
+#endif
 
 // Action for end of the program signal <C-c>
 void end_sig_func(){
 	normal_terminal();
+#ifdef linux
 	sigaction(SIGINT, &old_action, NULL);
 	kill(0, SIGINT);
+#elif _WIN32
+#endif
 }
 
 // capture end of program signal <C-c>
 void init_end_sig(){
+#ifdef linux
 	struct sigaction action;
 	memset(&action, 0, sizeof(action));
 	action.sa_handler = &end_sig_func;
 	sigaction(SIGINT, &action, &old_action);
 	system("clear");  // clear screen when start the program
+#elif _WIN32
+
+// save as utf-8
+#pragma execution_character_set_push("utf-8")
+	SetConsoleOutputCP(65001);
+
+	system("cls");  // clear screen when start the program
+#endif
 }
 
 
-/* get a char from user with no interruption */
+/* get a char from user with no interruption (no stepping mode)*/
 int getc_keep(void){
 	fd_set readfds;
 	struct timeval tv;
 	char ch;
 
+#ifdef linux
 	// Set stdin to non-blocking mode
 	int flags = fcntl(STDIN_FILENO, F_GETFL);
 	fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
@@ -207,7 +228,14 @@ int getc_keep(void){
 		read(STDIN_FILENO, &ch, 1);
 		return ch;
 	}
-
+#elif _WIN32
+	if (_kbhit()) {  // Check if a key is pressed
+		char ch = _getch();  // Read the character (non-blocking)
+		return ch;
+	} else {
+		return -1;
+	}
+#endif
 	return -1;
 }
 
@@ -289,6 +317,7 @@ int get_key(void){
 	struct timeval tv;
 	char ch;
 
+#ifdef linux
 	// Set stdin to non-blocking mode
 	int flags = fcntl(STDIN_FILENO, F_GETFL);
 	fcntl(STDIN_FILENO, F_SETFL, flags | O_NONBLOCK);
@@ -310,6 +339,17 @@ int get_key(void){
 			return -1;
 		}
 	}
+#elif _WIN32
+	ch = _getch();
+
+	ch = ch - '1';
+	if(ch >= 0 && ch <= 7){
+		return 0x00 | 1 << (ch);  // 0b00000000 | 1 << (c)
+	} else {
+		return -1;
+	}
+
+#endif
 	return -1;
 }
 
@@ -349,3 +389,17 @@ void binary_led(int num, uint8_t keynum, char binary[], int len){
 	}
 }
 
+
+void cpu_sleep(unsigned int microseconds) {
+#ifdef __linux__
+#include <unistd.h>
+	usleep(microseconds);
+#elif _WIN32
+#include <windows.h>
+	unsigned int milliseconds = microseconds / 1000;
+	if (microseconds % 1000 > 0) {
+		milliseconds += 1;
+	}
+	Sleep(milliseconds);
+#endif
+}

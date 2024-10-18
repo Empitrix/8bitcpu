@@ -9,8 +9,6 @@
 #include "display.h"
 #include <stdio.h>
 #include <string.h>
-#include <unistd.h>
-
 
 
 static int cw = 0;

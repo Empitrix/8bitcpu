@@ -4,13 +4,12 @@
 #include "src/components/reg.h"
 #include "src/components/decode.h"
 #include "src/components/exec.h"
-#include "src/display.h"
 #include "src/emulator.h"
+#include "src/utils.h"
+#include "src/display.h"
 #include "src/types.h"
 #include "src/term.h"
-#include "src/utils.h"
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
 
 
@@ -90,7 +89,7 @@ int main(int argc, char *argv[]){
 			}
 
 			if(gflags.is_pause != 0){
-				usleep(gflags.frequency);
+				cpu_sleep(gflags.frequency);
 				dprt(term_size().x - 10, 2, "[26aF9a][bl]❚❚ Paused");
 				fflush(NULL);
 				continue;
@@ -148,7 +147,7 @@ int main(int argc, char *argv[]){
 
 		// Interruption
 		if(gflags.stepping == 0){
-			usleep(gflags.frequency);
+			cpu_sleep(gflags.frequency);
 		}
 
 

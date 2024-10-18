@@ -3,5 +3,11 @@
 /assembler
 /examples/test.bin
 *.out
+*.exe
 *.txt
 /cpu_state.txt
+
+# zig compile
+/cpu.pdb
+*.pdb
+/.clangd

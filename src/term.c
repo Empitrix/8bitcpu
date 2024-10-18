@@ -1,9 +1,25 @@
 #include "types.h"
-#include <sys/ioctl.h>
-#include <termios.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#ifdef linux
+#include <sys/ioctl.h>
+#include <termios.h>
 #include <unistd.h>
+#else
+#include <windows.h>
+#include <conio.h>
+#endif
+
+
+void plat_cls(void){
+#ifdef linux
+	system("clear");
+#elif _WIN32
+	system("cls");
+#endif
+}
+
 
 // show cursor
 void enable_cursor(void){
@@ -18,32 +34,43 @@ void disable_cursor(void){
 }
 
 
+#ifdef linux
 static struct termios old, current;
+#endif
 
 // Disable Echo
 void init_term(){                   // terminal i/o settings
+#ifdef linux
 	tcgetattr(0, &old);               // grab old terminal i/o settings
 	current = old;                    // make new settings same as old settings
 	current.c_lflag &= ~ICANON;       // disable buffered i/o
 	current.c_lflag &= ~ECHO;         // set no echo mode
 	tcsetattr(0, TCSANOW, &current);  // use these new terminal i/o settings now
+#endif
 }
 
 // Enable Echo
 void nrm_term(){
+#ifdef linux
 	tcgetattr(0, &old);
 	current = old;
 	current.c_lflag |= ICANON;
 	current.c_lflag |= ECHO;
 	tcsetattr(0, TCSANOW, &current);
+#endif
 }
 
 // Get a char without echo
 char getl(void){
 	char ch;
+#ifdef linux
 	init_term();
 	ch = getchar();
 	nrm_term();
+#elif _WIN32
+	ch = _getch();
+#endif
+
 	return ch;
 }
 
@@ -53,7 +80,8 @@ void cls_term(void){
 #ifdef linux
 	printf("\033[H");
 #else
-	printf("\033[1;1H\033[2J");
+	printf("\033[H");
+	// printf("\033[1;1H\033[2J");
 #endif
 }
 
@@ -64,10 +92,18 @@ void cls_term(void){
 /* ter_size: get terminal size [x, y] */
 TERSIZ term_size(void){
 	TERSIZ siz = {0, 0};
+#ifdef linux
 	struct winsize w;
 	ioctl(STDOUT_FILENO, TIOCGWINSZ, &w);
 	siz.x = w.ws_col;
 	siz.y = w.ws_row;
+#elif _WIN32
+	CONSOLE_SCREEN_BUFFER_INFO csbi;
+	int columns, rows;
+	GetConsoleScreenBufferInfo(GetStdHandle(STD_OUTPUT_HANDLE), &csbi);
+	siz.x = csbi.srWindow.Right - csbi.srWindow.Left + 1;
+	siz.y = csbi.srWindow.Bottom - csbi.srWindow.Top + 1;
+#endif
 
 	// // Clear terminal if user changes the window
 	// if(siz.x != tmp_x_siz || siz.y != tmp_y_siz){ system("clear"); }
@@ -79,7 +115,8 @@ TERSIZ term_size(void){
 
 /* turn the echo on and make cursor visible */
 void normal_terminal(void){
-	system("clear");
+	// system("clear");
+	plat_cls();
 	enable_cursor();
 	nrm_term();
 	fflush(NULL);

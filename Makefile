@@ -6,6 +6,12 @@ all:
 windows:
 	@ x86_64-w64-mingw32-gcc ./main.c -lm -o ./cpu.exe
 
+llvm:
+	@ clang ./main.c -o ./cpu.exe
+
+zig:
+	@ zig cc ./main.c -lm -o ./cpu.exe
+
 # To compile for 'linux' using "cc" compiler
 linux:
 	@ cc ./main.c -lm -o ./cpu
