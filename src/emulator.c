@@ -73,7 +73,7 @@ void emulate_cpu(GFLAGS *flags, int ukey){
 	cls_term();
 
 	// Main frame && header
-	draw_box(1, 1, ts.x - 1, ts.y, " [98C379]8-BIT CPU[{}] ");
+	draw_box(1, 1, ts.x - 1, ts.y, "8-BIT CPU");
 	int hx = (ts.x / 2);  // Half of x
 
 	// ROM Pannel
@@ -184,7 +184,10 @@ void emulate_cpu(GFLAGS *flags, int ukey){
 	if(flags->stepping){
 		dprt(hx + 33, 5, "[2196F3]Frequency[FFFFFF]: [FFDFAF]Keyboard Key");
 	} else {
-		dprt(hx + 33, 5, "[2196F3]Frequency[FFFFFF]: [FFDFAF]%d", 1000000 / flags->frequency);
+		char frq_buff[30];
+		frequency_str(1000000 / flags->frequency, frq_buff);
+		dprt(hx + 33, 5, "[2196F3]Frequency[FFFFFF]: [FFDFAF]%s", frq_buff);
+		// dprt(hx + 33, 5, "[2196F3]Frequency[FFFFFF]: [FFDFAF]%d", 1000000 / flags->frequency);
 	}
 
 	// Show program path

@@ -403,3 +403,16 @@ void cpu_sleep(unsigned int microseconds) {
 	Sleep(milliseconds);
 #endif
 }
+
+
+
+void frequency_str(int frq, char buff[]){
+	if (frq >= 1000000) {  // Convert to MHz
+		sprintf(buff, "%.1f MHz", frq / 1000000.0);
+	} else if (frq >= 1000) {  // Convert to kHz
+		sprintf(buff, "%.1f KHz", frq / 1000.0);
+	} else {  // Frequency in Hz
+		sprintf(buff, "%d Hz", frq);
+	}
+}
+

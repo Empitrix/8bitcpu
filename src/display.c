@@ -160,13 +160,26 @@ void draw_line(int x, int y, int size, LINE_TYPE lt, char *a, char *b){
 void draw_box(int x, int y, int widht, int height, char *title){
 	char colored[MAXSIZ];
 	update_color("[808080]", 0, colored);
+	int empty_title = strcmp(title, "");
 	printf("%s", colored);
-	draw_line(x, y, height, VERTICAL, "╭", "╰");
-	draw_line(x + widht, y, height, VERTICAL, "╮", "╯");
-	draw_line(x + 1, y, widht, HORIZONTAL, "─", "─");
-	draw_line(x + 1, y + height - 2, widht, HORIZONTAL, "─", "─");
-	if(strcmp(title, "") != 0){
-		update_color("[F0F0F0]", 0, colored);
+	draw_line(x, y, height, VERTICAL, "╭", "╰");  // Left
+	draw_line(x + widht, y, height, VERTICAL, "╮", "╯");  // Right
+
+	if(empty_title == 0){
+		draw_line(x + 1, y, widht, HORIZONTAL, "─", "─");  // Top
+	} else {
+		draw_line(x + 1, y, 1, HORIZONTAL, "─", "─");  // Top
+		draw_line(x + (int)strlen(title) + 4, y, widht - (int)strlen(title) - 3, HORIZONTAL, "─", "─");  // Top
+	}
+
+	draw_line(x + 1, y + height - 2, widht, HORIZONTAL, "─", "─");  // Bottom
+	if(empty_title != 0){
+
+		if(strcmp(title, "8-BIT CPU") == 0){
+			update_color("[98C379]", 0, colored);
+		} else {
+			update_color("[F0F0F0]", 0, colored);
+		}
 		printf("%s", colored);
 		dprt(x + 2, y, " %s ", title);
 	}
