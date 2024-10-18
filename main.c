@@ -31,11 +31,8 @@ int main(int argc, char *argv[]){
 	DECODE dcd;
 	EXEC exec;
 
-	// OSCCAL;
-	
 
-	// Update flags
-	update_gflags(&gflags, argc, argv);
+	update_gflags(&gflags, argc, argv);  // Update flags
 
 	if(gflags.pload == STATE_LOAD){
 		int tmp;
@@ -53,6 +50,8 @@ int main(int argc, char *argv[]){
 		reg_init();
 		ram_init();
 	}
+
+	int steps = 0;
 
 	do {
 
@@ -145,6 +144,14 @@ int main(int argc, char *argv[]){
 			set_sfr_bit(STATUS_REGISTER, 4);
 		}
 
+
+		if(steps == gflags.ci_mode && gflags.ci_mode != 0){
+			dprt(term_size().x - 8, 2, "[00FF00][i]Reached!");
+			save_cpu_state(gflags, ppc);
+		} else {
+			dprt(term_size().x - 8, 2, "        ");
+		}
+
 		// Interruption
 		if(gflags.stepping == 0){
 			cpu_sleep(gflags.frequency);
@@ -157,6 +164,7 @@ int main(int argc, char *argv[]){
 			continue;
 		}
 
+		steps++;
 	} while(gflags.stepping ? (c = getl()) != 'q' : 1);
 
 

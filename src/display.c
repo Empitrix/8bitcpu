@@ -7,7 +7,62 @@
 #include <stdlib.h>
 
 
+void update_color(char format[], int clean, char src[]) {
+	strcpy(src, format);
+
+	char tmp[MAXSIZ];  // Allocate temporary buffer
+	int dst_idx = 0;   // Index for tmp (destination buffer)
+	int src_idx = 0;   // Index for src (source buffer)
+
+	while (src[src_idx] != '\0') {
+		if (src[src_idx] == '[' || src[src_idx] == '{') {
+			// Check if it's a color code
+			char color_code[7];
+			for (int i = 0; i < 6; i++) {
+				color_code[i] = src[src_idx + 1 + i];  // Extract hex code
+			}
+			color_code[6] = '\0';
+
+			// Convert hex color to RGB
+			int r, g, b;
+			if (sscanf(color_code, "%2x%2x%2x", &r, &g, &b) == 3) {
+				if (src[src_idx] == '[') {
+					dst_idx += sprintf(&tmp[dst_idx], "\033[38;2;%d;%d;%dm", r, g, b);  // fg
+				} else if (src[src_idx] == '{') {
+					dst_idx += sprintf(&tmp[dst_idx], "\033[48;2;%d;%d;%dm", r, g, b);  // bg
+				}
+				src_idx += 8;  // Don't copy the color code (skip "[FFFFFF]" or "{FFFFFF}")
+			} else {
+				tmp[dst_idx++] = src[src_idx++];  // Just copy if color code is invalid
+			}
+		} else {
+			tmp[dst_idx++] = src[src_idx++];  // Copy other characters
+		}
+	}
+
+	tmp[dst_idx] = '\0';  // Null-terminate the result
+
+	// Copy the modified string back to the original buffer
+	strncpy(src, tmp, dst_idx);
+	src[dst_idx] = '\0';
+
+	// Insert reset codes at the end
+	if(clean == 1) {
+		strcat(src, "\033[0m\033[49m");
+	}
+
+	// Perform additional replacements
+	str_replace(src, "[{}]", "\033[0m\033[49m");
+	str_replace(src, "[]", "\033[0m");
+	str_replace(src, "{}", "\033[49m");
+	str_replace(src, "[u]", "\033[4m");
+	str_replace(src, "[bl]", "\x1b[5m");
+	str_replace(src, "[b]", "\x1b[1m");
+	str_replace(src, "[i]", "\x1b[3m");
+}
+
 /* Update colors and return in (char *) for foreground: [FFFFFF] & for background: {FFFFFF} */
+/*
 void update_color(char *format, int clean, char src[]){
 	strcpy(src, format);
 
@@ -60,6 +115,7 @@ void update_color(char *format, int clean, char src[]){
 	str_replace(src, "[b]", "\x1b[1m");
 	str_replace(src, "[i]", "\x1b[3m");
 }
+*/
 
 
 /* goto given x, y coord (set cursor to [x, y])*/

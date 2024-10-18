@@ -29,6 +29,7 @@ void enable_cursor(void){
 
 // hide cursor
 void disable_cursor(void){
+	setvbuf(stdout, NULL, _IONBF, 0);  // Disable buffering for stdout
 	printf("\033[?25l");
 	fflush(NULL);
 }
@@ -77,12 +78,13 @@ char getl(void){
 
 /* clear terminal */
 void cls_term(void){
-#ifdef linux
-	printf("\033[H");
-#else
-	printf("\033[H");
-	// printf("\033[1;1H\033[2J");
-#endif
+	printf("\033[H");  // set position of cursor to [0, 0]
+// #ifdef linux
+// 	printf("\033[H");
+// #else
+// 	printf("\033[H");
+// 	// printf("\033[1;1H\033[2J");
+// #endif
 }
 
 

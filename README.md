@@ -703,6 +703,7 @@ And to see how console works use `-c` flag and `hello.bin` program in `examples/
 | `-p <path>` | Program        | Path to `.bin` file from [`assembler`](https://github.com/empitrix/assembler) |
 | `-l <path>` | Load CPU state | Path to a `.txt` file that contains CPU's state                               |
 | `-c`        | Console        | Enables the `console` and allows loggin for register `0x06` (GPIO)            |
+| `-i <num>`  | CI Mode        | Save CPU state at given position                                              |
 
 - If CPU state is loaded with `-l` don't need to use `-p` to load a program to CPU, but make sure that the program is exists for CPU to load it.
 

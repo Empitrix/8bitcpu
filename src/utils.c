@@ -89,6 +89,7 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 	gflags->pload = PROGRAM_LOAD;
 	gflags->is_sleep = 0;
 	gflags->console_en = 0;
+	gflags->ci_mode = 0;
 
 	memset(gflags->program, '\0', MALL);
 	memset(gflags->load, '\0', MALL);
@@ -96,6 +97,7 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 	int ps = 0;  // program save
 	int fs = 0;  // File save
 	int ls = 0;  // load save
+	int cc = 0;  // capture ci flag
 
 	int i;
 	for(i = 0; i < argc; ++i){
@@ -110,6 +112,12 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 			strcpy(gflags->load, argv[i]);
 			ls = 0;
 			gflags->pload = STATE_LOAD;
+			continue;
+		}
+
+		if(cc == 1){
+			gflags->ci_mode = atoi(argv[i]);
+			cc = 0;
 			continue;
 		}
 
@@ -146,6 +154,8 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 					case 'l':
 						ls = 1;
 						break;
+					case 'i':
+						cc = 1;
 					default:
 						break;
 				}
@@ -164,6 +174,10 @@ void update_gflags(GFLAGS *gflags, int argc, char *argv[]){
 
 	if(ls == 1){
 		lprt(1, "After [afaf00]'-l'[ffffff] you should put save state file!");
+	}
+
+	if(cc == 1){
+		lprt(1, "After [afaf00]'-i'[ffffff] you should set CI/CD parameter which is a <number>");
 	}
 
 	if(strcmp(gflags->program, "") == 0 && strcmp(gflags->load, "") == 0){

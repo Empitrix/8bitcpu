@@ -44,6 +44,7 @@ typedef struct GFLAGS {
 	int is_pause;
 	int is_sleep;
 	int console_en;
+	int ci_mode;
 } GFLAGS;
 
 
